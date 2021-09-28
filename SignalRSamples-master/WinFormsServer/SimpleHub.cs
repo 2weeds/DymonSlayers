@@ -24,6 +24,8 @@ namespace WinFormsServer
         public static event ClientGroupEventHandler ClientReadyCheck;
         public static event ClientGroupEventHandler ResetClientReadyCheck;
 
+        public static event ClientGroupEventHandler UpdateSpawn;
+
         public static event MessageReceivedEventHandler MessageReceived;
 
         public static void ClearState()
@@ -53,6 +55,13 @@ namespace WinFormsServer
         }        
 
         #region Client Methods
+
+
+        public void UpdateSpawns(string groupName)
+        {
+            UpdateSpawn?.Invoke(Context.ConnectionId, groupName);
+        }
+
 
         public void SetUserName(string userName)
         {

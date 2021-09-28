@@ -203,8 +203,10 @@ namespace WinFormsClient
             readyServerButton1.Enabled = true;
             btnPlay.Visible = false;
             btnPlay.Enabled = false;
-            FormGame gamefrm = new FormGame();
-            gamefrm.Show();
+            //FormGame gamefrm = new FormGame();
+            //gamefrm.Show();
+            FrmTest test = new FrmTest(_signalRConnection, _hubProxy, grpServer1.Text);
+            test.Show();
         }
     }
 }
