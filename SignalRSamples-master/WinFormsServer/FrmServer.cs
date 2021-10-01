@@ -9,6 +9,7 @@ using Microsoft.Owin.Hosting;
 using Microsoft.AspNet.SignalR;
 using System.ComponentModel;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace WinFormsServer
 {
@@ -187,12 +188,12 @@ namespace WinFormsServer
                 writeToLog($"{clientName}:{message}");
             }));
         }
-        private void SimpleHub_UpdateSpawn(string clientId, string groupName)
+        private void SimpleHub_UpdateSpawn(string clientId, string groupName, ConcurrentDictionary<string, List<string>> groups)
         {
             this.BeginInvoke(new Action(() =>
             {
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
-                hubContext.Clients.Group(groupName).spawnPlayer(clientId);
+                hubContext.Clients.Group(groupName).spawnPlayer(groups[groupName]);
             }));
         }
 

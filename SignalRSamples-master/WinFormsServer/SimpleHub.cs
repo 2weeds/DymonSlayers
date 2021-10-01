@@ -2,18 +2,21 @@
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using Microsoft.AspNet.SignalR;
+using System.Collections.Generic;
 
 namespace WinFormsServer
 {
     public delegate void ClientConnectionEventHandler(string clientId);
     public delegate void ClientNameChangedEventHandler(string clientId, string newName);
     public delegate void ClientGroupEventHandler(string clientId, string groupName);
+    public delegate void ClientSpawnEventHandler(string clientId, string groupName, ConcurrentDictionary<string, List<string>> groupList);
 
     public delegate void MessageReceivedEventHandler(string senderClientId, string message);
 
     public class SimpleHub : Hub
     {
         static ConcurrentDictionary<string, string> _users = new ConcurrentDictionary<string, string>();
+        static ConcurrentDictionary<string, List<string>> _groups = new ConcurrentDictionary<string, List<string>>();
 
         public static event ClientConnectionEventHandler ClientConnected;
         public static event ClientConnectionEventHandler ClientDisconnected;
@@ -24,7 +27,7 @@ namespace WinFormsServer
         public static event ClientGroupEventHandler ClientReadyCheck;
         public static event ClientGroupEventHandler ResetClientReadyCheck;
 
-        public static event ClientGroupEventHandler UpdateSpawn;
+        public static event ClientSpawnEventHandler UpdateSpawn;
 
         public static event MessageReceivedEventHandler MessageReceived;
 
@@ -59,7 +62,7 @@ namespace WinFormsServer
 
         public void UpdateSpawns(string groupName)
         {
-            UpdateSpawn?.Invoke(Context.ConnectionId, groupName);
+            UpdateSpawn?.Invoke(Context.ConnectionId, groupName, _groups);
         }
 
 
@@ -69,10 +72,30 @@ namespace WinFormsServer
 
             ClientNameChanged?.Invoke(Context.ConnectionId, userName);
         }
-
+        /// <summary>
+        /// Adds a player to Dictionary to group as SignalR does not have a way
+        /// to controll groups apart form adding or removing members.
+        /// Scuffed checks, but meh.
+        /// Called on every 'await Groups.Add'
+        /// </summary>
+        /// <param name="group">Group name</param>
+        void AddToGroups(string group)
+        {
+            if (!_groups.TryRemove(group, out List<string> bff))
+            {
+                bff = new List<string>();
+            }
+            if (!bff.Contains(Context.ConnectionId))
+            {
+                bff.Add(Context.ConnectionId);
+            }
+            _groups.TryAdd(group, bff);
+        }
         public async Task JoinGroup(string groupName)
         {
             await Groups.Add(Context.ConnectionId, groupName);
+            // adds user to group dictionary
+            AddToGroups(groupName);
 
             ClientJoinedToGroup?.Invoke(Context.ConnectionId, groupName);
         }
@@ -80,20 +103,22 @@ namespace WinFormsServer
         public async Task ReadyCheck(string groupName)
         {
             await Groups.Add(Context.ConnectionId, groupName);
-
+            AddToGroups(groupName);
             ClientReadyCheck?.Invoke(Context.ConnectionId, groupName);
         }
 
         public async Task ResetReadyCheck(string groupName)
         {
             await Groups.Add(Context.ConnectionId, groupName);
-
+            AddToGroups(groupName);
             ResetClientReadyCheck?.Invoke(Context.ConnectionId, groupName);
         }
 
         public async Task LeaveGroup(string groupName)
         {
             await Groups.Remove(Context.ConnectionId, groupName);
+            // Removes user id from dictionary of groupName
+            _groups[groupName].Remove(Context.ConnectionId);
 
             ClientLeftGroup?.Invoke(Context.ConnectionId, groupName);
         }        

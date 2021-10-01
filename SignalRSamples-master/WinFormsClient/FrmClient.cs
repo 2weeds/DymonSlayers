@@ -205,7 +205,9 @@ namespace WinFormsClient
             btnPlay.Enabled = false;
             //FormGame gamefrm = new FormGame();
             //gamefrm.Show();
-            FrmTest test = new FrmTest(_signalRConnection, _hubProxy, grpServer1.Text);
+
+            //giving alot of arguments, so maybe add singleton gere for context stuff n things?
+            FrmTest test = new FrmTest(_signalRConnection, _hubProxy, grpServer1.Text, txtUserName.Text);
             test.Show();
         }
     }
