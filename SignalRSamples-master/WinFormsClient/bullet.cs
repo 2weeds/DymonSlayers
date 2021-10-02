@@ -18,9 +18,15 @@ namespace SgClient1
         public int bulletLeft;
         public int bulletTop;
 
-        public void mkBullet(FormGame form)
+        public void mkBullet(FormGame form, string color)
         {
-            Bullet.BackColor = System.Drawing.Color.White;
+            if (color == "White")
+            {
+                Bullet.BackColor = System.Drawing.Color.White;
+            } else
+            {
+                Bullet.BackColor = System.Drawing.Color.Red;
+            }
             Bullet.Size = new Size(5, 5);
             Bullet.Name = "bullet";
             Bullet.Left = bulletLeft;

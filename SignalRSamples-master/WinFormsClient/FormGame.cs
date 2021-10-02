@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.SignalR.Client;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -23,20 +24,103 @@ namespace SgClient1
         int zombieSpeed = 3;
         int score = 0;
         bool gameOver = false;
+        HubConnection _signalRConnection;
+        IHubProxy _hubProxy;
+        string group;
+        string userName;
         Random rnd = new Random();
 
-        public FormGame()
+        public FormGame(HubConnection hc, IHubProxy hp, string gid, string name)
         {
+            userName = name;
+            group = gid;
+            _signalRConnection = hc;
+            _hubProxy = hp;
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
-            for (int i = 0; i < 2; i++)
+            await asStuf();
+            /* for (int i = 0; i < 2; i++)
+             {
+                 makeZombies();
+                 this.Size = new Size(940, 700);
+             } */
+        }
+
+        async Task asStuf()
+        {
+           // _hubProxy.On<List<string>>("spawnPlayer", (users) => SpawnGroup(users));
+            _hubProxy.On<string, string>("AddMessage", (name, message) => getMovement($"{name};{message}"));
+            _hubProxy.On<string, int, int>("shotMade", (direct, bulletLeft, bulletTop) => bulletShot(direct, bulletLeft, bulletTop));
+            try
             {
-                makeZombies();
-                this.Size = new Size(940, 700);
+                await _hubProxy.Invoke("UpdateSpawns", group);
             }
+            catch (Exception ex)
+            {
+                //Spawn($"EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE:  {ex}"); // old method to spawn labels
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// Spawns whole group (2 players) to map
+        /// </summary>
+        /// <param name="ids"> IDs of players in group list </param>
+        void SpawnGroup(List<string> ids)
+        {
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    SpawnGroup(ids);
+                });
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Moves labels, according to passed messages
+        /// TODO: add better message filters (for fire, pickups etc.)
+        /// possible TODO: instead of name use ids maybe? 
+        /// </summary>
+        /// <param name="message"> Recieved group message </param>
+        private void getMovement(string message)
+        {
+            string[] parts = message.Split(';');
+            string sender = parts[0];
+            string x = parts[1];
+            string y = parts[2];
+            if (sender != userName)
+            {
+                if (player1.Location.X < int.Parse(x))
+                {
+                    player1.Image = Properties.Resources.right1;
+                } else if (player1.Location.X > int.Parse(x))
+                {
+                    player1.Image = Properties.Resources.left1;
+                } else if (player1.Location.Y > int.Parse(y))
+                {
+                    player1.Image = Properties.Resources.up1;
+                } else if (player1.Location.Y < int.Parse(y))
+                {
+                    player1.Image = Properties.Resources.down1;
+                }
+                player1.Location = new Point(int.Parse(x), int.Parse(y));
+            }
+        }
+
+        private void bulletShot(string direct, int bulletLeft, int bulletTop)
+        {
+            _hubProxy.Invoke("Send", "Shot made");
+            bullet shoot = new bullet();
+            shoot.direction = direct;
+            shoot.bulletLeft = bulletLeft;
+            shoot.bulletTop = bulletTop;
+            shoot.mkBullet(this, "Red");
         }
 
         private void keyisdown(object sender, KeyEventArgs e)
@@ -113,7 +197,8 @@ namespace SgClient1
             if (playerHealth > 1)
             {
                 progressBar1.Value = Convert.ToInt32(playerHealth);
-            } else
+            }
+            else
             {
                 player.Image = Properties.Resources.dead;
                 timer1.Stop();
@@ -147,6 +232,8 @@ namespace SgClient1
             {
                 player.Top += speed;
             }
+
+            _hubProxy.Invoke("Send", $"{player.Location.X};{player.Location.Y}");
 
             foreach (Control x in this.Controls)
             {
@@ -213,7 +300,7 @@ namespace SgClient1
                             j.Dispose();
                             this.Controls.Remove(x);
                             x.Dispose();
-                            makeZombies();
+                            // makeZombies();
                         }
                     }
                 }
@@ -239,7 +326,8 @@ namespace SgClient1
             shoot.direction = direct;
             shoot.bulletLeft = player.Left + (player.Width / 2);
             shoot.bulletTop = player.Top + (player.Height / 2);
-            shoot.mkBullet(this);
+            shoot.mkBullet(this, "White");
+            _hubProxy.Invoke("UpdateShots", group, direct, player.Left + (player.Width / 2), player.Top + (player.Height / 2));
         }
 
         private void makeZombies()
