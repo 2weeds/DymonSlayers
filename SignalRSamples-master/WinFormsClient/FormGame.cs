@@ -28,6 +28,8 @@ namespace SgClient1
         IHubProxy _hubProxy;
         string group;
         string userName;
+       /* PictureBox player = new PictureBox();
+        PictureBox player1 = new PictureBox(); */
         Random rnd = new Random();
 
         public FormGame(HubConnection hc, IHubProxy hp, string gid, string name)
@@ -53,7 +55,7 @@ namespace SgClient1
         {
            // _hubProxy.On<List<string>>("spawnPlayer", (users) => SpawnGroup(users));
             _hubProxy.On<string, string>("AddMessage", (name, message) => getMovement($"{name};{message}"));
-            _hubProxy.On<string, int, int>("shotMade", (direct, bulletLeft, bulletTop) => bulletShot(direct, bulletLeft, bulletTop));
+            _hubProxy.On<string, int, int>("makeAShot", (direct, bulletLeft, bulletTop) => bulletShot(direct, bulletLeft, bulletTop));
             try
             {
                 await _hubProxy.Invoke("UpdateSpawns", group);
@@ -80,6 +82,20 @@ namespace SgClient1
                 });
                 return;
             }
+
+          /*  player.Name = "player1";
+            player.Location = new Point(350, 190);
+            player.Visible = true;
+            Controls.Add(player);
+            player.BringToFront();
+
+            ids.Remove(_signalRConnection.ConnectionId);
+            player1.Name = "player2";
+            player1.Location = new Point(350, 190);
+            player1.Visible = true;
+            Controls.Add(player1);
+            player1.BringToFront(); */
+            
         }
 
         /// <summary>
@@ -99,13 +115,16 @@ namespace SgClient1
                 if (player1.Location.X < int.Parse(x))
                 {
                     player1.Image = Properties.Resources.right1;
-                } else if (player1.Location.X > int.Parse(x))
+                }
+                else if (player1.Location.X > int.Parse(x))
                 {
                     player1.Image = Properties.Resources.left1;
-                } else if (player1.Location.Y > int.Parse(y))
+                }
+                else if (player1.Location.Y > int.Parse(y))
                 {
                     player1.Image = Properties.Resources.up1;
-                } else if (player1.Location.Y < int.Parse(y))
+                }
+                else if (player1.Location.Y < int.Parse(y))
                 {
                     player1.Image = Properties.Resources.down1;
                 }
@@ -232,7 +251,6 @@ namespace SgClient1
             {
                 player.Top += speed;
             }
-
             _hubProxy.Invoke("Send", $"{player.Location.X};{player.Location.Y}");
 
             foreach (Control x in this.Controls)

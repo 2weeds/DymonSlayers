@@ -28,7 +28,7 @@ namespace WinFormsServer
 
         public static event ClientGroupEventHandler UpdateSpawn;
 
-        public static event BulletEventHandler shotMade;
+        public static event BulletEventHandler ShotMade;
 
         public static event MessageReceivedEventHandler MessageReceived;
 
@@ -67,7 +67,7 @@ namespace WinFormsServer
 
         public void UpdateShots(string groupName, string direct, int bulletLeft, int bulletTop)
         {
-            shotMade?.Invoke(Context.ConnectionId, groupName, direct, bulletLeft, bulletTop);
+            ShotMade?.Invoke(Context.ConnectionId, groupName, direct, bulletLeft, bulletTop);
         }
 
         public void SetUserName(string userName)

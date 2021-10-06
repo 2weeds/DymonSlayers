@@ -37,7 +37,7 @@ namespace WinFormsServer
             SimpleHub.MessageReceived += SimpleHub_MessageReceived;
 
             SimpleHub.UpdateSpawn += SimpleHub_UpdateSpawn;
-            SimpleHub.shotMade += SimpleHub_ShotMade;
+            SimpleHub.ShotMade += SimpleHub_ShotMade;
         }
 
         private void bindListsToControls()
@@ -201,7 +201,7 @@ namespace WinFormsServer
         private void SimpleHub_ShotMade(string groupName, string clientId, string direct, int bulletLeft, int bulletTop)
         {
             var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
-            hubContext.Clients.Group(groupName).shotMade(direct, bulletLeft, bulletTop);
+            hubContext.Clients.Group(groupName).makeAShot(direct, bulletLeft, bulletTop);
         }
 
         private void btnStartServer_Click(object sender, EventArgs e)
