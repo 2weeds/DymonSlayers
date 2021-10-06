@@ -53,9 +53,8 @@ namespace SgClient1
 
         async Task asStuf()
         {
-           // _hubProxy.On<List<string>>("spawnPlayer", (users) => SpawnGroup(users));
-            _hubProxy.On<string, string>("AddMessage", (name, message) => getMovement($"{name};{message}"));
-            _hubProxy.On<string, int, int>("makeAShot", (direct, bulletLeft, bulletTop) => bulletShot(direct, bulletLeft, bulletTop));
+            // _hubProxy.On<List<string>>("spawnPlayer", (users) => SpawnGroup(users));
+            _hubProxy.On<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
             try
             {
                 await _hubProxy.Invoke("UpdateSpawns", group);
@@ -98,12 +97,6 @@ namespace SgClient1
             
         }
 
-        /// <summary>
-        /// Moves labels, according to passed messages
-        /// TODO: add better message filters (for fire, pickups etc.)
-        /// possible TODO: instead of name use ids maybe? 
-        /// </summary>
-        /// <param name="message"> Recieved group message </param>
         private void getMovement(string message)
         {
             if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
@@ -140,14 +133,36 @@ namespace SgClient1
             }
         }
 
-        private void bulletShot(string direct, int bulletLeft, int bulletTop)
+        private void bulletShot(string user, string direct, int bulletLeft, int bulletTop)
         {
-            _hubProxy.Invoke("Send", "Shot made");
-            bullet shoot = new bullet();
-            shoot.direction = direct;
-            shoot.bulletLeft = bulletLeft;
-            shoot.bulletTop = bulletTop;
-            shoot.mkBullet(this, "Red");
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    bulletShot(user, direct, bulletLeft, bulletTop);
+                });
+                return;
+            }
+            if (user != userName)
+            {
+                bullet shoot = new bullet();
+                shoot.direction = direct;
+                shoot.bulletLeft = bulletLeft;
+                shoot.bulletTop = bulletTop;
+                shoot.mkBullet(this, "Red");
+            }
+        }
+
+        private void checkAction(string message)
+        {
+            string[] parts = message.Split(';');
+            if (parts[1] == "m")
+            {
+                getMovement(parts[0] + ";" + parts[2] + ";" + parts[3]);
+            } else if (parts[1] == "s")
+            {
+                bulletShot(parts[0], parts[2], int.Parse(parts[3]), int.Parse(parts[4]));
+            }
         }
 
         private void keyisdown(object sender, KeyEventArgs e)
@@ -259,7 +274,7 @@ namespace SgClient1
             {
                 player.Top += speed;
             }
-            _hubProxy.Invoke("Send", $"{player.Location.X};{player.Location.Y}");
+            _hubProxy.Invoke("Send", $"m;{player.Location.X};{player.Location.Y}");
 
             foreach (Control x in this.Controls)
             {
@@ -353,7 +368,7 @@ namespace SgClient1
             shoot.bulletLeft = player.Left + (player.Width / 2);
             shoot.bulletTop = player.Top + (player.Height / 2);
             shoot.mkBullet(this, "White");
-            _hubProxy.Invoke("UpdateShots", group, direct, player.Left + (player.Width / 2), player.Top + (player.Height / 2));
+            _hubProxy.Invoke("Send", $"s;{direct};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
         }
 
         private void makeZombies()

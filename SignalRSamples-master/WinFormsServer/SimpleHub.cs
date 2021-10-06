@@ -67,7 +67,7 @@ namespace WinFormsServer
 
         public void UpdateShots(string groupName, string direct, int bulletLeft, int bulletTop)
         {
-            ShotMade?.Invoke(Context.ConnectionId, groupName, direct, bulletLeft, bulletTop);
+             ShotMade?.Invoke(Context.ConnectionId, groupName, direct, bulletLeft, bulletTop);
         }
 
         public void SetUserName(string userName)
@@ -103,15 +103,14 @@ namespace WinFormsServer
             await Groups.Remove(Context.ConnectionId, groupName);
 
             ClientLeftGroup?.Invoke(Context.ConnectionId, groupName);
-        }        
-
-        public void Send(string msg)
-        {
-            Clients.All.addMessage(_users[Context.ConnectionId], msg);
-
-            MessageReceived?.Invoke(Context.ConnectionId, msg);
         }
 
+          public void Send(string msg)
+          {
+              Clients.All.addMessage(_users[Context.ConnectionId], msg);
+
+              MessageReceived?.Invoke(Context.ConnectionId, msg);
+          }
         #endregion        
     }
 }
