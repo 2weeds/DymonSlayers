@@ -84,11 +84,11 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.player = new System.Windows.Forms.PictureBox();
-            this.zombie = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.player = new System.Windows.Forms.PictureBox();
+            this.player1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.player)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zombie)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.player1)).BeginInit();
             this.SuspendLayout();
             // 
             // contentsToolStripMenuItem1
@@ -460,53 +460,51 @@
             this.progressBar1.Size = new System.Drawing.Size(171, 23);
             this.progressBar1.TabIndex = 5;
             // 
-            // player
-            // 
-            this.player.Image = global::SgClient1.Properties.Resources.up;
-            this.player.Location = new System.Drawing.Point(353, 190);
-            this.player.Name = "player";
-            this.player.Size = new System.Drawing.Size(71, 100);
-            this.player.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.player.TabIndex = 6;
-            this.player.TabStop = false;
-            this.player.Tag = "player";
-            // 
-            // zombie
-            // 
-            this.zombie.Image = global::SgClient1.Properties.Resources.zdown;
-            this.zombie.Location = new System.Drawing.Point(20, 86);
-            this.zombie.Name = "zombie";
-            this.zombie.Size = new System.Drawing.Size(71, 71);
-            this.zombie.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.zombie.TabIndex = 7;
-            this.zombie.TabStop = false;
-            this.zombie.Tag = "";
-            // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 20;
             this.timer1.Tick += new System.EventHandler(this.gameEngine);
             // 
-            // Form1
+            // player
+            // 
+            this.player.Image = global::SgClient1.Properties.Resources.up;
+            this.player.Location = new System.Drawing.Point(350, 190);
+            this.player.Name = "player";
+            this.player.Size = new System.Drawing.Size(71, 100);
+            this.player.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.player.TabIndex = 8;
+            this.player.TabStop = false;
+            // 
+            // player1
+            // 
+            this.player1.Image = global::SgClient1.Properties.Resources.up1;
+            this.player1.Location = new System.Drawing.Point(350, 190);
+            this.player1.Name = "player1";
+            this.player1.Size = new System.Drawing.Size(71, 100);
+            this.player1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.player1.TabIndex = 9;
+            this.player1.TabStop = false;
+            // 
+            // FormGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.zombie);
+            this.Controls.Add(this.player1);
             this.Controls.Add(this.player);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
+            this.Name = "FormGame";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyisdown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.keyisup);
             ((System.ComponentModel.ISupportInitialize)(this.player)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zombie)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.player1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -567,8 +565,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.PictureBox player;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.PictureBox zombie;
+        private System.Windows.Forms.PictureBox player;
+        private System.Windows.Forms.PictureBox player1;
     }
 }

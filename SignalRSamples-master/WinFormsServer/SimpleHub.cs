@@ -9,6 +9,8 @@ namespace WinFormsServer
     public delegate void ClientNameChangedEventHandler(string clientId, string newName);
     public delegate void ClientGroupEventHandler(string clientId, string groupName);
 
+    public delegate void BulletEventHandler(string clientId, string groupName, string direct, int bulletLeft, int bulletTop);
+
     public delegate void MessageReceivedEventHandler(string senderClientId, string message);
 
     public class SimpleHub : Hub
@@ -23,6 +25,10 @@ namespace WinFormsServer
         public static event ClientGroupEventHandler ClientLeftGroup;
         public static event ClientGroupEventHandler ClientReadyCheck;
         public static event ClientGroupEventHandler ResetClientReadyCheck;
+
+        public static event ClientGroupEventHandler UpdateSpawn;
+
+        public static event BulletEventHandler ShotMade;
 
         public static event MessageReceivedEventHandler MessageReceived;
 
@@ -50,9 +56,19 @@ namespace WinFormsServer
             ClientDisconnected?.Invoke(Context.ConnectionId);
 
             return base.OnDisconnected(stopCalled);
-        }        
+        }
 
         #region Client Methods
+
+        public void UpdateSpawns(string groupName)
+        {
+            UpdateSpawn?.Invoke(Context.ConnectionId, groupName);
+        }
+
+        public void UpdateShots(string groupName, string direct, int bulletLeft, int bulletTop)
+        {
+             ShotMade?.Invoke(Context.ConnectionId, groupName, direct, bulletLeft, bulletTop);
+        }
 
         public void SetUserName(string userName)
         {
@@ -87,15 +103,14 @@ namespace WinFormsServer
             await Groups.Remove(Context.ConnectionId, groupName);
 
             ClientLeftGroup?.Invoke(Context.ConnectionId, groupName);
-        }        
-
-        public void Send(string msg)
-        {
-            Clients.All.addMessage(_users[Context.ConnectionId], msg);
-
-            MessageReceived?.Invoke(Context.ConnectionId, msg);
         }
 
+          public void Send(string msg)
+          {
+              Clients.All.addMessage(_users[Context.ConnectionId], msg);
+
+              MessageReceived?.Invoke(Context.ConnectionId, msg);
+          }
         #endregion        
     }
 }
