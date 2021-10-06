@@ -106,6 +106,14 @@ namespace SgClient1
         /// <param name="message"> Recieved group message </param>
         private void getMovement(string message)
         {
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    getMovement(message);
+                });
+                return;
+            }
             string[] parts = message.Split(';');
             string sender = parts[0];
             string x = parts[1];
