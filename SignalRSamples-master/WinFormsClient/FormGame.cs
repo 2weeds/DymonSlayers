@@ -53,7 +53,7 @@ namespace SgClient1
 
         async Task asStuf()
         {
-            // _hubProxy.On<List<string>>("spawnPlayer", (users) => SpawnGroup(users));
+            _hubProxy.On<int>("DropAmmo", (ammo) => dropAmmo(ammo));
             _hubProxy.On<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
             try
             {
@@ -227,10 +227,11 @@ namespace SgClient1
                 ammo--;
                 shoot(facing);
 
-                if (ammo < 2)
-                {
-                    dropAmmo();
-                }
+                //if (ammo < 2)
+                //{
+                //    dropAmmo();
+                //}
+                _hubProxy.Invoke("UpdateBullets",group, ammo);
             }
         }
 
@@ -348,17 +349,28 @@ namespace SgClient1
             }
         }
 
-        private void dropAmmo()
+        private void dropAmmo(int ammosize)
         {
-            PictureBox ammo = new PictureBox();
-            ammo.Image = Properties.Resources.ammo_Image;
-            ammo.SizeMode = PictureBoxSizeMode.AutoSize;
-            ammo.Left = rnd.Next(10, 790);
-            ammo.Top = rnd.Next(50, 500);
-            ammo.Name = "ammo";
-            this.Controls.Add(ammo);
-            ammo.BringToFront();
-            player.BringToFront();
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    dropAmmo(ammosize);
+                });
+                return;
+            }
+            if (ammosize<2)
+            {
+                PictureBox ammo = new PictureBox();
+                ammo.Image = Properties.Resources.ammo_Image;
+                ammo.SizeMode = PictureBoxSizeMode.AutoSize;
+                ammo.Left = rnd.Next(10, 790);
+                ammo.Top = rnd.Next(50, 500);
+                ammo.Name = "ammo";
+                this.Controls.Add(ammo);
+                ammo.BringToFront();
+                player.BringToFront();
+            }
         }
 
         private void shoot(string direct)
@@ -369,6 +381,7 @@ namespace SgClient1
             shoot.bulletTop = player.Top + (player.Height / 2);
             shoot.mkBullet(this, "White");
             _hubProxy.Invoke("Send", $"s;{direct};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
+
         }
 
         private void makeZombies()

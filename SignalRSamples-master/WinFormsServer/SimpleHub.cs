@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Infrastructure;
 
 namespace WinFormsServer
 {
@@ -12,6 +13,8 @@ namespace WinFormsServer
     public delegate void BulletEventHandler(string clientId, string groupName, string direct, int bulletLeft, int bulletTop);
 
     public delegate void MessageReceivedEventHandler(string senderClientId, string message);
+
+    public delegate void BulletSizeEventHandler(string clientId, string groupName, int bulletLeft);
 
     public class SimpleHub : Hub
     {
@@ -31,6 +34,7 @@ namespace WinFormsServer
         public static event BulletEventHandler ShotMade;
 
         public static event MessageReceivedEventHandler MessageReceived;
+        public static event BulletSizeEventHandler OutOfBullets;
 
         public static void ClearState()
         {
@@ -110,6 +114,11 @@ namespace WinFormsServer
               Clients.All.addMessage(_users[Context.ConnectionId], msg);
 
               MessageReceived?.Invoke(Context.ConnectionId, msg);
+          }
+
+          public void UpdateBullets(string groupName, int bulletLeft)
+          {
+              OutOfBullets?.Invoke(Context.ConnectionId, groupName, bulletLeft);
           }
         #endregion        
     }

@@ -38,6 +38,7 @@ namespace WinFormsServer
 
             SimpleHub.ShotMade += SimpleHub_ShotMade;
             SimpleHub.UpdateSpawn += SimpleHub_UpdateSpawn;
+            SimpleHub.OutOfBullets+= SimpleHub_OutOfBullets;
         }
 
         private void bindListsToControls()
@@ -205,6 +206,15 @@ namespace WinFormsServer
                  var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
                  hubContext.Clients.Group(groupName).makeAShot(direct, bulletLeft, bulletTop);
                  
+            }));
+        }
+
+        private void SimpleHub_OutOfBullets(string clientId, string groupName, int ammo)
+        {
+            this.BeginInvoke(new Action(() =>
+            {
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
+                hubContext.Clients.Group(groupName).DropAmmo(ammo);
             }));
         }
 
