@@ -14,12 +14,13 @@ namespace WinFormsClient
     public partial class FrmClient : Form
     {
         //Connection to a SignalR server
-        HubConnection _signalRConnection;
+        public HubConnection _signalRConnection;
         //Proxy object for a hub hosted on the SignalR server
-        IHubProxy _hubProxy;
-
+        public IHubProxy _hubProxy;
+        public static FrmClient instance;
         public FrmClient()
         {
+            instance = this;
             InitializeComponent();
         }
 
@@ -203,8 +204,17 @@ namespace WinFormsClient
             readyServerButton1.Enabled = true;
             btnPlay.Visible = false;
             btnPlay.Enabled = false;
-            FormGame gamefrm = new FormGame(_signalRConnection, _hubProxy, grpServer1.Text, txtUserName.Text);
+            //FormGame gamefrm = new FormGame(_signalRConnection, _hubProxy, grpServer1.Text, txtUserName.Text);
+            FormGame gamefrm = new FormGame(instance);
             gamefrm.Show();
+        }
+        public string GetName()
+        {
+            return txtUserName.Text;
+        }
+        public string GetGroup()
+        {
+            return grpServer1.Text;
         }
     }
 }

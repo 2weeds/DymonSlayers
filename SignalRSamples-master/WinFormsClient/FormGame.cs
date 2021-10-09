@@ -32,12 +32,12 @@ namespace SgClient1
         PictureBox player1 = new PictureBox(); */
         Random rnd = new Random();
 
-        public FormGame(HubConnection hc, IHubProxy hp, string gid, string name)
+        public FormGame(WinFormsClient.FrmClient instance)
         {
-            userName = name;
-            group = gid;
-            _signalRConnection = hc;
-            _hubProxy = hp;
+            userName = instance.GetName();
+            group = instance.GetGroup();
+            _signalRConnection = instance._signalRConnection;
+            _hubProxy = instance._hubProxy;
             InitializeComponent();
         }
 
