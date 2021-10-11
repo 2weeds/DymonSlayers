@@ -37,6 +37,8 @@ namespace WinFormsServer
             SimpleHub.MessageReceived += SimpleHub_MessageReceived;
 
             SimpleHub.UpdateSpawn += SimpleHub_UpdateSpawn;
+            SimpleHub.OutOfBullets += SimpleHub_OutOfBullets;
+            SimpleHub.OutOfZombies += SimpleHub_OutOfZombies;
         }
 
         private void bindListsToControls()
@@ -194,6 +196,24 @@ namespace WinFormsServer
             {
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
                 hubContext.Clients.Group(groupName).spawnPlayer(clientId);
+            }));
+        }
+
+        private void SimpleHub_OutOfBullets(string clientId, string groupName, int x, int y)
+        {
+            this.BeginInvoke(new Action(() =>
+            {
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
+                hubContext.Clients.Group(groupName).DropAmmo(x, y);
+            }));
+        }
+
+        private void SimpleHub_OutOfZombies(string clientId, string groupName, int x, int y)
+        {
+            this.BeginInvoke(new Action(() =>
+            {
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
+                hubContext.Clients.Group(groupName).SpawnZombie(x, y);
             }));
         }
 

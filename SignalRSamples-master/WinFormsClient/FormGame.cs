@@ -21,6 +21,7 @@ namespace SgClient1
         int speed = 10;
         int ammo = 10;
         int zombieSpeed = 3;
+        int zombieCount = 3;
         int score = 0;
         bool gameOver = false;
         HubConnection _signalRConnection;
@@ -29,28 +30,27 @@ namespace SgClient1
         string userName;
         Random rnd = new Random();
 
-        public FormGame(HubConnection hc, IHubProxy hp, string gid, string name)
+        public FormGame(WinFormsClient.FrmClient instance)
         {
-            userName = name;
-            group = gid;
-            _signalRConnection = hc;
-            _hubProxy = hp;
+            userName = instance.GetName();
+            group = instance.GetGroup();
+            _signalRConnection = instance._signalRConnection;
+            _hubProxy = instance._hubProxy;
             InitializeComponent();
         }
 
         private async void Form1_Load(object sender, EventArgs e)
         {
             await asStuf();
-             for (int i = 0; i < 1; i++)
-             {
-                 makeZombies();
-                 this.Size = new Size(940, 700);
-             }
+            pictureBox1.Name = "zombie";
+            pictureBox2.Name = "zombie";
+            this.Size = new Size(940, 700);
         }
 
         async Task asStuf()
         {
-            // _hubProxy.On<List<string>>("spawnPlayer", (users) => SpawnGroup(users));
+            _hubProxy.On<int,int>("DropAmmo", (x, y) => dropAmmo(x, y));
+            _hubProxy.On<int, int>("SpawnZombie", (x, y) => makeZombies(x, y));
             _hubProxy.On<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
             try
             {
@@ -227,7 +227,7 @@ namespace SgClient1
 
                 if (ammo < 2)
                 {
-                    dropAmmo();
+                    _hubProxy.Invoke("UpdateBullets", group, rnd.Next(10, 790), rnd.Next(50, 500));
                 }
             }
         }
@@ -276,18 +276,16 @@ namespace SgClient1
                 player.Top += speed;
                 _hubProxy.Invoke("Send", $"m;down;{player.Location.X};{player.Location.Y}");
             }
-          //  _hubProxy.Invoke("Send", $"m;{player.Location.X};{player.Location.Y}");
 
             foreach (Control x in this.Controls)
             {
                 if (x is PictureBox && x.Name == "ammo")
                 {
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
+                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
                     {
                         this.Controls.Remove(((PictureBox)x));
-
                         ((PictureBox)x).Dispose();
-                        ammo += 5;
+                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)){ammo += 5;}
                     }
                 }
 
@@ -359,27 +357,36 @@ namespace SgClient1
                         if (x.Bounds.IntersectsWith(j.Bounds))
                         {
                             score++;
+                            zombieCount--;
                             this.Controls.Remove(j);
                             j.Dispose();
                             this.Controls.Remove(x);
                             x.Dispose();
-                            int xzm = rnd.Next(10, 790);
-                            int yzm = rnd.Next(50, 500);
-                            _hubProxy.Invoke();
-                            makeZombies(xzm, yzm);
+                            if (zombieCount < 3)
+                            {
+                                _hubProxy.Invoke("UpdateZombies", group, rnd.Next(10, 790), rnd.Next(50, 500));
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void dropAmmo()
+        private void dropAmmo(int x, int y)
         {
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    dropAmmo(x, y);
+                });
+                return;
+            }
             PictureBox ammo = new PictureBox();
             ammo.Image = Properties.Resources.ammo_Image;
             ammo.SizeMode = PictureBoxSizeMode.AutoSize;
-            ammo.Left = rnd.Next(10, 790);
-            ammo.Top = rnd.Next(50, 500);
+            ammo.Left = x;
+            ammo.Top = y;
             ammo.Name = "ammo";
             this.Controls.Add(ammo);
             ammo.BringToFront();
@@ -394,18 +401,31 @@ namespace SgClient1
             shoot.bulletTop = player.Top + (player.Height / 2);
             shoot.mkBullet(this, "White");
             _hubProxy.Invoke("Send", $"s;{direct};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
+
         }
 
         private void makeZombies(int x, int y)
         {
-            PictureBox zombie = new PictureBox();
-            zombie.Name = "zombie";
-            zombie.Image = Properties.Resources.zdown;
-            zombie.Left = rnd.Next(0, 900);
-            zombie.Top = rnd.Next(0, 800);
-            zombie.SizeMode = PictureBoxSizeMode.AutoSize;
-            this.Controls.Add(zombie);
-            player.BringToFront();
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    makeZombies(x, y);
+                });
+                return;
+            }
+            if (zombieCount < 3)
+            {
+                PictureBox zombie = new PictureBox();
+                zombie.Name = "zombie";
+                zombie.Image = Properties.Resources.zdown;
+                zombie.Left = x;
+                zombie.Top = y;
+                zombie.SizeMode = PictureBoxSizeMode.AutoSize;
+                this.Controls.Add(zombie);
+                player.BringToFront();
+                zombieCount++;
+            }
         }
     }
 }

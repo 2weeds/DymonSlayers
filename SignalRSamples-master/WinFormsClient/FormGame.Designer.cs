@@ -87,8 +87,14 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.player = new System.Windows.Forms.PictureBox();
             this.player1 = new System.Windows.Forms.PictureBox();
+            this.zombie = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.player)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.player1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zombie)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // contentsToolStripMenuItem1
@@ -486,12 +492,45 @@
             this.player1.TabIndex = 9;
             this.player1.TabStop = false;
             // 
+            // zombie
+            // 
+            this.zombie.Image = global::SgClient1.Properties.Resources.zdown;
+            this.zombie.Location = new System.Drawing.Point(90, 83);
+            this.zombie.Name = "zombie";
+            this.zombie.Size = new System.Drawing.Size(71, 71);
+            this.zombie.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.zombie.TabIndex = 10;
+            this.zombie.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::SgClient1.Properties.Resources.zleft;
+            this.pictureBox1.Location = new System.Drawing.Point(640, 190);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(71, 71);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 11;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = global::SgClient1.Properties.Resources.zup;
+            this.pictureBox2.Location = new System.Drawing.Point(506, 367);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(71, 71);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox2.TabIndex = 12;
+            this.pictureBox2.TabStop = false;
+            // 
             // FormGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.zombie);
             this.Controls.Add(this.player1);
             this.Controls.Add(this.player);
             this.Controls.Add(this.progressBar1);
@@ -505,6 +544,9 @@
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.keyisup);
             ((System.ComponentModel.ISupportInitialize)(this.player)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.player1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zombie)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -568,5 +610,8 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox player;
         private System.Windows.Forms.PictureBox player1;
+        private System.Windows.Forms.PictureBox zombie;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
