@@ -53,7 +53,7 @@ namespace SgClient1
 
         async Task asStuf()
         {
-            _hubProxy.On<int>("DropAmmo", (ammo) => dropAmmo(ammo));
+            _hubProxy.On<int,int,int>("DropAmmo", (ammo,x,y) => dropAmmo(ammo,x,y));
             _hubProxy.On<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
             try
             {
@@ -231,7 +231,7 @@ namespace SgClient1
                 //{
                 //    dropAmmo();
                 //}
-                _hubProxy.Invoke("UpdateBullets",group, ammo);
+                _hubProxy.Invoke("UpdateBullets",group, ammo, rnd.Next(10,790), rnd.Next(50,500));
             }
         }
 
@@ -281,12 +281,11 @@ namespace SgClient1
             {
                 if (x is PictureBox && x.Name == "ammo")
                 {
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
+                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)|| ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
                     {
                         this.Controls.Remove(((PictureBox)x));
-
                         ((PictureBox)x).Dispose();
-                        ammo += 5;
+                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)){ammo += 5;}
                     }
                 }
 
@@ -349,13 +348,13 @@ namespace SgClient1
             }
         }
 
-        private void dropAmmo(int ammosize)
+        private void dropAmmo(int ammosize, int x, int y)
         {
             if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
             {
                 this.Invoke((MethodInvoker)delegate
                 {
-                    dropAmmo(ammosize);
+                    dropAmmo(ammosize, x, y);
                 });
                 return;
             }
@@ -364,8 +363,10 @@ namespace SgClient1
                 PictureBox ammo = new PictureBox();
                 ammo.Image = Properties.Resources.ammo_Image;
                 ammo.SizeMode = PictureBoxSizeMode.AutoSize;
-                ammo.Left = rnd.Next(10, 790);
-                ammo.Top = rnd.Next(50, 500);
+                //ammo.Left = rnd.Next(10, 790);
+                //ammo.Top = rnd.Next(50, 500);
+                ammo.Left = x;
+                ammo.Top = y;
                 ammo.Name = "ammo";
                 this.Controls.Add(ammo);
                 ammo.BringToFront();

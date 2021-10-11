@@ -209,12 +209,12 @@ namespace WinFormsServer
             }));
         }
 
-        private void SimpleHub_OutOfBullets(string clientId, string groupName, int ammo)
+        private void SimpleHub_OutOfBullets(string clientId, string groupName, int ammo, int x, int y)
         {
             this.BeginInvoke(new Action(() =>
             {
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
-                hubContext.Clients.Group(groupName).DropAmmo(ammo);
+                hubContext.Clients.Group(groupName).DropAmmo(ammo, x, y);
             }));
         }
 

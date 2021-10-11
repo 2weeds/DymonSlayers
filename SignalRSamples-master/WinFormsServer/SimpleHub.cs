@@ -14,7 +14,7 @@ namespace WinFormsServer
 
     public delegate void MessageReceivedEventHandler(string senderClientId, string message);
 
-    public delegate void BulletSizeEventHandler(string clientId, string groupName, int bulletLeft);
+    public delegate void BulletSizeEventHandler(string clientId, string groupName, int bulletLeft, int x, int y);
 
     public class SimpleHub : Hub
     {
@@ -116,9 +116,9 @@ namespace WinFormsServer
               MessageReceived?.Invoke(Context.ConnectionId, msg);
           }
 
-          public void UpdateBullets(string groupName, int bulletLeft)
+          public void UpdateBullets(string groupName, int bulletLeft, int x, int y)
           {
-              OutOfBullets?.Invoke(Context.ConnectionId, groupName, bulletLeft);
+              OutOfBullets?.Invoke(Context.ConnectionId, groupName, bulletLeft,x,y);
           }
         #endregion        
     }
