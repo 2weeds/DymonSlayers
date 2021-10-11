@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 namespace SgClient1
 {
     public partial class FormGame : Form
@@ -28,8 +27,9 @@ namespace SgClient1
         IHubProxy _hubProxy;
         string group;
         string userName;
-       /* PictureBox player = new PictureBox();
-        PictureBox player1 = new PictureBox(); */
+        /* PictureBox player = new PictureBox();
+         PictureBox player1 = new PictureBox(); */
+        PictureBox zombie = new PictureBox();
         Random rnd = new Random();
 
         public FormGame(HubConnection hc, IHubProxy hp, string gid, string name)
@@ -44,11 +44,11 @@ namespace SgClient1
         private async void Form1_Load(object sender, EventArgs e)
         {
             await asStuf();
-            /* for (int i = 0; i < 2; i++)
+             for (int i = 0; i < 1; i++)
              {
                  makeZombies();
                  this.Size = new Size(940, 700);
-             } */
+             }
         }
 
         async Task asStuf()
@@ -109,23 +109,24 @@ namespace SgClient1
             }
             string[] parts = message.Split(';');
             string sender = parts[0];
-            string x = parts[1];
-            string y = parts[2];
+            string direction = parts[1];
+            string x = parts[2];
+            string y = parts[3];
             if (sender != userName)
             {
-                if (player1.Location.X < int.Parse(x))
-                {
-                    player1.Image = Properties.Resources.right1;
-                }
-                else if (player1.Location.X > int.Parse(x))
+                if (direction == "left")
                 {
                     player1.Image = Properties.Resources.left1;
                 }
-                else if (player1.Location.Y > int.Parse(y))
+                else if (direction == "right")
+                {
+                    player1.Image = Properties.Resources.right1;
+                }
+                else if (direction == "up")
                 {
                     player1.Image = Properties.Resources.up1;
                 }
-                else if (player1.Location.Y < int.Parse(y))
+                else if (direction == "down")
                 {
                     player1.Image = Properties.Resources.down1;
                 }
@@ -158,7 +159,7 @@ namespace SgClient1
             string[] parts = message.Split(';');
             if (parts[1] == "m")
             {
-                getMovement(parts[0] + ";" + parts[2] + ";" + parts[3]);
+                getMovement(parts[0] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4]);
             } else if (parts[1] == "s")
             {
                 bulletShot(parts[0], parts[2], int.Parse(parts[3]), int.Parse(parts[4]));
@@ -258,23 +259,27 @@ namespace SgClient1
             if (goleft && player.Left > 0)
             {
                 player.Left -= speed;
+                _hubProxy.Invoke("Send", $"m;left;{player.Location.X};{player.Location.Y}");
             }
 
             if (goright && player.Left + player.Width < 930)
             {
                 player.Left += speed;
+                _hubProxy.Invoke("Send", $"m;right;{player.Location.X};{player.Location.Y}");
             }
 
             if (goup && player.Top > 60)
             {
                 player.Top -= speed;
+                _hubProxy.Invoke("Send", $"m;up;{player.Location.X};{player.Location.Y}");
             }
 
             if (godown && player.Top + player.Height < 700)
             {
                 player.Top += speed;
+                _hubProxy.Invoke("Send", $"m;down;{player.Location.X};{player.Location.Y}");
             }
-            _hubProxy.Invoke("Send", $"m;{player.Location.X};{player.Location.Y}");
+          //  _hubProxy.Invoke("Send", $"m;{player.Location.X};{player.Location.Y}");
 
             foreach (Control x in this.Controls)
             {
@@ -300,30 +305,50 @@ namespace SgClient1
 
                 if (x is PictureBox && x.Name == "zombie")
                 {
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
+                    /*   if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
+                       {
+                           playerHealth -= 1;
+                       } */
+                    var p = player;
+                    int[] distances = new int[4];                                          // Array with zombie distances to player: Indexes 0 and 1 are for player 1, indexes 2 and 3 are for player 2
+                    distances[0] = System.Math.Abs(((PictureBox)x).Left - player.Left);
+                    distances[1] = System.Math.Abs(((PictureBox)x).Top - player.Top);
+                    distances[2] = System.Math.Abs(((PictureBox)x).Left - player1.Left);
+                    distances[3] = System.Math.Abs(((PictureBox)x).Top - player1.Top);
+                    int min = 999999;
+                    int ind = -1;
+                    for (int i = 0; i < distances.Length; i++)
                     {
-                        playerHealth -= 1;
+                        if (distances[i] < min)
+                        {
+                            min = distances[i];
+                            ind = i;
+                        }
+                    }
+                    if (ind == 2 || ind == 3)
+                    {
+                        p = player1;
                     }
 
-                    if (((PictureBox)x).Left > player.Left)
+                    if (((PictureBox)x).Left > p.Left)
                     {
                         ((PictureBox)x).Left -= zombieSpeed;
                         ((PictureBox)x).Image = Properties.Resources.zleft;
                     }
 
-                    if (((PictureBox)x).Left < player.Left)
+                    if (((PictureBox)x).Left < p.Left)
                     {
                         ((PictureBox)x).Left += zombieSpeed;
                         ((PictureBox)x).Image = Properties.Resources.zright;
                     }
 
-                    if (((PictureBox)x).Top > player.Top)
+                    if (((PictureBox)x).Top > p.Top)
                     {
                         ((PictureBox)x).Top -= zombieSpeed;
                         ((PictureBox)x).Image = Properties.Resources.zup;
                     }
 
-                    if (((PictureBox)x).Top < player.Top)
+                    if (((PictureBox)x).Top < p.Top)
                     {
                         ((PictureBox)x).Top += zombieSpeed;
                         ((PictureBox)x).Image = Properties.Resources.zdown;
