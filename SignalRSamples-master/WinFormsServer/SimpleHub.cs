@@ -61,6 +61,11 @@ namespace WinFormsServer
             UpdateSpawn?.Invoke(Context.ConnectionId, groupName);
         }
 
+        public void spawnZombies(string groupName, int x, int y)
+        {
+            spawnZombies?.Invoke(Context.ConnectionId, groupName, x, y);
+        }
+
         public void SetUserName(string userName)
         {
             _users[Context.ConnectionId] = userName;

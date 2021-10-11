@@ -27,9 +27,6 @@ namespace SgClient1
         IHubProxy _hubProxy;
         string group;
         string userName;
-        /* PictureBox player = new PictureBox();
-         PictureBox player1 = new PictureBox(); */
-        PictureBox zombie = new PictureBox();
         Random rnd = new Random();
 
         public FormGame(HubConnection hc, IHubProxy hp, string gid, string name)
@@ -366,7 +363,10 @@ namespace SgClient1
                             j.Dispose();
                             this.Controls.Remove(x);
                             x.Dispose();
-                            // makeZombies();
+                            int xzm = rnd.Next(10, 790);
+                            int yzm = rnd.Next(50, 500);
+                            _hubProxy.Invoke();
+                            makeZombies(xzm, yzm);
                         }
                     }
                 }
@@ -396,7 +396,7 @@ namespace SgClient1
             _hubProxy.Invoke("Send", $"s;{direct};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
         }
 
-        private void makeZombies()
+        private void makeZombies(int x, int y)
         {
             PictureBox zombie = new PictureBox();
             zombie.Name = "zombie";
