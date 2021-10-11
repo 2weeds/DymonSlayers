@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 namespace SgClient1
 {
     public partial class FormGame : Form
@@ -22,14 +21,13 @@ namespace SgClient1
         int speed = 10;
         int ammo = 10;
         int zombieSpeed = 3;
+        int zombieCount = 3;
         int score = 0;
         bool gameOver = false;
         HubConnection _signalRConnection;
         IHubProxy _hubProxy;
         string group;
         string userName;
-       /* PictureBox player = new PictureBox();
-        PictureBox player1 = new PictureBox(); */
         Random rnd = new Random();
 
         public FormGame(WinFormsClient.FrmClient instance)
@@ -44,16 +42,15 @@ namespace SgClient1
         private async void Form1_Load(object sender, EventArgs e)
         {
             await asStuf();
-            /* for (int i = 0; i < 2; i++)
-             {
-                 makeZombies();
-                 this.Size = new Size(940, 700);
-             } */
+            pictureBox1.Name = "zombie";
+            pictureBox2.Name = "zombie";
+            this.Size = new Size(940, 700);
         }
 
         async Task asStuf()
         {
-            _hubProxy.On<int,int,int>("DropAmmo", (ammo,x,y) => dropAmmo(ammo,x,y));
+            _hubProxy.On<int,int>("DropAmmo", (x, y) => dropAmmo(x, y));
+            _hubProxy.On<int, int>("SpawnZombie", (x, y) => makeZombies(x, y));
             _hubProxy.On<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
             try
             {
@@ -109,23 +106,24 @@ namespace SgClient1
             }
             string[] parts = message.Split(';');
             string sender = parts[0];
-            string x = parts[1];
-            string y = parts[2];
+            string direction = parts[1];
+            string x = parts[2];
+            string y = parts[3];
             if (sender != userName)
             {
-                if (player1.Location.X < int.Parse(x))
-                {
-                    player1.Image = Properties.Resources.right1;
-                }
-                else if (player1.Location.X > int.Parse(x))
+                if (direction == "left")
                 {
                     player1.Image = Properties.Resources.left1;
                 }
-                else if (player1.Location.Y > int.Parse(y))
+                else if (direction == "right")
+                {
+                    player1.Image = Properties.Resources.right1;
+                }
+                else if (direction == "up")
                 {
                     player1.Image = Properties.Resources.up1;
                 }
-                else if (player1.Location.Y < int.Parse(y))
+                else if (direction == "down")
                 {
                     player1.Image = Properties.Resources.down1;
                 }
@@ -158,7 +156,7 @@ namespace SgClient1
             string[] parts = message.Split(';');
             if (parts[1] == "m")
             {
-                getMovement(parts[0] + ";" + parts[2] + ";" + parts[3]);
+                getMovement(parts[0] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4]);
             } else if (parts[1] == "s")
             {
                 bulletShot(parts[0], parts[2], int.Parse(parts[3]), int.Parse(parts[4]));
@@ -227,11 +225,10 @@ namespace SgClient1
                 ammo--;
                 shoot(facing);
 
-                //if (ammo < 2)
-                //{
-                //    dropAmmo();
-                //}
-                _hubProxy.Invoke("UpdateBullets",group, ammo, rnd.Next(10,790), rnd.Next(50,500));
+                if (ammo < 2)
+                {
+                    _hubProxy.Invoke("UpdateBullets", group, rnd.Next(10, 790), rnd.Next(50, 500));
+                }
             }
         }
 
@@ -259,29 +256,32 @@ namespace SgClient1
             if (goleft && player.Left > 0)
             {
                 player.Left -= speed;
+                _hubProxy.Invoke("Send", $"m;left;{player.Location.X};{player.Location.Y}");
             }
 
             if (goright && player.Left + player.Width < 930)
             {
                 player.Left += speed;
+                _hubProxy.Invoke("Send", $"m;right;{player.Location.X};{player.Location.Y}");
             }
 
             if (goup && player.Top > 60)
             {
                 player.Top -= speed;
+                _hubProxy.Invoke("Send", $"m;up;{player.Location.X};{player.Location.Y}");
             }
 
             if (godown && player.Top + player.Height < 700)
             {
                 player.Top += speed;
+                _hubProxy.Invoke("Send", $"m;down;{player.Location.X};{player.Location.Y}");
             }
-            _hubProxy.Invoke("Send", $"m;{player.Location.X};{player.Location.Y}");
 
             foreach (Control x in this.Controls)
             {
                 if (x is PictureBox && x.Name == "ammo")
                 {
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)|| ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
+                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
                     {
                         this.Controls.Remove(((PictureBox)x));
                         ((PictureBox)x).Dispose();
@@ -300,30 +300,50 @@ namespace SgClient1
 
                 if (x is PictureBox && x.Name == "zombie")
                 {
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
+                    /*   if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
+                       {
+                           playerHealth -= 1;
+                       } */
+                    var p = player;
+                    int[] distances = new int[4];                                          // Array with zombie distances to player: Indexes 0 and 1 are for player 1, indexes 2 and 3 are for player 2
+                    distances[0] = System.Math.Abs(((PictureBox)x).Left - player.Left);
+                    distances[1] = System.Math.Abs(((PictureBox)x).Top - player.Top);
+                    distances[2] = System.Math.Abs(((PictureBox)x).Left - player1.Left);
+                    distances[3] = System.Math.Abs(((PictureBox)x).Top - player1.Top);
+                    int min = 999999;
+                    int ind = -1;
+                    for (int i = 0; i < distances.Length; i++)
                     {
-                        playerHealth -= 1;
+                        if (distances[i] < min)
+                        {
+                            min = distances[i];
+                            ind = i;
+                        }
+                    }
+                    if (ind == 2 || ind == 3)
+                    {
+                        p = player1;
                     }
 
-                    if (((PictureBox)x).Left > player.Left)
+                    if (((PictureBox)x).Left > p.Left)
                     {
                         ((PictureBox)x).Left -= zombieSpeed;
                         ((PictureBox)x).Image = Properties.Resources.zleft;
                     }
 
-                    if (((PictureBox)x).Left < player.Left)
+                    if (((PictureBox)x).Left < p.Left)
                     {
                         ((PictureBox)x).Left += zombieSpeed;
                         ((PictureBox)x).Image = Properties.Resources.zright;
                     }
 
-                    if (((PictureBox)x).Top > player.Top)
+                    if (((PictureBox)x).Top > p.Top)
                     {
                         ((PictureBox)x).Top -= zombieSpeed;
                         ((PictureBox)x).Image = Properties.Resources.zup;
                     }
 
-                    if (((PictureBox)x).Top < player.Top)
+                    if (((PictureBox)x).Top < p.Top)
                     {
                         ((PictureBox)x).Top += zombieSpeed;
                         ((PictureBox)x).Image = Properties.Resources.zdown;
@@ -337,41 +357,40 @@ namespace SgClient1
                         if (x.Bounds.IntersectsWith(j.Bounds))
                         {
                             score++;
+                            zombieCount--;
                             this.Controls.Remove(j);
                             j.Dispose();
                             this.Controls.Remove(x);
                             x.Dispose();
-                            // makeZombies();
+                            if (zombieCount < 3)
+                            {
+                                _hubProxy.Invoke("UpdateZombies", group, rnd.Next(10, 790), rnd.Next(50, 500));
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void dropAmmo(int ammosize, int x, int y)
+        private void dropAmmo(int x, int y)
         {
             if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
             {
                 this.Invoke((MethodInvoker)delegate
                 {
-                    dropAmmo(ammosize, x, y);
+                    dropAmmo(x, y);
                 });
                 return;
             }
-            if (ammosize<2)
-            {
-                PictureBox ammo = new PictureBox();
-                ammo.Image = Properties.Resources.ammo_Image;
-                ammo.SizeMode = PictureBoxSizeMode.AutoSize;
-                //ammo.Left = rnd.Next(10, 790);
-                //ammo.Top = rnd.Next(50, 500);
-                ammo.Left = x;
-                ammo.Top = y;
-                ammo.Name = "ammo";
-                this.Controls.Add(ammo);
-                ammo.BringToFront();
-                player.BringToFront();
-            }
+            PictureBox ammo = new PictureBox();
+            ammo.Image = Properties.Resources.ammo_Image;
+            ammo.SizeMode = PictureBoxSizeMode.AutoSize;
+            ammo.Left = x;
+            ammo.Top = y;
+            ammo.Name = "ammo";
+            this.Controls.Add(ammo);
+            ammo.BringToFront();
+            player.BringToFront();
         }
 
         private void shoot(string direct)
@@ -385,16 +404,28 @@ namespace SgClient1
 
         }
 
-        private void makeZombies()
+        private void makeZombies(int x, int y)
         {
-            PictureBox zombie = new PictureBox();
-            zombie.Name = "zombie";
-            zombie.Image = Properties.Resources.zdown;
-            zombie.Left = rnd.Next(0, 900);
-            zombie.Top = rnd.Next(0, 800);
-            zombie.SizeMode = PictureBoxSizeMode.AutoSize;
-            this.Controls.Add(zombie);
-            player.BringToFront();
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    makeZombies(x, y);
+                });
+                return;
+            }
+            if (zombieCount < 3)
+            {
+                PictureBox zombie = new PictureBox();
+                zombie.Name = "zombie";
+                zombie.Image = Properties.Resources.zdown;
+                zombie.Left = x;
+                zombie.Top = y;
+                zombie.SizeMode = PictureBoxSizeMode.AutoSize;
+                this.Controls.Add(zombie);
+                player.BringToFront();
+                zombieCount++;
+            }
         }
     }
 }

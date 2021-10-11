@@ -10,11 +10,9 @@ namespace WinFormsServer
     public delegate void ClientNameChangedEventHandler(string clientId, string newName);
     public delegate void ClientGroupEventHandler(string clientId, string groupName);
 
-    public delegate void BulletEventHandler(string clientId, string groupName, string direct, int bulletLeft, int bulletTop);
-
     public delegate void MessageReceivedEventHandler(string senderClientId, string message);
 
-    public delegate void BulletSizeEventHandler(string clientId, string groupName, int bulletLeft, int x, int y);
+    public delegate void SpawnerEventHandler(string clientId, string groupName, int x, int y);
 
     public class SimpleHub : Hub
     {
@@ -31,10 +29,9 @@ namespace WinFormsServer
 
         public static event ClientGroupEventHandler UpdateSpawn;
 
-        public static event BulletEventHandler ShotMade;
-
         public static event MessageReceivedEventHandler MessageReceived;
-        public static event BulletSizeEventHandler OutOfBullets;
+        public static event SpawnerEventHandler OutOfBullets;
+        public static event SpawnerEventHandler OutOfZombies;
 
         public static void ClearState()
         {
@@ -69,9 +66,9 @@ namespace WinFormsServer
             UpdateSpawn?.Invoke(Context.ConnectionId, groupName);
         }
 
-        public void UpdateShots(string groupName, string direct, int bulletLeft, int bulletTop)
+        public void UpdateZombies(string groupName, int x, int y)
         {
-             ShotMade?.Invoke(Context.ConnectionId, groupName, direct, bulletLeft, bulletTop);
+            OutOfZombies?.Invoke(Context.ConnectionId, groupName, x, y);
         }
 
         public void SetUserName(string userName)
@@ -116,9 +113,9 @@ namespace WinFormsServer
               MessageReceived?.Invoke(Context.ConnectionId, msg);
           }
 
-          public void UpdateBullets(string groupName, int bulletLeft, int x, int y)
+          public void UpdateBullets(string groupName, int x, int y)
           {
-              OutOfBullets?.Invoke(Context.ConnectionId, groupName, bulletLeft,x,y);
+              OutOfBullets?.Invoke(Context.ConnectionId, groupName, x, y);
           }
         #endregion        
     }
