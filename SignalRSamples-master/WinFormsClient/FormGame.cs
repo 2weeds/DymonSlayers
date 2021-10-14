@@ -416,14 +416,10 @@ namespace SgClient1
             }
             if (zombieCount < 3)
             {
-                PictureBox zombie = new PictureBox();
-                zombie.Name = "zombie";
-                zombie.Image = Properties.Resources.zdown;
-                zombie.Left = x;
-                zombie.Top = y;
-                zombie.SizeMode = PictureBoxSizeMode.AutoSize;
-                this.Controls.Add(zombie);
-                player.BringToFront();
+                zombie zm = new zombie();
+                zm.zombieLeft = x;
+                zm.zombieTop = y;
+                zm.createAZombie(this);
                 zombieCount++;
             }
         }
