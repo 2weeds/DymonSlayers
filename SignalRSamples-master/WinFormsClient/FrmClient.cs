@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using SgClient1;
+using SgClient1.Strategy;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,39 +32,30 @@ namespace WinFormsClient
 
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
+            ClientOptionsAlgorithm Disconnect = new DisconnectFromServer();
+            Disconnect.action(ref _signalRConnection, ref _hubProxy, instance);
             //Close the server connection if exists
-            if (_signalRConnection != null)
-            {
-                _signalRConnection.Stop();
-                _signalRConnection.Dispose();
-                _signalRConnection = null;
-
-                btnConnect.Enabled = true;
-                txtUrl.Enabled = true;
-                txtUserName.Enabled = true;
-                btnDisconnect.Enabled = false;
-                grpMessaging.Enabled = false;
-                grpMembership.Enabled = false;
-
-            }
         }
 
         private void btnSend_Click(object sender, EventArgs e)
         {
+            ClientOptionsAlgorithm Send = new SendToTheHub();
+            Send.action(ref _signalRConnection, ref _hubProxy, instance);
             //Call the "Send" method on the hub (on the server) with the given parameters
-            _hubProxy.Invoke("Send", txtMessage.Text);
         }
 
         private void btnJoinGroup_Click(object sender, EventArgs e)
         {
+            ClientOptionsAlgorithm JoinGroup = new JoinGroup();
+            JoinGroup.action(ref _signalRConnection, ref _hubProxy, instance);
             //Call the "JoinGroup" method on the hub (on the server)
-            _hubProxy.Invoke("JoinGroup", txtGroupName.Text);
         }
 
         private void btnLeaveGroup_Click(object sender, EventArgs e)
         {
+            ClientOptionsAlgorithm LeaveGroup = new LeaveGroup();
+            LeaveGroup.action(ref _signalRConnection, ref _hubProxy, instance);
             //Call the "LeaveGroup" method on the hub (on the server)
-            _hubProxy.Invoke("LeaveGroup", txtGroupName.Text);
         }
 
         private async Task connectAsync()
@@ -82,7 +74,6 @@ namespace WinFormsClient
             _hubProxy.On<int>("updateMembers", (size) => updateGroupSize(size));
             _hubProxy.On<int>("updateReady", (size) => updateReadyCheckSize(size));
             _hubProxy.On<int>("getReadyPlayers", (size) => triggerGameForm(size));
-
 
             btnConnect.Enabled = false;
 
@@ -108,7 +99,7 @@ namespace WinFormsClient
             }
         }
 
-        private void HubConnection_StateChanged(StateChange obj)
+        public void HubConnection_StateChanged(StateChange obj)
         {
             if (obj.NewState == Microsoft.AspNet.SignalR.Client.ConnectionState.Connected)
                 writeToLog("Connected");
@@ -116,7 +107,7 @@ namespace WinFormsClient
                 writeToLog("Disconnected");
         }
 
-        private void writeToLog(string log)
+        public void writeToLog(string log)
         {
             if (this.InvokeRequired)
                 this.BeginInvoke(new Action(() => txtLog.AppendText(log + Environment.NewLine)));
@@ -124,7 +115,7 @@ namespace WinFormsClient
                 txtLog.AppendText(log + Environment.NewLine);
         }
 
-        private void triggerGameForm(int size)
+        public void triggerGameForm(int size)
         {
             if (size == 2)
             {
@@ -142,7 +133,7 @@ namespace WinFormsClient
             }
         }
 
-        private void updateGroupSize(int size)
+        public void updateGroupSize(int size)
         {
             if (this.InvokeRequired)
                 this.BeginInvoke(new Action(() => labelServerPlayers.Text = "Players: " + size.ToString() + "/2"));
@@ -150,7 +141,7 @@ namespace WinFormsClient
                 labelServerPlayers.Text = "Players: " + size.ToString() + "/2";
         }
 
-        private void updateReadyCheckSize(int size)
+        public void updateReadyCheckSize(int size)
         {
             if (this.InvokeRequired)
                 this.BeginInvoke(new Action(() => labelReadyServer1.Text = "Ready: " + size.ToString() + "/2"));
@@ -158,56 +149,31 @@ namespace WinFormsClient
                 labelReadyServer1.Text = "Ready: " + size.ToString() + "/2";
         }
 
-        private void FrmClient_Load(object sender, EventArgs e)
+        public void joinServerButton1_Click(object sender, EventArgs e)
         {
-
+            ClientOptionsAlgorithm ServerGroup = new JoinServerGroup();
+            ServerGroup.action(ref _signalRConnection, ref _hubProxy, instance);
         }
 
-        private void groupBox2_Enter(object sender, EventArgs e)
+        public void leaveServerButton1_Click(object sender, EventArgs e)
         {
-
+            ClientOptionsAlgorithm LeaveServerGroup = new LeaveServerGroup();
+            LeaveServerGroup.action(ref _signalRConnection, ref _hubProxy, instance);
         }
 
-        private void joinServerButton1_Click(object sender, EventArgs e)
+        public void readyServerButton1_Click(object sender, EventArgs e)
         {
-            _hubProxy.Invoke("JoinGroup", grpServer1.Text);
-            readyServerButton1.Visible = true;
-            joinServerButton1.Visible = false;
-            readyServerButton1.Enabled = true;
-            joinServerButton1.Enabled = false;
+            ClientOptionsAlgorithm Ready = new ReadyForGame();
+            Ready.action(ref _signalRConnection, ref _hubProxy, instance);
         }
 
-        private void leaveServerButton1_Click(object sender, EventArgs e)
+        public void btnPlay_Click(object sender, EventArgs e)
         {
-            _hubProxy.Invoke("LeaveGroup", grpServer1.Text);
-            labelServerPlayers.Text = "Players 0/2";
-            labelReadyServer1.Text = "Ready 0/2";
-            joinServerButton1.Visible = true;
-            joinServerButton1.Enabled = true;
-            readyServerButton1.Visible = false;
-            readyServerButton1.Enabled = false;
-            btnPlay.Visible = false;
-            btnPlay.Enabled = false;
-
+            ClientOptionsAlgorithm Start = new PlayGame();
+            Start.action(ref _signalRConnection, ref _hubProxy, instance);
+            
         }
 
-        private void readyServerButton1_Click(object sender, EventArgs e)
-        {
-            _hubProxy.Invoke("ReadyCheck", grpServer1.Text);
-            readyServerButton1.Enabled = false;
-        }
-
-        private void btnPlay_Click(object sender, EventArgs e)
-        {
-            _hubProxy.Invoke("ResetReadyCheck", grpServer1.Text);
-            readyServerButton1.Visible = true;
-            readyServerButton1.Enabled = true;
-            btnPlay.Visible = false;
-            btnPlay.Enabled = false;
-            //FormGame gamefrm = new FormGame(_signalRConnection, _hubProxy, grpServer1.Text, txtUserName.Text);
-            FormGame gamefrm = new FormGame(instance);
-            gamefrm.Show();
-        }
         public string GetName()
         {
             return txtUserName.Text;
@@ -215,6 +181,66 @@ namespace WinFormsClient
         public string GetGroup()
         {
             return grpServer1.Text;
+        }
+        public Button getbtnConnect()
+        {
+            return btnConnect;
+        }
+        public Button getbtnDisconnect()
+        {
+            return btnDisconnect;
+        }
+        public Button getleaveServerButton1()
+        {
+            return leaveServerButton1;
+        }
+        public Button getreadyServerButton1()
+        {
+            return readyServerButton1;
+        }
+        public Button getbtnPlay()
+        {
+            return btnPlay;
+        }
+        public Button getjoinServerButton1()
+        {
+            return joinServerButton1;
+        }
+        public TextBox gettxtUrl()
+        {
+            return txtUrl;
+        }
+        public TextBox gettxtGroupName()
+        {
+            return txtGroupName;
+        }
+        public TextBox gettxtMessage()
+        {
+            return txtMessage;
+        }
+        public TextBox gettxtUserName()
+        {
+            return txtUserName;
+        }
+        public Label getlabelServerPlayers()
+        {
+            return labelServerPlayers;
+        }
+        public Label getlabelReadyServer1()
+        {
+            return labelReadyServer1;
+        }
+        public GroupBox getgrpMessaging()
+        {
+            return grpMessaging;
+        }
+        public GroupBox getgrpMembership()
+        {
+            return grpMembership;
+        }
+        public GroupBox getgrpServer1()
+        {
+            return grpServer1;
         }
     }
 }

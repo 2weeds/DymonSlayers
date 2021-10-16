@@ -47,12 +47,12 @@
             this.btnJoinGroup = new System.Windows.Forms.Button();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.grpServer1 = new System.Windows.Forms.GroupBox();
+            this.btnPlay = new System.Windows.Forms.Button();
             this.labelReadyServer1 = new System.Windows.Forms.Label();
             this.readyServerButton1 = new System.Windows.Forms.Button();
             this.labelServerPlayers = new System.Windows.Forms.Label();
             this.leaveServerButton1 = new System.Windows.Forms.Button();
             this.joinServerButton1 = new System.Windows.Forms.Button();
-            this.btnPlay = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.grpMessaging.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -254,7 +254,17 @@
             this.grpServer1.TabIndex = 4;
             this.grpServer1.TabStop = false;
             this.grpServer1.Text = "Server 1";
-            this.grpServer1.Enter += new System.EventHandler(this.groupBox2_Enter);
+            // 
+            // btnPlay
+            // 
+            this.btnPlay.Location = new System.Drawing.Point(75, 47);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(111, 23);
+            this.btnPlay.TabIndex = 5;
+            this.btnPlay.Text = "Play";
+            this.btnPlay.UseVisualStyleBackColor = true;
+            this.btnPlay.Visible = false;
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
             // labelReadyServer1
             // 
@@ -293,6 +303,7 @@
             this.leaveServerButton1.TabIndex = 1;
             this.leaveServerButton1.Text = "Leave";
             this.leaveServerButton1.UseVisualStyleBackColor = true;
+            this.leaveServerButton1.Visible = false;
             this.leaveServerButton1.Click += new System.EventHandler(this.leaveServerButton1_Click);
             // 
             // joinServerButton1
@@ -304,17 +315,6 @@
             this.joinServerButton1.Text = "Join";
             this.joinServerButton1.UseVisualStyleBackColor = true;
             this.joinServerButton1.Click += new System.EventHandler(this.joinServerButton1_Click);
-            // 
-            // btnPlay
-            // 
-            this.btnPlay.Location = new System.Drawing.Point(75, 47);
-            this.btnPlay.Name = "btnPlay";
-            this.btnPlay.Size = new System.Drawing.Size(111, 23);
-            this.btnPlay.TabIndex = 5;
-            this.btnPlay.Text = "Play";
-            this.btnPlay.UseVisualStyleBackColor = true;
-            this.btnPlay.Visible = false;
-            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
             // FrmClient
             // 
@@ -328,7 +328,6 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "FrmClient";
             this.Text = "Client";
-            this.Load += new System.EventHandler(this.FrmClient_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.grpMessaging.ResumeLayout(false);
