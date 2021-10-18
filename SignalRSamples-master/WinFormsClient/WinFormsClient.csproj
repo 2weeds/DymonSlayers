@@ -164,5 +164,29 @@
   <ItemGroup>
     <None Include="Resources\up1.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ammo-Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ammo-Image2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\med-Image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\med-Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\med-Image2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fireWall-Image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fireWall-Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fireWall-Image2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

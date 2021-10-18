@@ -10,6 +10,6 @@ namespace SgClient1
     {
         public int value;
 
-        public abstract void updateState();
+        public abstract void updateState(FormGame form, int x, int y);
     }
 }
