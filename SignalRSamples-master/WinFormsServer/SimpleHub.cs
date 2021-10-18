@@ -32,6 +32,8 @@ namespace WinFormsServer
         public static event MessageReceivedEventHandler MessageReceived;
         public static event SpawnerEventHandler OutOfBullets;
         public static event SpawnerEventHandler OutOfZombies;
+        public static event SpawnerEventHandler DropHealthPack;
+        public static event SpawnerEventHandler DropFireWall;
 
         public static void ClearState()
         {
@@ -106,17 +108,27 @@ namespace WinFormsServer
             ClientLeftGroup?.Invoke(Context.ConnectionId, groupName);
         }
 
-          public void Send(string msg)
-          {
-              Clients.All.addMessage(_users[Context.ConnectionId], msg);
+        public void Send(string msg)
+        {
+            Clients.All.addMessage(_users[Context.ConnectionId], msg);
 
-              MessageReceived?.Invoke(Context.ConnectionId, msg);
-          }
+            MessageReceived?.Invoke(Context.ConnectionId, msg);
+        }
 
-          public void UpdateBullets(string groupName, int x, int y)
-          {
-              OutOfBullets?.Invoke(Context.ConnectionId, groupName, x, y);
-          }
+        public void UpdateBullets(string groupName, int x, int y)
+        {
+            OutOfBullets?.Invoke(Context.ConnectionId, groupName, x, y);
+        }
+
+        public void UpdateHealthPacks(string groupName, int x, int y)
+        {
+            DropHealthPack?.Invoke(Context.ConnectionId, groupName, x, y);
+        }
+
+        public void UpdateFireWalls(string groupName, int x, int y)
+        {
+            DropFireWall?.Invoke(Context.ConnectionId, groupName, x, y);
+        }
         #endregion        
     }
 }

@@ -23,7 +23,11 @@ namespace SgClient1
         int zombieSpeed = 3;
         int zombieCount = 3;
         int score = 0;
+        bool fireWallPlaced = false;
         bool gameOver = false;
+        Creator lvCreator = new LevelCreator();
+        LevelObject level;
+        AbstractFactory objectFactory;
         HubConnection _signalRConnection;
         IHubProxy _hubProxy;
         string group;
@@ -41,6 +45,8 @@ namespace SgClient1
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            level = lvCreator.factoryMethod(1);
+            objectFactory = level.getAbstractFactory();
             await asStuf();
             pictureBox1.Name = "zombie";
             pictureBox2.Name = "zombie";
@@ -50,6 +56,8 @@ namespace SgClient1
         async Task asStuf()
         {
             _hubProxy.On<int,int>("DropAmmo", (x, y) => dropAmmo(x, y));
+            _hubProxy.On<int, int>("SpawnHealthPack", (x, y) => createHealthPack(x, y));
+            _hubProxy.On<int, int>("SpawnFireWall", (x, y) => createFireWall(x, y));
             _hubProxy.On<int, int>("SpawnZombie", (x, y) => makeZombies(x, y));
             _hubProxy.On<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
             try
@@ -234,6 +242,23 @@ namespace SgClient1
 
         private void gameEngine(object sender, EventArgs e)
         {
+            if (score == 10)
+            {
+                level = lvCreator.factoryMethod(2);
+                objectFactory = level.getAbstractFactory();
+            } else if (score == 20)
+            {
+                level = lvCreator.factoryMethod(3);
+                objectFactory = level.getAbstractFactory();
+            }
+            if (score % 10 == 0 && score != 0)
+            {
+                if (fireWallPlaced == false)
+                {
+                    _hubProxy.Invoke("UpdateFireWalls", group, rnd.Next(10, 790), rnd.Next(50, 500));
+                    fireWallPlaced = true;
+                }
+            }
             if (playerHealth > 1)
             {
                 progressBar1.Value = Convert.ToInt32(playerHealth);
@@ -279,13 +304,54 @@ namespace SgClient1
 
             foreach (Control x in this.Controls)
             {
-                if (x is PictureBox && x.Name == "ammo")
+                if (x is PictureBox && x.Name == "ammo" || x is PictureBox && x.Name == "ammo1" || x is PictureBox && x.Name == "ammo2")
                 {
+                    int ammoAdd = 0;
+                    if (x is PictureBox && x.Name == "ammo")
+                        ammoAdd = 5;
+                    else if (x is PictureBox && x.Name == "ammo1")
+                        ammoAdd = 10;
+                    else if (x is PictureBox && x.Name == "ammo2")
+                        ammoAdd = 15;
                     if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
                     {
                         this.Controls.Remove(((PictureBox)x));
                         ((PictureBox)x).Dispose();
-                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)){ammo += 5;}
+                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)){ammo += ammoAdd;}
+                    }
+                }
+
+                if (x is PictureBox && x.Name == "healthKit" || x is PictureBox && x.Name == "healthKit1" || x is PictureBox && x.Name == "healthKit2")
+                {
+                    int healAmount = 0;
+                    if (x is PictureBox && x.Name == "healthKit")
+                        healAmount = 5;
+                    else if (x is PictureBox && x.Name == "healthKit1")
+                        healAmount = 10;
+                    else if (x is PictureBox && x.Name == "healthKit2")
+                        healAmount = 15;
+                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
+                    {
+                        this.Controls.Remove(((PictureBox)x));
+                        ((PictureBox)x).Dispose();
+                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { playerHealth += healAmount; if (playerHealth > 100) { playerHealth = 100; } }
+                    }
+                }
+
+                if (x is PictureBox && x.Name == "fireWall" || x is PictureBox && x.Name == "fireWall1" || x is PictureBox && x.Name == "fireWall2")
+                {
+                    int damage = 0;
+                    if (x is PictureBox && x.Name == "fireWall")
+                        damage = 15;
+                    else if (x is PictureBox && x.Name == "fireWall1")
+                        damage = 25;
+                    else if (x is PictureBox && x.Name == "fireWall2")
+                        damage = 35;
+                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
+                    {
+                        this.Controls.Remove(((PictureBox)x));
+                        ((PictureBox)x).Dispose();
+                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { playerHealth -= damage; }
                     }
                 }
 
@@ -300,10 +366,14 @@ namespace SgClient1
 
                 if (x is PictureBox && x.Name == "zombie")
                 {
-                    /*   if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
-                       {
-                           playerHealth -= 1;
-                       } */
+                   /* if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
+                    {
+                        playerHealth -= 1;
+                        if (playerHealth == 30 || playerHealth == 20)
+                        {
+                            _hubProxy.Invoke("UpdateHealthPacks", group, rnd.Next(10, 790), rnd.Next(50, 500));
+                        }
+                    } */
                     var p = player;
                     int[] distances = new int[4];                                          // Array with zombie distances to player: Indexes 0 and 1 are for player 1, indexes 2 and 3 are for player 2
                     distances[0] = System.Math.Abs(((PictureBox)x).Left - player.Left);
@@ -357,6 +427,7 @@ namespace SgClient1
                         if (x.Bounds.IntersectsWith(j.Bounds))
                         {
                             score++;
+                            fireWallPlaced = false;
                             zombieCount--;
                             this.Controls.Remove(j);
                             j.Dispose();
@@ -382,14 +453,38 @@ namespace SgClient1
                 });
                 return;
             }
-            PictureBox ammo = new PictureBox();
-            ammo.Image = Properties.Resources.ammo_Image;
-            ammo.SizeMode = PictureBoxSizeMode.AutoSize;
-            ammo.Left = x;
-            ammo.Top = y;
-            ammo.Name = "ammo";
-            this.Controls.Add(ammo);
-            ammo.BringToFront();
+            Unit mapObj = objectFactory.createGunBullets();
+            mapObj.updateState(this, x, y);
+            player.BringToFront();
+        }
+
+        private void createHealthPack(int x, int y)
+        {
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    createHealthPack(x, y);
+                });
+                return;
+            }
+            Unit mapObj = objectFactory.createHealKit();
+            mapObj.updateState(this, x, y);
+            player.BringToFront();
+        }
+
+        private void createFireWall(int x, int y)
+        {
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    createFireWall(x, y);
+                });
+                return;
+            }
+            Unit mapObj = objectFactory.createFireWall();
+            mapObj.updateState(this, x, y);
             player.BringToFront();
         }
 
@@ -416,14 +511,10 @@ namespace SgClient1
             }
             if (zombieCount < 3)
             {
-                PictureBox zombie = new PictureBox();
-                zombie.Name = "zombie";
-                zombie.Image = Properties.Resources.zdown;
-                zombie.Left = x;
-                zombie.Top = y;
-                zombie.SizeMode = PictureBoxSizeMode.AutoSize;
-                this.Controls.Add(zombie);
-                player.BringToFront();
+                zombie zm = new zombie();
+                zm.zombieLeft = x;
+                zm.zombieTop = y;
+                zm.createAZombie(this);
                 zombieCount++;
             }
         }
