@@ -9,7 +9,7 @@ namespace SgClient1
 {
     public class AmmoKit3 : AmmoKit
     { 
-        public override void updateState(FormGame form, int x, int y)
+        public override void spawnUnit(FormGame form, int x, int y)
         {
             PictureBox ammo = new PictureBox();
             ammo.Image = Properties.Resources.ammo_Image2;

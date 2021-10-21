@@ -14,6 +14,8 @@ namespace WinFormsServer
 
     public delegate void SpawnerEventHandler(string clientId, string groupName, int x, int y);
 
+    public delegate void PlayerEventHandler(string clientId, string groupName, string userName);
+
     public class SimpleHub : Hub
     {
         static ConcurrentDictionary<string, string> _users = new ConcurrentDictionary<string, string>();
@@ -30,10 +32,13 @@ namespace WinFormsServer
         public static event ClientGroupEventHandler UpdateSpawn;
 
         public static event MessageReceivedEventHandler MessageReceived;
+
         public static event SpawnerEventHandler OutOfBullets;
         public static event SpawnerEventHandler OutOfZombies;
         public static event SpawnerEventHandler DropHealthPack;
         public static event SpawnerEventHandler DropFireWall;
+
+        public static event PlayerEventHandler DeadPlayer;
 
         public static void ClearState()
         {
@@ -128,6 +133,11 @@ namespace WinFormsServer
         public void UpdateFireWalls(string groupName, int x, int y)
         {
             DropFireWall?.Invoke(Context.ConnectionId, groupName, x, y);
+        }
+
+        public void PlayerDied(string groupName, string userName)
+        {
+            DeadPlayer?.Invoke(Context.ConnectionId, groupName, userName);
         }
         #endregion        
     }

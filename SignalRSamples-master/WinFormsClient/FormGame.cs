@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using SgClient1.Classes_Test;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,15 +13,12 @@ namespace SgClient1
 {
     public partial class FormGame : Form
     {
+        bool firstLaunch = true;
         bool goup;
         bool godown;
         bool goleft;
         bool goright;
         string facing = "up";
-        double playerHealth = 100;
-        int speed = 10;
-        int ammo = 10;
-        int zombieSpeed = 3;
         int zombieCount = 3;
         int score = 0;
         bool fireWallPlaced = false;
@@ -29,6 +27,8 @@ namespace SgClient1
         LevelObject level;
         AbstractFactory objectFactory;
         HubConnection _signalRConnection;
+        PlayerClass playerInteractions = new PlayerClass();
+        Zombie zm = new Zombie();
         IHubProxy _hubProxy;
         string group;
         string userName;
@@ -59,6 +59,7 @@ namespace SgClient1
             _hubProxy.On<int, int>("SpawnHealthPack", (x, y) => createHealthPack(x, y));
             _hubProxy.On<int, int>("SpawnFireWall", (x, y) => createFireWall(x, y));
             _hubProxy.On<int, int>("SpawnZombie", (x, y) => makeZombies(x, y));
+            _hubProxy.On<string>("PlayerDied", (user) => playerDead(user));
             _hubProxy.On<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
             try
             {
@@ -70,6 +71,22 @@ namespace SgClient1
                 throw;
             }
 
+        }
+
+        private void playerDead(string user)
+        {
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    playerDead(user);
+                });
+                return;
+            }
+            if (user != userName)
+            {
+                player1.Image = Properties.Resources.dead;
+            }
         }
 
         /// <summary>
@@ -173,7 +190,12 @@ namespace SgClient1
 
         private void keyisdown(object sender, KeyEventArgs e)
         {
-            if (gameOver) return;
+            if (gameOver)
+            {
+                timer1.Stop();
+                _hubProxy.Invoke("PlayerDied", group, userName);
+                return;
+            }
 
             if (e.KeyCode == Keys.A)
             {
@@ -206,7 +228,12 @@ namespace SgClient1
 
         private void keyisup(object sender, KeyEventArgs e)
         {
-            if (gameOver) return;
+            if (gameOver)
+            {
+                timer1.Stop();
+                _hubProxy.Invoke("PlayerDied", group, userName);
+                return;
+            }
 
             if (e.KeyCode == Keys.A)
             {
@@ -228,12 +255,12 @@ namespace SgClient1
                 godown = false;
             }
 
-            if (e.KeyCode == Keys.Space && ammo > 0)
+            if (e.KeyCode == Keys.Space && playerInteractions.ammo > 0)
             {
-                ammo--;
+                playerInteractions.ammo--;
                 shoot(facing);
 
-                if (ammo < 2)
+                if (playerInteractions.ammo < 2)
                 {
                     _hubProxy.Invoke("UpdateBullets", group, rnd.Next(10, 790), rnd.Next(50, 500));
                 }
@@ -242,6 +269,23 @@ namespace SgClient1
 
         private void gameEngine(object sender, EventArgs e)
         {
+            if (firstLaunch)
+            {
+                playerInteractions.form = this;
+                playerInteractions._hubProxy = _hubProxy;
+                playerInteractions.group = group;
+                playerInteractions.player = player;
+                playerInteractions.player1 = player1;
+
+                zm.form = this;
+                zm._hubProxy = _hubProxy;
+                zm.group = group;
+                zm.player = player;
+                zm.player1 = player1;
+
+                firstLaunch = false;
+            }
+
             if (score == 10)
             {
                 level = lvCreator.factoryMethod(2);
@@ -259,164 +303,28 @@ namespace SgClient1
                     fireWallPlaced = true;
                 }
             }
-            if (playerHealth > 1)
-            {
-                progressBar1.Value = Convert.ToInt32(playerHealth);
-            }
-            else
-            {
-                player.Image = Properties.Resources.dead;
-                timer1.Stop();
-                gameOver = true;
-            }
 
-            label1.Text = " Ammo: " + ammo;
+            label1.Text = " Ammo: " + playerInteractions.ammo;
             label2.Text = "Kills: " + score;
 
-            if (playerHealth < 20)
+            gameOver = playerInteractions.playerGameEngine(progressBar1, goleft, goup, goright, godown);
+            if (player.Image == Properties.Resources.dead && player1.Image != Properties.Resources.dead)
             {
-                progressBar1.ForeColor = System.Drawing.Color.Red;
-            }
-
-            if (goleft && player.Left > 0)
+                zm.zombieInteractions(ref playerInteractions.playerHealth, 1);
+            } else if (player.Image != Properties.Resources.dead && player1.Image == Properties.Resources.dead)
             {
-                player.Left -= speed;
-                _hubProxy.Invoke("Send", $"m;left;{player.Location.X};{player.Location.Y}");
-            }
-
-            if (goright && player.Left + player.Width < 930)
-            {
-                player.Left += speed;
-                _hubProxy.Invoke("Send", $"m;right;{player.Location.X};{player.Location.Y}");
-            }
-
-            if (goup && player.Top > 60)
-            {
-                player.Top -= speed;
-                _hubProxy.Invoke("Send", $"m;up;{player.Location.X};{player.Location.Y}");
-            }
-
-            if (godown && player.Top + player.Height < 700)
-            {
-                player.Top += speed;
-                _hubProxy.Invoke("Send", $"m;down;{player.Location.X};{player.Location.Y}");
-            }
+                zm.zombieInteractions(ref playerInteractions.playerHealth, 0);
+            } else
+                zm.zombieInteractions(ref playerInteractions.playerHealth, 2);
 
             foreach (Control x in this.Controls)
             {
-                if (x is PictureBox && x.Name == "ammo" || x is PictureBox && x.Name == "ammo1" || x is PictureBox && x.Name == "ammo2")
-                {
-                    int ammoAdd = 0;
-                    if (x is PictureBox && x.Name == "ammo")
-                        ammoAdd = 5;
-                    else if (x is PictureBox && x.Name == "ammo1")
-                        ammoAdd = 10;
-                    else if (x is PictureBox && x.Name == "ammo2")
-                        ammoAdd = 15;
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
-                    {
-                        this.Controls.Remove(((PictureBox)x));
-                        ((PictureBox)x).Dispose();
-                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)){ammo += ammoAdd;}
-                    }
-                }
-
-                if (x is PictureBox && x.Name == "healthKit" || x is PictureBox && x.Name == "healthKit1" || x is PictureBox && x.Name == "healthKit2")
-                {
-                    int healAmount = 0;
-                    if (x is PictureBox && x.Name == "healthKit")
-                        healAmount = 5;
-                    else if (x is PictureBox && x.Name == "healthKit1")
-                        healAmount = 10;
-                    else if (x is PictureBox && x.Name == "healthKit2")
-                        healAmount = 15;
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
-                    {
-                        this.Controls.Remove(((PictureBox)x));
-                        ((PictureBox)x).Dispose();
-                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { playerHealth += healAmount; if (playerHealth > 100) { playerHealth = 100; } }
-                    }
-                }
-
-                if (x is PictureBox && x.Name == "fireWall" || x is PictureBox && x.Name == "fireWall1" || x is PictureBox && x.Name == "fireWall2")
-                {
-                    int damage = 0;
-                    if (x is PictureBox && x.Name == "fireWall")
-                        damage = 15;
-                    else if (x is PictureBox && x.Name == "fireWall1")
-                        damage = 25;
-                    else if (x is PictureBox && x.Name == "fireWall2")
-                        damage = 35;
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
-                    {
-                        this.Controls.Remove(((PictureBox)x));
-                        ((PictureBox)x).Dispose();
-                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { playerHealth -= damage; }
-                    }
-                }
-
                 if (x is PictureBox && x.Name == "bullet")
                 {
                     if (((PictureBox)x).Left < 1 || ((PictureBox)x).Left > 930 || ((PictureBox)x).Top < 10 || ((PictureBox)x).Top > 700)
                     {
                         this.Controls.Remove(((PictureBox)x));
                         ((PictureBox)x).Dispose();
-                    }
-                }
-
-                if (x is PictureBox && x.Name == "zombie")
-                {
-                   /* if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
-                    {
-                        playerHealth -= 1;
-                        if (playerHealth == 30 || playerHealth == 20)
-                        {
-                            _hubProxy.Invoke("UpdateHealthPacks", group, rnd.Next(10, 790), rnd.Next(50, 500));
-                        }
-                    } */
-                    var p = player;
-                    int[] distances = new int[4];                                          // Array with zombie distances to player: Indexes 0 and 1 are for player 1, indexes 2 and 3 are for player 2
-                    distances[0] = System.Math.Abs(((PictureBox)x).Left - player.Left);
-                    distances[1] = System.Math.Abs(((PictureBox)x).Top - player.Top);
-                    distances[2] = System.Math.Abs(((PictureBox)x).Left - player1.Left);
-                    distances[3] = System.Math.Abs(((PictureBox)x).Top - player1.Top);
-                    int min = 999999;
-                    int ind = -1;
-                    for (int i = 0; i < distances.Length; i++)
-                    {
-                        if (distances[i] < min)
-                        {
-                            min = distances[i];
-                            ind = i;
-                        }
-                    }
-                    if (ind == 2 || ind == 3)
-                    {
-                        p = player1;
-                    }
-
-                    if (((PictureBox)x).Left > p.Left)
-                    {
-                        ((PictureBox)x).Left -= zombieSpeed;
-                        ((PictureBox)x).Image = Properties.Resources.zleft;
-                    }
-
-                    if (((PictureBox)x).Left < p.Left)
-                    {
-                        ((PictureBox)x).Left += zombieSpeed;
-                        ((PictureBox)x).Image = Properties.Resources.zright;
-                    }
-
-                    if (((PictureBox)x).Top > p.Top)
-                    {
-                        ((PictureBox)x).Top -= zombieSpeed;
-                        ((PictureBox)x).Image = Properties.Resources.zup;
-                    }
-
-                    if (((PictureBox)x).Top < p.Top)
-                    {
-                        ((PictureBox)x).Top += zombieSpeed;
-                        ((PictureBox)x).Image = Properties.Resources.zdown;
                     }
                 }
 
@@ -454,7 +362,7 @@ namespace SgClient1
                 return;
             }
             Unit mapObj = objectFactory.createGunBullets();
-            mapObj.updateState(this, x, y);
+            mapObj.spawnUnit(this, x, y);
             player.BringToFront();
         }
 
@@ -469,7 +377,7 @@ namespace SgClient1
                 return;
             }
             Unit mapObj = objectFactory.createHealKit();
-            mapObj.updateState(this, x, y);
+            mapObj.spawnUnit(this, x, y);
             player.BringToFront();
         }
 
@@ -484,7 +392,7 @@ namespace SgClient1
                 return;
             }
             Unit mapObj = objectFactory.createFireWall();
-            mapObj.updateState(this, x, y);
+            mapObj.spawnUnit(this, x, y);
             player.BringToFront();
         }
 
@@ -511,7 +419,7 @@ namespace SgClient1
             }
             if (zombieCount < 3)
             {
-                zombie zm = new zombie();
+                Zombie zm = new Zombie();
                 zm.zombieLeft = x;
                 zm.zombieTop = y;
                 zm.createAZombie(this);
