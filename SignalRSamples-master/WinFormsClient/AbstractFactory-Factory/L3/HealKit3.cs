@@ -9,7 +9,7 @@ namespace SgClient1
 {
     public class HealKit3 : HealKit
     { 
-        public override void updateState(FormGame form, int x, int y)
+        public override void spawnUnit(FormGame form, int x, int y)
         {
             PictureBox healthKit = new PictureBox();
             healthKit.Image = Properties.Resources.med_Image2;

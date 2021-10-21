@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SgClient1
+namespace SgClient1.Classes_Test
 {
-    class bullet
+    class bullet : GameClass
     {
         public string direction;
         public int speed = 20;

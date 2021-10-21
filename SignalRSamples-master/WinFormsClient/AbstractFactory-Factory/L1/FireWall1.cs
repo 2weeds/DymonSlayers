@@ -9,7 +9,7 @@ namespace SgClient1
 {
     public class FireWall1 : FireWall
     { 
-        public override void updateState(FormGame form, int x, int y)
+        public override void spawnUnit(FormGame form, int x, int y)
         {
             PictureBox fireWall = new PictureBox();
             fireWall.Image = Properties.Resources.fireWall_Image;

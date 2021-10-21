@@ -41,6 +41,7 @@ namespace WinFormsServer
             SimpleHub.OutOfZombies += SimpleHub_OutOfZombies;
             SimpleHub.DropHealthPack += SimpleHub_DropHealthPack;
             SimpleHub.DropFireWall += SimpleHub_CreateFireWall;
+            SimpleHub.DeadPlayer += SimpleHub_ShowPlayerDeath;
         }
 
         private void bindListsToControls()
@@ -234,6 +235,15 @@ namespace WinFormsServer
             {
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
                 hubContext.Clients.Group(groupName).SpawnFireWall(x, y);
+            }));
+        }
+
+        private void SimpleHub_ShowPlayerDeath(string clientId, string groupName, string userName)
+        {
+            this.BeginInvoke(new Action(() =>
+            {
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
+                hubContext.Clients.Group(groupName).PlayerDied(userName);
             }));
         }
 
