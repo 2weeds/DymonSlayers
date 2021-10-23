@@ -8,17 +8,29 @@ using System.Windows.Forms;
 
 namespace SgClient1.Classes_Test
 {
-    class PlayerClass : GameClass
+    class PlayerClass : Entity
     {
-        public double playerHealth = 100;
+        //public int Health = 100;
         public int speed = 10;
         public int ammo = 10;
+        public PlayerClass()
+        {
+            Health = 100;
+        }
 
+        public override void TakeDamage(int damage)
+        {
+            Health -= damage;
+        }
+        public int GetHealth()
+        {
+            return Health;
+        }
         public bool playerGameEngine(ProgressBar progressBar, bool goleft, bool goup, bool goright, bool godown)
         {
-            if (playerHealth > 1)
+            if (Health > 1)
             {
-                progressBar.Value = Convert.ToInt32(playerHealth);
+                progressBar.Value = Convert.ToInt32(Health);
             }
             else
             {
@@ -26,7 +38,7 @@ namespace SgClient1.Classes_Test
                 return true;
             }
 
-            if (playerHealth < 20)
+            if (Health < 20)
             {
                 progressBar.ForeColor = System.Drawing.Color.Red;
             }
@@ -87,7 +99,7 @@ namespace SgClient1.Classes_Test
                     {
                         form.Controls.Remove(((PictureBox)x));
                         ((PictureBox)x).Dispose();
-                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { playerHealth += healAmount; if (playerHealth > 100) { playerHealth = 100; } }
+                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { Health += healAmount; if (Health > 100) { Health = 100; } }
                     }
                 }
 
@@ -106,15 +118,16 @@ namespace SgClient1.Classes_Test
                         ((PictureBox)x).Dispose();
                         if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
                         {
-                            if (playerHealth < damage)
-                                playerHealth = 0;
+                            if (Health < damage)
+                                Health = 0;
                             else
-                                playerHealth -= damage;
+                                Health -= damage;
                         }
                     }
                 }
             }
             return false;
         }
+
     }
 }

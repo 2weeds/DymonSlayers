@@ -87,12 +87,12 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.player = new System.Windows.Forms.PictureBox();
             this.player1 = new System.Windows.Forms.PictureBox();
-            this.zombie = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.player)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.player1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zombie)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -431,9 +431,10 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(16, 11);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(108, 26);
+            this.label1.Size = new System.Drawing.Size(128, 31);
             this.label1.TabIndex = 2;
             this.label1.Text = "Ammo: 0";
             // 
@@ -442,9 +443,10 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(295, 9);
+            this.label2.Location = new System.Drawing.Point(393, 11);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(85, 26);
+            this.label2.Size = new System.Drawing.Size(102, 31);
             this.label2.TabIndex = 3;
             this.label2.Text = "Kills: 0";
             // 
@@ -453,17 +455,19 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(501, 9);
+            this.label3.Location = new System.Drawing.Point(668, 11);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(88, 26);
+            this.label3.Size = new System.Drawing.Size(108, 31);
             this.label3.TabIndex = 4;
             this.label3.Text = "Health:";
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(595, 11);
+            this.progressBar1.Location = new System.Drawing.Point(793, 14);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(171, 23);
+            this.progressBar1.Size = new System.Drawing.Size(228, 28);
             this.progressBar1.TabIndex = 5;
             // 
             // timer1
@@ -475,7 +479,8 @@
             // player
             // 
             this.player.Image = global::SgClient1.Properties.Resources.up;
-            this.player.Location = new System.Drawing.Point(350, 190);
+            this.player.Location = new System.Drawing.Point(467, 234);
+            this.player.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.player.Name = "player";
             this.player.Size = new System.Drawing.Size(71, 100);
             this.player.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -485,27 +490,30 @@
             // player1
             // 
             this.player1.Image = global::SgClient1.Properties.Resources.up1;
-            this.player1.Location = new System.Drawing.Point(350, 190);
+            this.player1.Location = new System.Drawing.Point(467, 234);
+            this.player1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.player1.Name = "player1";
             this.player1.Size = new System.Drawing.Size(71, 100);
             this.player1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.player1.TabIndex = 9;
             this.player1.TabStop = false;
             // 
-            // zombie
+            // pictureBox3
             // 
-            this.zombie.Image = global::SgClient1.Properties.Resources.zdown;
-            this.zombie.Location = new System.Drawing.Point(90, 83);
-            this.zombie.Name = "zombie";
-            this.zombie.Size = new System.Drawing.Size(71, 71);
-            this.zombie.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.zombie.TabIndex = 10;
-            this.zombie.TabStop = false;
+            this.pictureBox3.Image = global::SgClient1.Properties.Resources.zdown;
+            this.pictureBox3.Location = new System.Drawing.Point(120, 102);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(71, 71);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox3.TabIndex = 10;
+            this.pictureBox3.TabStop = false;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::SgClient1.Properties.Resources.zleft;
-            this.pictureBox1.Location = new System.Drawing.Point(640, 190);
+            this.pictureBox1.Location = new System.Drawing.Point(853, 234);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(71, 71);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -515,7 +523,8 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = global::SgClient1.Properties.Resources.zup;
-            this.pictureBox2.Location = new System.Drawing.Point(506, 367);
+            this.pictureBox2.Location = new System.Drawing.Point(675, 452);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(71, 71);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -524,19 +533,20 @@
             // 
             // FormGame
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1067, 554);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.zombie);
+            this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.player1);
             this.Controls.Add(this.player);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FormGame";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -544,7 +554,7 @@
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.keyisup);
             ((System.ComponentModel.ISupportInitialize)(this.player)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.player1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zombie)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
@@ -610,7 +620,7 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox player;
         private System.Windows.Forms.PictureBox player1;
-        private System.Windows.Forms.PictureBox zombie;
+        private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
     }

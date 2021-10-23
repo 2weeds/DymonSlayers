@@ -7,24 +7,93 @@ using System.Windows.Forms;
 
 namespace SgClient1.Classes_Test
 {
-    class Zombie : GameClass
+    class Zombie : Entity
     {
+
         Random rnd = new Random();
-        public int speed = 3;
-        PictureBox zombie = new PictureBox();
+        public int speed = 1;
+        //PictureBox zombie = new PictureBox();
         public int zombieLeft;
         public int zombieTop;
+        public string[] names = { "zombie1", "zombie2", "zombie3", "zombie4" };
+        public List<Zombie> zombies = new List<Zombie>();
+        public Zombie Find(string name)
+        {
+            foreach (var z in zombies)
+            {
+                if (z.Name == name)
+                {
+                    return z;
+                }
+            }
+            return null;
+        }
+        public void RemoveZombie(Zombie z)
+        {
+            zombies.Remove(z);
+        }
+        public override void TakeDamage(int damage)
+        {
+            Health -= damage;
+        }
+        public string UnusedName()
+        {
+            int index = -1;
+            bool used = false;
+            for (int i = 0; i < names.Length; i++)
+            {
+                used = false;
+                foreach (var z in zombies)
+                {
+                    if (names[i] == z.Name)
+                    {
+                        used = true;
+                        break;
+                    }
+                }
+                if (!used)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            return names[index];
+        }
+        public void createAZombie(FormGame form, int x, int y)
+        {
+            Zombie zombie = new Zombie();
+            zombie.Health = 3;
+            zombie.SizeMode = PictureBoxSizeMode.AutoSize;
+            zombie.Name = UnusedName();
+            zombie.Image = Properties.Resources.zdown;
+            zombie.Left = x;
+            zombie.Top = y;
+            zombie.BringToFront();
+            form.Controls.Add(zombie);
+            zombies.Add(zombie);
+        }
+        public void AddZombiePB(PictureBox zpb)
+        {
+            Zombie zombie = new Zombie();
+            zombie.Health = 3;
+            zombie.Name = UnusedName();
+            zombie.Left = zpb.Left;
+            zombie.Top = zpb.Top;
+            zombie.BringToFront();
+            form.Controls.Add(zombie);
+            zombies.Add(zombie);
+        }
 
-        public void zombieInteractions(ref double playerHealth, int chaseCase)
+        public void zombieInteractions(PlayerClass playerClass, int chaseCase)
         {
             foreach (Control x in form.Controls)
             {
-                if (x is PictureBox && x.Name == "zombie")
+                if (x is PictureBox && names.Contains(x.Name))
                 {
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
+                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))   //zombie do dmg to player
                     {
-                        playerHealth -= 1;
-                        if (playerHealth == 30 || playerHealth == 20)
+                        playerClass.TakeDamage(1);
+                        if (playerClass.GetHealth() == 30 || playerClass.GetHealth() == 20)
                         {
                             _hubProxy.Invoke("UpdateHealthPacks", group, rnd.Next(10, 790), rnd.Next(50, 500));
                         }
@@ -84,15 +153,5 @@ namespace SgClient1.Classes_Test
             }
         }
 
-        public void createAZombie(FormGame form)
-        {
-            zombie.SizeMode = PictureBoxSizeMode.AutoSize;
-            zombie.Name = "zombie";
-            zombie.Image = Properties.Resources.zdown;
-            zombie.Left = zombieLeft;
-            zombie.Top = zombieTop;
-            zombie.BringToFront();
-            form.Controls.Add(zombie);
-        }
     }
 }

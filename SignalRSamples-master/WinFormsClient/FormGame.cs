@@ -45,11 +45,22 @@ namespace SgClient1
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            zm.createAZombie(this, pictureBox1.Left, pictureBox1.Top);
+            zm.createAZombie(this, pictureBox2.Left, pictureBox2.Top);
+            zm.createAZombie(this, pictureBox3.Left, pictureBox3.Top);
+            this.Controls.Remove(pictureBox1);
+            pictureBox1.Dispose();
+            this.Controls.Remove(pictureBox2);
+            pictureBox2.Dispose();
+            this.Controls.Remove(pictureBox3);
+            pictureBox3.Dispose();
+
             level = lvCreator.factoryMethod(1);
             objectFactory = level.getAbstractFactory();
             await asStuf();
-            pictureBox1.Name = "zombie";
-            pictureBox2.Name = "zombie";
+            //pictureBox1.Name = zm.UnusedName();
+            //pictureBox2.Name = zm.UnusedName();
+            //pictureBox3.Name = zm.UnusedName();
             this.Size = new Size(940, 700);
         }
 
@@ -87,36 +98,6 @@ namespace SgClient1
             {
                 player1.Image = Properties.Resources.dead;
             }
-        }
-
-        /// <summary>
-        /// Spawns whole group (2 players) to map
-        /// </summary>
-        /// <param name="ids"> IDs of players in group list </param>
-        void SpawnGroup(List<string> ids)
-        {
-            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
-            {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    SpawnGroup(ids);
-                });
-                return;
-            }
-
-          /*  player.Name = "player1";
-            player.Location = new Point(350, 190);
-            player.Visible = true;
-            Controls.Add(player);
-            player.BringToFront();
-
-            ids.Remove(_signalRConnection.ConnectionId);
-            player1.Name = "player2";
-            player1.Location = new Point(350, 190);
-            player1.Visible = true;
-            Controls.Add(player1);
-            player1.BringToFront(); */
-            
         }
 
         private void getMovement(string message)
@@ -168,7 +149,7 @@ namespace SgClient1
             }
             if (user != userName)
             {
-                bullet shoot = new bullet();
+                Bullet shoot = new Bullet();
                 shoot.direction = direct;
                 shoot.bulletLeft = bulletLeft;
                 shoot.bulletTop = bulletTop;
@@ -310,16 +291,16 @@ namespace SgClient1
             gameOver = playerInteractions.playerGameEngine(progressBar1, goleft, goup, goright, godown);
             if (player.Image == Properties.Resources.dead && player1.Image != Properties.Resources.dead)
             {
-                zm.zombieInteractions(ref playerInteractions.playerHealth, 1);
+                zm.zombieInteractions(playerInteractions, 1);
             } else if (player.Image != Properties.Resources.dead && player1.Image == Properties.Resources.dead)
             {
-                zm.zombieInteractions(ref playerInteractions.playerHealth, 0);
+                zm.zombieInteractions(playerInteractions, 0);
             } else
-                zm.zombieInteractions(ref playerInteractions.playerHealth, 2);
+                zm.zombieInteractions(playerInteractions, 2);
 
             foreach (Control x in this.Controls)
             {
-                if (x is PictureBox && x.Name == "bullet")
+                if (x is PictureBox && x.Name == "bullet")//if bullet leaves map
                 {
                     if (((PictureBox)x).Left < 1 || ((PictureBox)x).Left > 930 || ((PictureBox)x).Top < 10 || ((PictureBox)x).Top > 700)
                     {
@@ -330,21 +311,31 @@ namespace SgClient1
 
                 foreach (Control j in this.Controls)
                 {
-                    if ((j is PictureBox && j.Name == "bullet") && (x is PictureBox && x.Name == "zombie"))
+                    if ((j is PictureBox && j.Name == "bullet") && (x is PictureBox && zm.names.Contains(x.Name)))
                     {
-                        if (x.Bounds.IntersectsWith(j.Bounds))
+                        if (x.Bounds.IntersectsWith(j.Bounds))//if bullet intercepts zombie
                         {
-                            score++;
-                            fireWallPlaced = false;
-                            zombieCount--;
+                            Zombie z = zm.Find(x.Name);
+                            if (z.Health <= 0) //zombie dies
+                            {
+                                score++;
+                                fireWallPlaced = false;
+                                zombieCount--;
+                                this.Controls.Remove(x);
+                                x.Dispose();
+                                zm.RemoveZombie(z);
+                                if (zombieCount < 3)
+                                {
+                                    _hubProxy.Invoke("UpdateZombies", group, rnd.Next(10, 790), rnd.Next(50, 500));
+                                }
+                            }
+                            else//  zombie takes dmg
+                            {
+                                z.TakeDamage(1);
+                            }
+                            //remove bullet
                             this.Controls.Remove(j);
                             j.Dispose();
-                            this.Controls.Remove(x);
-                            x.Dispose();
-                            if (zombieCount < 3)
-                            {
-                                _hubProxy.Invoke("UpdateZombies", group, rnd.Next(10, 790), rnd.Next(50, 500));
-                            }
                         }
                     }
                 }
@@ -398,7 +389,7 @@ namespace SgClient1
 
         private void shoot(string direct)
         {
-            bullet shoot = new bullet();
+            Bullet shoot = new Bullet();
             shoot.direction = direct;
             shoot.bulletLeft = player.Left + (player.Width / 2);
             shoot.bulletTop = player.Top + (player.Height / 2);
@@ -419,10 +410,10 @@ namespace SgClient1
             }
             if (zombieCount < 3)
             {
-                Zombie zm = new Zombie();
-                zm.zombieLeft = x;
-                zm.zombieTop = y;
-                zm.createAZombie(this);
+                //Zombie zm = new Zombie();
+                //zm.zombieLeft = x;
+                //zm.zombieTop = y;
+                zm.createAZombie(this, x, y);
                 zombieCount++;
             }
         }

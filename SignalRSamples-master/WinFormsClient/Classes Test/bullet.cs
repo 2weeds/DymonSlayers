@@ -8,11 +8,11 @@ using System.Windows.Forms;
 
 namespace SgClient1.Classes_Test
 {
-    class bullet : GameClass
+    class Bullet : GameClass
     {
         public string direction;
         public int speed = 20;
-        PictureBox Bullet = new PictureBox();
+        PictureBox bullet = new PictureBox();
         Timer tm = new Timer();
 
         public int bulletLeft;
@@ -22,17 +22,17 @@ namespace SgClient1.Classes_Test
         {
             if (color == "White")
             {
-                Bullet.BackColor = System.Drawing.Color.White;
+                bullet.BackColor = System.Drawing.Color.White;
             } else
             {
-                Bullet.BackColor = System.Drawing.Color.Red;
+                bullet.BackColor = System.Drawing.Color.Red;
             }
-            Bullet.Size = new Size(5, 5);
-            Bullet.Name = "bullet";
-            Bullet.Left = bulletLeft;
-            Bullet.Top = bulletTop;
-            Bullet.BringToFront();
-            form.Controls.Add(Bullet);
+            bullet.Size = new Size(5, 5);
+            bullet.Name = "bullet";
+            bullet.Left = bulletLeft;
+            bullet.Top = bulletTop;
+            bullet.BringToFront();
+            form.Controls.Add(bullet);
 
             tm.Interval = speed;
             tm.Tick += new EventHandler(tm_Tick);
@@ -43,31 +43,31 @@ namespace SgClient1.Classes_Test
         {
             if (direction == "left")
             {
-                Bullet.Left -= speed;
+                bullet.Left -= speed;
             }
 
             if (direction == "right")
             {
-                Bullet.Left += speed;
+                bullet.Left += speed;
             }
 
             if (direction == "up")
             {
-                Bullet.Top -= speed;
+                bullet.Top -= speed;
             }
 
             if (direction == "down")
             {
-                Bullet.Top += speed;
+                bullet.Top += speed;
             }
 
-            if (Bullet.Left < 16 || Bullet.Left > 860 || Bullet.Top < 10 || Bullet.Top > 616)
+            if (bullet.Left < 16 || bullet.Left > 860 || bullet.Top < 10 || bullet.Top > 616)
             {
                 tm.Stop();
                 tm.Dispose();
-                Bullet.Dispose();
+                bullet.Dispose();
                 tm = null;
-                Bullet = null;
+                bullet = null;
             }
         }
     }

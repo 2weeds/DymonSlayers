@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace SgClient1.Classes_Test
 {
-    abstract class GameClass
+    abstract class GameClass : PictureBox
     {
         public FormGame form;
         public PictureBox player;

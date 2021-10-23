@@ -66,10 +66,19 @@
     <Compile Include="AbstractFactory-Factory\L2\AmmoKit2.cs" />
     <Compile Include="AbstractFactory-Factory\L3\FireWall3.cs" />
     <Compile Include="AbstractFactory-Factory\L3\HealKit3.cs" />
-    <Compile Include="Classes Test\bullet.cs" />
+    <Compile Include="Classes Test\Bullet.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="AbstractFactory-Factory\Creator.cs" />
-    <Compile Include="Classes Test\GameClass.cs" />
-    <Compile Include="Classes Test\PlayerClass.cs" />
+    <Compile Include="Classes Test\Entity.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes Test\GameClass.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes Test\PlayerClass.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FormGame.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,7 +103,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AbstractFactory-Factory\Unit.cs" />
-    <Compile Include="Classes Test\Zombie.cs" />
+    <Compile Include="Classes Test\Zombie.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Strategy\JoinServerGroup.cs" />
     <Compile Include="Strategy\LeaveGroup.cs" />
     <Compile Include="Strategy\ClientOptionsAlgorithm.cs" />
