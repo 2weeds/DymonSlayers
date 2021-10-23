@@ -59,26 +59,16 @@ namespace SgClient1.Classes_Test
             }
             return names[index];
         }
-        public void createAZombie(FormGame form, int x, int y)
+        public void createAZombie(FormGame form, int x, int y, Weapon weapon)
         {
             Zombie zombie = new Zombie();
+            zombie.Weapon = weapon; 
             zombie.Health = 3;
             zombie.SizeMode = PictureBoxSizeMode.AutoSize;
             zombie.Name = UnusedName();
             zombie.Image = Properties.Resources.zdown;
             zombie.Left = x;
             zombie.Top = y;
-            zombie.BringToFront();
-            form.Controls.Add(zombie);
-            zombies.Add(zombie);
-        }
-        public void AddZombiePB(PictureBox zpb)
-        {
-            Zombie zombie = new Zombie();
-            zombie.Health = 3;
-            zombie.Name = UnusedName();
-            zombie.Left = zpb.Left;
-            zombie.Top = zpb.Top;
             zombie.BringToFront();
             form.Controls.Add(zombie);
             zombies.Add(zombie);
@@ -90,9 +80,9 @@ namespace SgClient1.Classes_Test
             {
                 if (x is PictureBox && names.Contains(x.Name))
                 {
-                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))   //zombie do dmg to player
+                    if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))   
                     {
-                        playerClass.TakeDamage(1);
+                        playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
                         if (playerClass.GetHealth() == 30 || playerClass.GetHealth() == 20)
                         {
                             _hubProxy.Invoke("UpdateHealthPacks", group, rnd.Next(10, 790), rnd.Next(50, 500));

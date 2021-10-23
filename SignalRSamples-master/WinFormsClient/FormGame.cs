@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using SgClient1.Builder;
 using SgClient1.Classes_Test;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,8 @@ namespace SgClient1
         string group;
         string userName;
         Random rnd = new Random();
-
+        WeaponDirector pistol = new WeaponDirector(new PistolBuilder());
+        WeaponDirector hands = new WeaponDirector(new KillerHandsBuilder());
         public FormGame(WinFormsClient.FrmClient instance)
         {
             userName = instance.GetName();
@@ -45,15 +47,17 @@ namespace SgClient1
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            zm.createAZombie(this, pictureBox1.Left, pictureBox1.Top);
-            zm.createAZombie(this, pictureBox2.Left, pictureBox2.Top);
-            zm.createAZombie(this, pictureBox3.Left, pictureBox3.Top);
+            zm.createAZombie(this, pictureBox1.Left, pictureBox1.Top, hands.MakeWeapon().GetWeapon());
+            zm.createAZombie(this, pictureBox2.Left, pictureBox2.Top, hands.MakeWeapon().GetWeapon());
+            zm.createAZombie(this, pictureBox3.Left, pictureBox3.Top, hands.MakeWeapon().GetWeapon());
             this.Controls.Remove(pictureBox1);
             pictureBox1.Dispose();
             this.Controls.Remove(pictureBox2);
             pictureBox2.Dispose();
             this.Controls.Remove(pictureBox3);
             pictureBox3.Dispose();
+
+            playerInteractions.Weapon = pistol.MakeWeapon().GetWeapon();
 
             level = lvCreator.factoryMethod(1);
             objectFactory = level.getAbstractFactory();
@@ -316,7 +320,7 @@ namespace SgClient1
                         if (x.Bounds.IntersectsWith(j.Bounds))//if bullet intercepts zombie
                         {
                             Zombie z = zm.Find(x.Name);
-                            if (z.Health <= 0) //zombie dies
+                            if (z.Health < 1) //zombie dies
                             {
                                 score++;
                                 fireWallPlaced = false;
@@ -331,7 +335,7 @@ namespace SgClient1
                             }
                             else//  zombie takes dmg
                             {
-                                z.TakeDamage(1);
+                                z.TakeDamage(playerInteractions.Weapon.GetWeaponDamage());
                             }
                             //remove bullet
                             this.Controls.Remove(j);
@@ -413,7 +417,7 @@ namespace SgClient1
                 //Zombie zm = new Zombie();
                 //zm.zombieLeft = x;
                 //zm.zombieTop = y;
-                zm.createAZombie(this, x, y);
+                zm.createAZombie(this, x, y, hands.MakeWeapon().GetWeapon());
                 zombieCount++;
             }
         }
