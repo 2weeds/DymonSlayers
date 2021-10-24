@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SgClient1.Observer;
+
 namespace SgClient1
 {
     public partial class FormGame : Form
@@ -29,8 +31,13 @@ namespace SgClient1
         AbstractFactory objectFactory;
         HubConnection _signalRConnection;
         PlayerClass playerInteractions = new PlayerClass();
+
+        private NewsReporter reporter = new NewsReporter();
+
+        
         Zombie zm = new Zombie();
         IHubProxy _hubProxy;
+        
         string group;
         string userName;
         Random rnd = new Random();
@@ -47,6 +54,9 @@ namespace SgClient1
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            reporter._IHubProxy = _hubProxy;
+            playerInteractions.Health = 100;
+            playerInteractions.Attach(reporter);
             zm.createAZombie(this, pictureBox1.Left, pictureBox1.Top, hands.MakeWeapon().GetWeapon());
             zm.createAZombie(this, pictureBox2.Left, pictureBox2.Top, hands.MakeWeapon().GetWeapon());
             zm.createAZombie(this, pictureBox3.Left, pictureBox3.Top, hands.MakeWeapon().GetWeapon());

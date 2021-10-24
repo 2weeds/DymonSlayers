@@ -1,22 +1,51 @@
-﻿using Microsoft.AspNet.SignalR.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SgClient1.Observer;
 
 namespace SgClient1.Classes_Test
 {
-    class PlayerClass : Entity
+    class PlayerClass : Entity, ISubject
     {
         //public int Health = 100;
         public int speed = 10;
         public int ammo = 10;
+        public int Health
+        {
+            get { return _health; }
+            set
+            {
+                _health = value;
+                Notify();
+            }
+        }
+        private int _health;
         public PlayerClass()
         {
-            Health = 100;
+            _observers = new List<IObserver>();
         }
+        
+        
+        private List<IObserver> _observers;
+
+
+        public void Attach(IObserver observer)
+        {
+            _observers.Add(observer);
+        }
+
+        public void Notify()
+        {
+            _observers.ForEach(o =>
+            {
+                o.Update(this);
+            });
+        }
+
+       
 
         public override void TakeDamage(int damage)
         {

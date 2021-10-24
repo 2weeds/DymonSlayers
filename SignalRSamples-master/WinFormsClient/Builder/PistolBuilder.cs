@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SgClient1.Classes_Test;
+using SgClient1.Observer;
 
 namespace SgClient1.Builder
 {
     class PistolBuilder : IWeaponBuilder
     {
-        Weapon pistol;
+        private Weapon pistol;
         public PistolBuilder()
         {
             pistol = new Weapon();
