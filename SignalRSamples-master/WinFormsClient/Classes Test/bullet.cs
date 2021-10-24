@@ -18,17 +18,22 @@ namespace SgClient1.Classes_Test
         public int bulletLeft;
         public int bulletTop;
 
-        public void mkBullet(FormGame form, string color)
+        public void mkBullet(FormGame form, string bulletType)
         {
-            if (color == "White")
+            if (bulletType == "Fire")
+            {
+                bullet.BackColor = System.Drawing.Color.Orange;
+                bullet.Name = "bulletF";
+            } else if (bulletType == "Ice")
             {
                 bullet.BackColor = System.Drawing.Color.White;
-            } else
+                bullet.Name = "bulletI";
+            } else if (bulletType == "Lightning")
             {
-                bullet.BackColor = System.Drawing.Color.Red;
+                bullet.BackColor = System.Drawing.Color.Yellow;
+                bullet.Name = "bulletL";
             }
             bullet.Size = new Size(5, 5);
-            bullet.Name = "bullet";
             bullet.Left = bulletLeft;
             bullet.Top = bulletTop;
             bullet.BringToFront();
