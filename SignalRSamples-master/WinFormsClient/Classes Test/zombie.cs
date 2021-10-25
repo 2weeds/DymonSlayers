@@ -84,14 +84,14 @@ namespace SgClient1.Classes_Test
             {
                 if (x is PictureBox && names.Contains(x.Name))
                 {
-                   /* if (((PictureBox)x).Bounds.IntersectsWith(playerClass.player.Bounds))
+                    if (((PictureBox)x).Bounds.IntersectsWith(playerClass.player.Bounds))
                     {
                         playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
                         if (playerClass.GetHealth() == 30 || playerClass.GetHealth() == 20)
                         {
                             _hubProxy.Invoke("UpdateHealthPacks", group, rnd.Next(10, 790), rnd.Next(50, 500));
                         }
-                    } */
+                    }
                     var p = playerClass.player;
                     if (chaseCase == 1)
                     {

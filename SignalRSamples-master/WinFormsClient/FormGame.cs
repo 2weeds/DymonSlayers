@@ -39,7 +39,7 @@ namespace SgClient1
         WeaponDirector pistol = new WeaponDirector(new PistolBuilder());
         WeaponDirector hands = new WeaponDirector(new KillerHandsBuilder());
 
-        //Decorator testing
+        //Decorator
         IceBullet ice;
         FireBullet fire;
         LightningBullet lightning;
@@ -278,7 +278,6 @@ namespace SgClient1
                         lightning.LightningShoot(facing);
                         break;
                 }
-               // playerInteractions.shoot(facing, bulletType);
 
                 if (playerInteractions.ammo < 2)
                 {
@@ -305,7 +304,7 @@ namespace SgClient1
 
                 firstLaunch = false;
 
-                //Testing decorator
+                //Decorator
                 fire = new FireBullet(playerInteractions);
                 ice = new IceBullet(playerInteractions);
                 lightning = new LightningBullet(playerInteractions);
@@ -368,16 +367,22 @@ namespace SgClient1
                             }
                             else//  zombie takes dmg
                             {
-                                if (j.Name == "bulletI")
+                             /*  if (j.Name == "bulletI")
                                 {
-                                    z.speed = 1;
-                                    initializeZombieInteractions(z);
+                                    zm.RemoveZombie(z);
+                                    zombieCount--;
+                                    _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
+                                    this.Controls.Remove(x);
+                                    z.Dispose();
                                 }
                                 if (j.Name == "bulletL")
                                 {
-                                    z.speed = 0;
-                                    initializeZombieInteractions(z);
-                                }
+                                    zm.RemoveZombie(z);
+                                    zombieCount--;
+                                    _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
+                                    this.Controls.Remove(x);
+                                    z.Dispose();
+                                } */
                                 z.TakeDamage(playerInteractions.Weapon.GetWeaponDamage());
                             }
                             //remove bullet
