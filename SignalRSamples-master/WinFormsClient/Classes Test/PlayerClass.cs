@@ -158,5 +158,15 @@ namespace SgClient1.Classes_Test
             return false;
         }
 
+        public void shoot(string direct, string bulletType)
+        {
+            Bullet shoot = new Bullet();
+            shoot.direction = direct;
+            shoot.bulletLeft = player.Left + (player.Width / 2);
+            shoot.bulletTop = player.Top + (player.Height / 2);
+            shoot.mkBullet(form, bulletType);
+            _hubProxy.Invoke("Send", $"s;{direct};{bulletType};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
+
+        }
     }
 }

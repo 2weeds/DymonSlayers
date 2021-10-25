@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using SgClient1.Builder;
 using SgClient1.Classes_Test;
+using SgClient1.Decorator;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +23,7 @@ namespace SgClient1
         bool goleft;
         bool goright;
         string facing = "up";
+        string bulletType = "Fire";
         int zombieCount = 3;
         int score = 0;
         bool fireWallPlaced = false;
@@ -43,6 +45,11 @@ namespace SgClient1
         Random rnd = new Random();
         WeaponDirector pistol = new WeaponDirector(new PistolBuilder());
         WeaponDirector hands = new WeaponDirector(new KillerHandsBuilder());
+
+        //Decorator
+        IceBullet ice;
+        FireBullet fire;
+        LightningBullet lightning;
         public FormGame(WinFormsClient.FrmClient instance)
         {
             userName = instance.GetName();
@@ -151,13 +158,13 @@ namespace SgClient1
             }
         }
 
-        private void bulletShot(string user, string direct, int bulletLeft, int bulletTop)
+        private void bulletShot(string user, string direct, string bulletType, int bulletLeft, int bulletTop)
         {
             if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
             {
                 this.Invoke((MethodInvoker)delegate
                 {
-                    bulletShot(user, direct, bulletLeft, bulletTop);
+                    bulletShot(user, direct, bulletType, bulletLeft, bulletTop);
                 });
                 return;
             }
@@ -167,7 +174,7 @@ namespace SgClient1
                 shoot.direction = direct;
                 shoot.bulletLeft = bulletLeft;
                 shoot.bulletTop = bulletTop;
-                shoot.mkBullet(this, "Red");
+                shoot.mkBullet(this, bulletType);
             }
         }
 
@@ -179,7 +186,7 @@ namespace SgClient1
                 getMovement(parts[0] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4]);
             } else if (parts[1] == "s")
             {
-                bulletShot(parts[0], parts[2], int.Parse(parts[3]), int.Parse(parts[4]));
+                bulletShot(parts[0], parts[2], parts[3], int.Parse(parts[4]), int.Parse(parts[5]));
             }
         }
 
@@ -219,6 +226,22 @@ namespace SgClient1
                 facing = "down";
                 player.Image = Properties.Resources.down;
             }
+
+            if (e.KeyCode == Keys.Z)
+            {
+                switch (bulletType)
+                {
+                    case "Fire":
+                        bulletType = "Ice";
+                        break;
+                    case "Ice":
+                        bulletType = "Lightning";
+                        break;
+                    case "Lightning":
+                        bulletType = "Fire";
+                        break;
+                }
+            }
         }
 
         private void keyisup(object sender, KeyEventArgs e)
@@ -253,7 +276,18 @@ namespace SgClient1
             if (e.KeyCode == Keys.Space && playerInteractions.ammo > 0)
             {
                 playerInteractions.ammo--;
-                shoot(facing);
+                switch (bulletType)
+                {
+                    case "Fire":
+                        fire.FireShoot(facing);
+                        break;
+                    case "Ice":
+                        ice.IceShoot(facing);
+                        break;
+                    case "Lightning":
+                        lightning.LightningShoot(facing);
+                        break;
+                }
 
                 if (playerInteractions.ammo < 2)
                 {
@@ -279,6 +313,11 @@ namespace SgClient1
                 zm.player1 = player1;
 
                 firstLaunch = false;
+
+                //Decorator
+                fire = new FireBullet(playerInteractions);
+                ice = new IceBullet(playerInteractions);
+                lightning = new LightningBullet(playerInteractions);
             }
 
             if (score == 10)
@@ -303,18 +342,11 @@ namespace SgClient1
             label2.Text = "Kills: " + score;
 
             gameOver = playerInteractions.playerGameEngine(progressBar1, goleft, goup, goright, godown);
-            if (player.Image == Properties.Resources.dead && player1.Image != Properties.Resources.dead)
-            {
-                zm.zombieInteractions(playerInteractions, 1);
-            } else if (player.Image != Properties.Resources.dead && player1.Image == Properties.Resources.dead)
-            {
-                zm.zombieInteractions(playerInteractions, 0);
-            } else
-                zm.zombieInteractions(playerInteractions, 2);
+            initializeZombieInteractions(zm);
 
             foreach (Control x in this.Controls)
             {
-                if (x is PictureBox && x.Name == "bullet")//if bullet leaves map
+                if (x is PictureBox && x.Name == "bulletF" || x is PictureBox && x.Name == "bulletI" || x is PictureBox && x.Name == "bulletL")//if bullet leaves map
                 {
                     if (((PictureBox)x).Left < 1 || ((PictureBox)x).Left > 930 || ((PictureBox)x).Top < 10 || ((PictureBox)x).Top > 700)
                     {
@@ -325,7 +357,7 @@ namespace SgClient1
 
                 foreach (Control j in this.Controls)
                 {
-                    if ((j is PictureBox && j.Name == "bullet") && (x is PictureBox && zm.names.Contains(x.Name)))
+                    if ((j is PictureBox && j.Name == "bulletF" || j is PictureBox && j.Name == "bulletI" || j is PictureBox && j.Name == "bulletL") && (x is PictureBox && zm.names.Contains(x.Name)))
                     {
                         if (x.Bounds.IntersectsWith(j.Bounds))//if bullet intercepts zombie
                         {
@@ -345,6 +377,22 @@ namespace SgClient1
                             }
                             else//  zombie takes dmg
                             {
+                             /*  if (j.Name == "bulletI")
+                                {
+                                    zm.RemoveZombie(z);
+                                    zombieCount--;
+                                    _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
+                                    this.Controls.Remove(x);
+                                    z.Dispose();
+                                }
+                                if (j.Name == "bulletL")
+                                {
+                                    zm.RemoveZombie(z);
+                                    zombieCount--;
+                                    _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
+                                    this.Controls.Remove(x);
+                                    z.Dispose();
+                                } */
                                 z.TakeDamage(playerInteractions.Weapon.GetWeaponDamage());
                             }
                             //remove bullet
@@ -354,6 +402,20 @@ namespace SgClient1
                     }
                 }
             }
+        }
+
+        private void initializeZombieInteractions(Zombie zmb)
+        {
+            if (player.Image == Properties.Resources.dead && player1.Image != Properties.Resources.dead)
+            {
+                zmb.zombieInteractions(playerInteractions, 1);
+            }
+            else if (player.Image != Properties.Resources.dead && player1.Image == Properties.Resources.dead)
+            {
+                zmb.zombieInteractions(playerInteractions, 0);
+            }
+            else
+                zmb.zombieInteractions(playerInteractions, 2);
         }
 
         private void dropAmmo(int x, int y)
@@ -401,17 +463,6 @@ namespace SgClient1
             player.BringToFront();
         }
 
-        private void shoot(string direct)
-        {
-            Bullet shoot = new Bullet();
-            shoot.direction = direct;
-            shoot.bulletLeft = player.Left + (player.Width / 2);
-            shoot.bulletTop = player.Top + (player.Height / 2);
-            shoot.mkBullet(this, "White");
-            _hubProxy.Invoke("Send", $"s;{direct};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
-
-        }
-
         private void makeZombies(int x, int y)
         {
             if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
@@ -424,9 +475,6 @@ namespace SgClient1
             }
             if (zombieCount < 3)
             {
-                //Zombie zm = new Zombie();
-                //zm.zombieLeft = x;
-                //zm.zombieTop = y;
                 zm.createAZombie(this, x, y, hands.MakeWeapon().GetWeapon());
                 zombieCount++;
             }
