@@ -18,11 +18,11 @@ namespace SgClient1
     public partial class FormGame : Form
     {
         bool firstLaunch = true;
-        bool goup;
-        bool godown;
-        bool goleft;
-        bool goright;
-        string facing = "up";
+        public bool goup;
+        public bool godown;
+        public bool goleft;
+        public bool goright;
+        public string facing = "up";
         string bulletType = "Fire";
         int zombieCount = 3;
         int score = 0;
@@ -121,13 +121,13 @@ namespace SgClient1
             }
         }
 
-        private void getMovement(string message)
+        public void getMovement(string message, PictureBox player1)
         {
             if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
             {
                 this.Invoke((MethodInvoker)delegate
                 {
-                    getMovement(message);
+                    getMovement(message, player1);
                 });
                 return;
             }
@@ -183,14 +183,14 @@ namespace SgClient1
             string[] parts = message.Split(';');
             if (parts[1] == "m")
             {
-                getMovement(parts[0] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4]);
+                getMovement(parts[0] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4], player1);
             } else if (parts[1] == "s")
             {
                 bulletShot(parts[0], parts[2], parts[3], int.Parse(parts[4]), int.Parse(parts[5]));
             }
         }
 
-        private void keyisdown(object sender, KeyEventArgs e)
+        public void keyisdown(object sender, KeyEventArgs e)
         {
             if (gameOver)
             {
@@ -295,6 +295,8 @@ namespace SgClient1
                 }
             }
         }
+        public PictureBox GetPlayer() { return player; }
+        public PictureBox GetPlayer1() { return player1; }
 
         private void gameEngine(object sender, EventArgs e)
         {

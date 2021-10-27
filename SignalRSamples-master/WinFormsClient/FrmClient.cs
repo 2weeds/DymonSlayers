@@ -24,6 +24,7 @@ namespace WinFormsClient
             instance = this;
             InitializeComponent();
         }
+        public FrmClient getInstance() { return instance; }
 
         private async void btnConnect_Click(object sender, EventArgs e)
         {
