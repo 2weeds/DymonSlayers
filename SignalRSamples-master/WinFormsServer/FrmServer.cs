@@ -182,6 +182,28 @@ namespace WinFormsServer
             writeToLog($"Client left group. Id:{clientId}, Group:{groupName}");
         }
 
+        private void SimpleHub_ClientLeftReady(string clientId, string groupName)
+        {
+            this.BeginInvoke(new Action(() =>
+            {
+                /*int groupSize;
+                int checkSize;
+                var group = _groups.FirstOrDefault(x => x == groupName);
+                _readyCount.TryGetValue(groupName, out groupSize);
+                if (group != null && groupSize > 1)
+                {
+                    _readyCount.AddOrUpdate(groupName, 1, (groupname, count) => count - 1);
+
+                    _readyCount.TryGetValue(groupName, out groupSize);
+                    var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
+                    hubContext.Clients.Group(groupName).updateReady(groupSize);
+                    hubContext.Clients.Group(groupName).getReadyPlayers(groupSize);
+                }*/
+
+            }));
+            writeToLog($"Client left ready check. Id:{clientId}, Group:{groupName}");
+        }
+
         private void SimpleHub_MessageReceived(string senderClientId, string message)
         {
             //One of the clients sent a message, log it

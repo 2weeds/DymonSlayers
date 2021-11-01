@@ -47,6 +47,7 @@
             this.btnJoinGroup = new System.Windows.Forms.Button();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.grpServer1 = new System.Windows.Forms.GroupBox();
+            this.btnUndo = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.labelReadyServer1 = new System.Windows.Forms.Label();
             this.readyServerButton1 = new System.Windows.Forms.Button();
@@ -241,6 +242,7 @@
             // 
             // grpServer1
             // 
+            this.grpServer1.Controls.Add(this.btnUndo);
             this.grpServer1.Controls.Add(this.btnPlay);
             this.grpServer1.Controls.Add(this.labelReadyServer1);
             this.grpServer1.Controls.Add(this.readyServerButton1);
@@ -254,6 +256,18 @@
             this.grpServer1.TabIndex = 4;
             this.grpServer1.TabStop = false;
             this.grpServer1.Text = "Server 1";
+            // 
+            // btnUndo
+            // 
+            this.btnUndo.Enabled = false;
+            this.btnUndo.Location = new System.Drawing.Point(316, 47);
+            this.btnUndo.Name = "btnUndo";
+            this.btnUndo.Size = new System.Drawing.Size(75, 23);
+            this.btnUndo.TabIndex = 6;
+            this.btnUndo.Text = "Undo";
+            this.btnUndo.UseVisualStyleBackColor = true;
+            this.btnUndo.Visible = false;
+            this.btnUndo.Click += new System.EventHandler(this.btnUndo_Click);
             // 
             // btnPlay
             // 
@@ -369,5 +383,6 @@
         private System.Windows.Forms.Button joinServerButton1;
         private System.Windows.Forms.Label labelReadyServer1;
         private System.Windows.Forms.Button btnPlay;
+        private System.Windows.Forms.Button btnUndo;
     }
 }

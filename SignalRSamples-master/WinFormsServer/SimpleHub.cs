@@ -26,6 +26,7 @@ namespace WinFormsServer
 
         public static event ClientGroupEventHandler ClientJoinedToGroup;
         public static event ClientGroupEventHandler ClientLeftGroup;
+        public static event ClientGroupEventHandler ClientLeftReady;
         public static event ClientGroupEventHandler ClientReadyCheck;
         public static event ClientGroupEventHandler ResetClientReadyCheck;
 
@@ -104,6 +105,13 @@ namespace WinFormsServer
             await Groups.Add(Context.ConnectionId, groupName);
 
             ResetClientReadyCheck?.Invoke(Context.ConnectionId, groupName);
+        }
+
+        public async Task LeaveReady(string groupName)
+        {
+            await Groups.Remove(Context.ConnectionId, groupName);
+
+            ClientLeftReady?.Invoke(Context.ConnectionId, groupName);
         }
 
         public async Task LeaveGroup(string groupName)

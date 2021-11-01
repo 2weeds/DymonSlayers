@@ -85,6 +85,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes Test\Weapon.cs" />
+    <Compile Include="Command\CommandController.cs" />
+    <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\LeaveServerGroup.cs" />
     <Compile Include="Decorator\Decorator.cs" />
     <Compile Include="Decorator\FireBullet.cs" />
     <Compile Include="Decorator\IceBullet.cs" />
@@ -120,17 +123,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Strategy\FirstLevelStrategy.cs" />
-    <Compile Include="Strategy\JoinServerGroup.cs" />
-    <Compile Include="Strategy\LeaveGroup.cs" />
-    <Compile Include="Strategy\ClientOptionsAlgorithm.cs" />
-    <Compile Include="Strategy\DisconnectFromServer.cs" />
-    <Compile Include="Strategy\JoinGroup.cs" />
-    <Compile Include="Strategy\LeaveServerGroup.cs" />
+    <Compile Include="Command\JoinServerGroup.cs" />
     <Compile Include="Strategy\LevelStrategy.cs" />
-    <Compile Include="Strategy\ReadyForGame.cs" />
+    <Compile Include="Command\ReadyForGame.cs" />
     <Compile Include="Strategy\SecondLevelStrategy.cs" />
-    <Compile Include="Strategy\SendToTheHub.cs" />
-    <Compile Include="Strategy\PlayGame.cs" />
     <Compile Include="Strategy\ThirdLevelStrategy.cs" />
     <EmbeddedResource Include="FormGame.resx">
       <DependentUpon>FormGame.cs</DependentUpon>
