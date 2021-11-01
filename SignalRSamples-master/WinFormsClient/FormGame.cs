@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SgClient1.Observer;
+using SgClient1.Strategy;
 
 namespace SgClient1
 {
@@ -46,6 +47,8 @@ namespace SgClient1
         WeaponDirector pistol = new WeaponDirector(new PistolBuilder());
         WeaponDirector hands = new WeaponDirector(new KillerHandsBuilder());
 
+        LevelStrategy Strategy = null;
+
         //Decorator
         IceBullet ice;
         FireBullet fire;
@@ -78,6 +81,10 @@ namespace SgClient1
 
             level = lvCreator.factoryMethod(1);
             objectFactory = level.getAbstractFactory();
+
+            //strategy
+            setStrategy(1);
+
             await asStuf();
             //pictureBox1.Name = zm.UnusedName();
             //pictureBox2.Name = zm.UnusedName();
@@ -326,10 +333,14 @@ namespace SgClient1
             {
                 level = lvCreator.factoryMethod(2);
                 objectFactory = level.getAbstractFactory();
+                //strategy
+                setStrategy(2);
             } else if (score == 20)
             {
                 level = lvCreator.factoryMethod(3);
                 objectFactory = level.getAbstractFactory();
+                //strategy
+                setStrategy(3);
             }
             if (score % 10 == 0 && score != 0)
             {
@@ -480,6 +491,24 @@ namespace SgClient1
                 zm.createAZombie(this, x, y, hands.MakeWeapon().GetWeapon());
                 zombieCount++;
             }
+        }
+
+        private void setStrategy(int level)
+        {
+            if(level == 1)
+            {
+                Strategy = new FirstLevelStrategy();
+            }
+            else if (level == 2)
+            {
+                Strategy = new SecondLevelStrategy();
+            }
+            else if (level == 3)
+            {
+                Strategy = new ThirdLevelStrategy();
+            }
+
+            Strategy.action(playerInteractions, zm);
         }
     }
 }
