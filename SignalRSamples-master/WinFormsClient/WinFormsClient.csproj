@@ -115,7 +115,6 @@
     <Compile Include="Classes Test\Zombie.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Prototype\Prototype.cs" />
     <Compile Include="Strategy\JoinServerGroup.cs" />
     <Compile Include="Strategy\LeaveGroup.cs" />
     <Compile Include="Strategy\ClientOptionsAlgorithm.cs" />
