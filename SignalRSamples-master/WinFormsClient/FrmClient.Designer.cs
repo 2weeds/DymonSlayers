@@ -47,6 +47,7 @@
             this.btnJoinGroup = new System.Windows.Forms.Button();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.grpServer1 = new System.Windows.Forms.GroupBox();
+            this.btnNotReady = new System.Windows.Forms.Button();
             this.btnUndo = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.labelReadyServer1 = new System.Windows.Forms.Label();
@@ -102,6 +103,7 @@
             this.btnDisconnect.TabIndex = 7;
             this.btnDisconnect.Text = "Disconnect";
             this.btnDisconnect.UseVisualStyleBackColor = true;
+            this.btnDisconnect.Visible = false;
             this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
             // 
             // txtUrl
@@ -242,6 +244,7 @@
             // 
             // grpServer1
             // 
+            this.grpServer1.Controls.Add(this.btnNotReady);
             this.grpServer1.Controls.Add(this.btnUndo);
             this.grpServer1.Controls.Add(this.btnPlay);
             this.grpServer1.Controls.Add(this.labelReadyServer1);
@@ -252,17 +255,29 @@
             this.grpServer1.Enabled = false;
             this.grpServer1.Location = new System.Drawing.Point(12, 300);
             this.grpServer1.Name = "grpServer1";
-            this.grpServer1.Size = new System.Drawing.Size(397, 76);
+            this.grpServer1.Size = new System.Drawing.Size(397, 102);
             this.grpServer1.TabIndex = 4;
             this.grpServer1.TabStop = false;
             this.grpServer1.Text = "Server 1";
             // 
+            // btnNotReady
+            // 
+            this.btnNotReady.Enabled = false;
+            this.btnNotReady.Location = new System.Drawing.Point(75, 73);
+            this.btnNotReady.Name = "btnNotReady";
+            this.btnNotReady.Size = new System.Drawing.Size(111, 23);
+            this.btnNotReady.TabIndex = 7;
+            this.btnNotReady.Text = "Not ready";
+            this.btnNotReady.UseVisualStyleBackColor = true;
+            this.btnNotReady.Visible = false;
+            this.btnNotReady.Click += new System.EventHandler(this.btnNotReady_Click);
+            // 
             // btnUndo
             // 
             this.btnUndo.Enabled = false;
-            this.btnUndo.Location = new System.Drawing.Point(316, 47);
+            this.btnUndo.Location = new System.Drawing.Point(203, 73);
             this.btnUndo.Name = "btnUndo";
-            this.btnUndo.Size = new System.Drawing.Size(75, 23);
+            this.btnUndo.Size = new System.Drawing.Size(111, 23);
             this.btnUndo.TabIndex = 6;
             this.btnUndo.Text = "Undo";
             this.btnUndo.UseVisualStyleBackColor = true;
@@ -384,5 +399,6 @@
         private System.Windows.Forms.Label labelReadyServer1;
         private System.Windows.Forms.Button btnPlay;
         private System.Windows.Forms.Button btnUndo;
+        private System.Windows.Forms.Button btnNotReady;
     }
 }

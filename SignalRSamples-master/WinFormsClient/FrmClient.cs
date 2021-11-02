@@ -49,6 +49,18 @@ namespace WinFormsClient
                 instance.getbtnDisconnect().Enabled = false;
                 instance.getgrpMessaging().Enabled = false;
                 instance.getgrpMembership().Enabled = false;
+                instance.getbtnNotReady().Enabled = false;
+                instance.getbtnNotReady().Visible = false;
+                instance.getreadyServerButton1().Visible = false;
+                instance.getreadyServerButton1().Enabled = false;
+                instance.getleaveServerButton1().Visible = false;
+                instance.getleaveServerButton1().Enabled = false;
+                instance.getbtnUndo().Visible = false;
+                instance.getbtnUndo().Enabled = false;
+                instance.getbtnPlay().Visible = false;
+                instance.getbtnPlay().Enabled = false;
+                instance.getjoinServerButton1().Enabled = false;
+                instance.getjoinServerButton1().Visible = false;
             }
         }
 
@@ -100,8 +112,6 @@ namespace WinFormsClient
                 txtUrl.Enabled = false;
                 txtUserName.Enabled = false;
                 btnDisconnect.Enabled = true;
-                grpMessaging.Enabled = true;
-                grpMembership.Enabled = true;
                 grpServer1.Enabled = true;
             }
             catch (Exception ex)
@@ -131,17 +141,27 @@ namespace WinFormsClient
         {
             if (size == 2)
             {
-                // FormGame gamefrm = new FormGame();
                 if (this.InvokeRequired)
                 {
                     this.BeginInvoke(new Action(() => btnPlay.Visible = true));
+                    this.BeginInvoke(new Action(() => btnPlay.Enabled = true));
+                    this.BeginInvoke(new Action(() => btnNotReady.Visible = true));
+                    this.BeginInvoke(new Action(() => btnNotReady.Enabled = true));
                     this.BeginInvoke(new Action(() => readyServerButton1.Visible = false));
                 }
                 else
                 {
                     btnPlay.Visible = true;
+                    btnPlay.Enabled = true;
                     readyServerButton1.Visible = false;
+                    instance.getbtnNotReady().Enabled = true;
+                    instance.getbtnNotReady().Visible = true;
                 }
+            }
+            else
+            {
+                btnPlay.Enabled = false;
+                readyServerButton1.Visible = true;
             }
         }
 
@@ -184,6 +204,11 @@ namespace WinFormsClient
             }
         }
 
+        private void btnNotReady_Click(object sender, EventArgs e)
+        {
+            pickCommand("notReady");
+        }
+
         public void btnPlay_Click(object sender, EventArgs e)
         {
             _hubProxy.Invoke("ResetReadyCheck", instance.getgrpServer1().Text);
@@ -211,6 +236,10 @@ namespace WinFormsClient
             else if(command == "leaveGroup")
             {
                 runnableCommand = new LeaveServerGroup(_signalRConnection, _hubProxy, instance);
+            }
+            else if(command == "notReady")
+            {
+                runnableCommand = new LeaveReadyState(_signalRConnection, _hubProxy, instance);
             }
 
             if(runnableCommand != null)
@@ -254,6 +283,10 @@ namespace WinFormsClient
         public Button getbtnUndo()
         {
             return btnUndo;
+        }
+        public Button getbtnNotReady()
+        {
+            return btnNotReady;
         }
         public TextBox gettxtUrl()
         {

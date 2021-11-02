@@ -33,6 +33,7 @@ namespace WinFormsServer
             SimpleHub.ClientJoinedToGroup += SimpleHub_ClientJoinedToGroup;
             SimpleHub.ClientReadyCheck += SimpleHub_ClientReadyCheck;
             SimpleHub.ResetClientReadyCheck += SimpleHub_ResetClientReadyCheck;
+            SimpleHub.ClientLeftReady += SimpleHub_ClientLeftReady;
             SimpleHub.ClientLeftGroup += SimpleHub_ClientLeftGroup;
             SimpleHub.MessageReceived += SimpleHub_MessageReceived;
 
@@ -133,8 +134,10 @@ namespace WinFormsServer
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
                 hubContext.Clients.Group(groupName).updateReady(groupSize);
                 hubContext.Clients.Group(groupName).getReadyPlayers(groupSize);
+                //writeToLog($"Ready count: :{groupSize}");
             }));
             writeToLog($"Client is ready. Id:{clientId}, Group:{groupName}");
+            
         }
 
         private void SimpleHub_ResetClientReadyCheck(string clientId, string groupName)
@@ -186,20 +189,27 @@ namespace WinFormsServer
         {
             this.BeginInvoke(new Action(() =>
             {
-                /*int groupSize;
+                int groupSize;
                 int checkSize;
-                var group = _groups.FirstOrDefault(x => x == groupName);
+               // var group = _groups.FirstOrDefault(x => x == groupName);
                 _readyCount.TryGetValue(groupName, out groupSize);
-                if (group != null && groupSize > 1)
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
+                if (/*group != null && */groupSize > 1)
                 {
                     _readyCount.AddOrUpdate(groupName, 1, (groupname, count) => count - 1);
-
                     _readyCount.TryGetValue(groupName, out groupSize);
-                    var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
-                    hubContext.Clients.Group(groupName).updateReady(groupSize);
-                    hubContext.Clients.Group(groupName).getReadyPlayers(groupSize);
-                }*/
+                }
+                else if(/*group != null && */groupSize == 1)
+                {
+                    int lastSize;
+                    int lastReadySize;
+                    _readyCount.AddOrUpdate(groupName, 1, (groupname, count) => count - 1);
+                    _readyCount.TryGetValue(groupName, out groupSize);
+                    // _readyCount.TryRemove(groupName, out groupSize);
+                }
 
+                hubContext.Clients.Group(groupName).updateReady(groupSize);
+                hubContext.Clients.Group(groupName).getReadyPlayers(groupSize);
             }));
             writeToLog($"Client left ready check. Id:{clientId}, Group:{groupName}");
         }

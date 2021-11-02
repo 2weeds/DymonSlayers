@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-using SgClient1.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using WinFormsClient;
 
-namespace SgClient1.Strategy
+namespace SgClient1.Command
 {
-    class ReadyForGame : ICommand
+    class LeaveReadyState : ICommand
     {
         private HubConnection _signalRConnection { get; set; }
         private IHubProxy _hubProxy { get; set; }
         private FrmClient instance { get; set; }
 
-        public ReadyForGame(HubConnection _signalRConnection, IHubProxy _hubProxy, FrmClient instance)
+        public LeaveReadyState(HubConnection _signalRConnection, IHubProxy _hubProxy, FrmClient instance)
         {
             this._signalRConnection = _signalRConnection;
             this._hubProxy = _hubProxy;
@@ -23,14 +22,6 @@ namespace SgClient1.Strategy
         }
 
         public override void run()
-        {
-            _hubProxy.Invoke("ReadyCheck", instance.getgrpServer1().Text);
-            instance.getreadyServerButton1().Enabled = false;
-            instance.getbtnNotReady().Enabled = true;
-            instance.getbtnNotReady().Visible = true;
-        }
-
-        public override void undo()
         {
             _hubProxy.Invoke("LeaveReady", instance.getgrpServer1().Text);
             instance.getlabelReadyServer1().Text = "Ready 0/2";
@@ -42,6 +33,14 @@ namespace SgClient1.Strategy
             instance.getbtnPlay().Enabled = false;
             instance.getbtnNotReady().Enabled = false;
             instance.getbtnNotReady().Visible = false;
+        }
+
+        public override void undo()
+        {
+            _hubProxy.Invoke("ReadyCheck", instance.getgrpServer1().Text);
+            instance.getreadyServerButton1().Enabled = false;
+            instance.getbtnNotReady().Enabled = true;
+            instance.getbtnNotReady().Visible = true;
         }
     }
 }

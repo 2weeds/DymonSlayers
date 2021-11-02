@@ -87,6 +87,7 @@
     <Compile Include="Classes Test\Weapon.cs" />
     <Compile Include="Command\CommandController.cs" />
     <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\LeaveReadyState.cs" />
     <Compile Include="Command\LeaveServerGroup.cs" />
     <Compile Include="Decorator\Decorator.cs" />
     <Compile Include="Decorator\FireBullet.cs" />

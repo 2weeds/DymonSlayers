@@ -34,6 +34,8 @@ namespace SgClient1.Command
             instance.getleaveServerButton1().Enabled = false;
             instance.getbtnPlay().Visible = false;
             instance.getbtnPlay().Enabled = false;
+            instance.getbtnNotReady().Enabled = false;
+            instance.getbtnNotReady().Visible = false;
         }
 
         public override void undo()

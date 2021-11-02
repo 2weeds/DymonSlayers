@@ -34,7 +34,7 @@ namespace SgClient1.Strategy
             instance.getbtnUndo().Enabled = true;
             instance.getbtnUndo().Visible = true;
         }
-
+        
         public override void undo()
         {
             _hubProxy.Invoke("LeaveGroup", instance.getgrpServer1().Text);
@@ -50,6 +50,8 @@ namespace SgClient1.Strategy
             instance.getbtnPlay().Enabled = false;
             instance.getbtnUndo().Enabled = false;
             instance.getbtnUndo().Visible = false;
+            instance.getbtnNotReady().Enabled = false;
+            instance.getbtnNotReady().Visible = false;
         }
     }
 }
