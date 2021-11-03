@@ -15,7 +15,7 @@ using SgClient1.Observer;
 
 namespace SgClient1
 {
-    public partial class FormGame : Form
+    public partial class FormGame : Form, ICloneable
     {
         bool firstLaunch = true;
         public bool goup;
@@ -57,6 +57,11 @@ namespace SgClient1
             _signalRConnection = instance._signalRConnection;
             _hubProxy = instance._hubProxy;
             InitializeComponent();
+        }
+
+        public FormGame()
+        {
+
         }
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -102,7 +107,6 @@ namespace SgClient1
                 //Spawn($"EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE:  {ex}"); // old method to spawn labels
                 throw;
             }
-
         }
 
         private void playerDead(string user)
@@ -294,6 +298,33 @@ namespace SgClient1
                     _hubProxy.Invoke("UpdateBullets", group, rnd.Next(10, 790), rnd.Next(50, 500));
                 }
             }
+            if(e.KeyCode == Keys.Z)
+            {
+                //deep
+                var copyD = copyDeep();
+                var addressDeep = copyD.GetHashCode();
+                var copyS = copyShallow();
+                var addressShallow = copyS.GetHashCode();
+                _hubProxy.Invoke("Send", String.Format("{0} {1}", "Deep copy address", addressDeep));
+                _hubProxy.Invoke("Send", String.Format("{0} {1}", "Shallow copy address", addressShallow));
+                _hubProxy.Invoke("Send", String.Format("{0} {1}", "Real address", this.GetHashCode()));
+                _hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Deep player1 and player2 coordinates", copyD.player.Location, copyD.player1.Location));
+                _hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Shallow player1 and player2 coordinates", copyS.player.Location, copyS.player1.Location));
+                _hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Real player1 and player2 coordinates", this.player.Location, this.player1.Location));
+                //_hubProxy.Invoke<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
+                //_hubProxy.Invoke("SaveGame", group, player.Location, player1.Location);
+            }
+            if (e.KeyCode == Keys.X)
+            {
+                //shallow
+                var copy = copyShallow();
+                var address = copy.GetHashCode();
+                _hubProxy.Invoke("Send", String.Format("{0} {1}", "OG address", address));
+                _hubProxy.Invoke("Send", String.Format("{0} {1}", "Shallow copy address", address));
+                _hubProxy.Invoke("Send", String.Format("{0} {1}", "OG player address", this.player.GetHashCode()));
+                _hubProxy.Invoke("Send", String.Format("{0} {1}", "Shallow copy player address", copy.player.GetHashCode()));
+                //_hubProxy.Invoke("SaveGame", group, player.Location, player1.Location);
+            }
         }
         public PictureBox GetPlayer() { return player; }
         public PictureBox GetPlayer1() { return player1; }
@@ -480,6 +511,29 @@ namespace SgClient1
                 zm.createAZombie(this, x, y, hands.MakeWeapon().GetWeapon());
                 zombieCount++;
             }
+        }
+
+        public FormGame copyShallow()
+        {
+            return (FormGame)Clone();
+        }
+
+        public FormGame copyDeep()
+        {
+            var copy = new FormGame();
+            copy.userName = Name;
+            copy.group = group;
+            copy._signalRConnection = _signalRConnection;
+            copy._hubProxy = _hubProxy;
+            copy.player = player;
+            copy.player1 = player1;
+        
+            return copy;
+        }
+
+        public object Clone()
+        {
+            return (FormGame)this;
         }
     }
 }

@@ -139,6 +139,11 @@ namespace WinFormsServer
         {
             DeadPlayer?.Invoke(Context.ConnectionId, groupName, userName);
         }
-        #endregion        
+
+        public void SaveGame()
+        {
+
+        }
+        #endregion
     }
 }
