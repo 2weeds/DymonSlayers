@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using SgClient1;
+using SgClient1.Command;
 using SgClient1.Strategy;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,12 @@ namespace WinFormsClient
         //Proxy object for a hub hosted on the SignalR server
         public IHubProxy _hubProxy;
         public static FrmClient instance;
+        private CommandController CommandRunner;
         public FrmClient()
         {
             instance = this;
             InitializeComponent();
+            CommandRunner = new CommandController();
         }
         public FrmClient getInstance() { return instance; }
 
@@ -33,30 +36,50 @@ namespace WinFormsClient
 
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
-            ClientOptionsAlgorithm Disconnect = new DisconnectFromServer();
-            Disconnect.action(ref _signalRConnection, ref _hubProxy, instance);
             //Close the server connection if exists
+            if (_signalRConnection != null)
+            {
+                _signalRConnection.Stop();
+                _signalRConnection.Dispose();
+                _signalRConnection = null;
+
+                instance.getbtnConnect().Enabled = true;
+                instance.gettxtUrl().Enabled = true;
+                instance.gettxtUserName().Enabled = true;
+                instance.getbtnDisconnect().Enabled = false;
+                instance.getgrpMessaging().Enabled = false;
+                instance.getgrpMembership().Enabled = false;
+                instance.getbtnNotReady().Enabled = false;
+                instance.getbtnNotReady().Visible = false;
+                instance.getreadyServerButton1().Visible = false;
+                instance.getreadyServerButton1().Enabled = false;
+                instance.getleaveServerButton1().Visible = false;
+                instance.getleaveServerButton1().Enabled = false;
+                instance.getbtnUndo().Visible = false;
+                instance.getbtnUndo().Enabled = false;
+                instance.getbtnPlay().Visible = false;
+                instance.getbtnPlay().Enabled = false;
+                instance.getjoinServerButton1().Enabled = false;
+                instance.getjoinServerButton1().Visible = false;
+            }
         }
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            ClientOptionsAlgorithm Send = new SendToTheHub();
-            Send.action(ref _signalRConnection, ref _hubProxy, instance);
             //Call the "Send" method on the hub (on the server) with the given parameters
+            _hubProxy.Invoke("Send", instance.gettxtMessage().Text);
         }
 
         private void btnJoinGroup_Click(object sender, EventArgs e)
         {
-            ClientOptionsAlgorithm JoinGroup = new JoinGroup();
-            JoinGroup.action(ref _signalRConnection, ref _hubProxy, instance);
             //Call the "JoinGroup" method on the hub (on the server)
+            _hubProxy.Invoke("JoinGroup", instance.gettxtGroupName().Text);
         }
 
         private void btnLeaveGroup_Click(object sender, EventArgs e)
         {
-            ClientOptionsAlgorithm LeaveGroup = new LeaveGroup();
-            LeaveGroup.action(ref _signalRConnection, ref _hubProxy, instance);
             //Call the "LeaveGroup" method on the hub (on the server)
+            _hubProxy.Invoke("LeaveGroup", instance.gettxtGroupName().Text);
         }
 
         private async Task connectAsync()
@@ -89,8 +112,6 @@ namespace WinFormsClient
                 txtUrl.Enabled = false;
                 txtUserName.Enabled = false;
                 btnDisconnect.Enabled = true;
-                grpMessaging.Enabled = true;
-                grpMembership.Enabled = true;
                 grpServer1.Enabled = true;
             }
             catch (Exception ex)
@@ -120,17 +141,27 @@ namespace WinFormsClient
         {
             if (size == 2)
             {
-                // FormGame gamefrm = new FormGame();
                 if (this.InvokeRequired)
                 {
                     this.BeginInvoke(new Action(() => btnPlay.Visible = true));
+                    this.BeginInvoke(new Action(() => btnPlay.Enabled = true));
+                    this.BeginInvoke(new Action(() => btnNotReady.Visible = true));
+                    this.BeginInvoke(new Action(() => btnNotReady.Enabled = true));
                     this.BeginInvoke(new Action(() => readyServerButton1.Visible = false));
                 }
                 else
                 {
                     btnPlay.Visible = true;
+                    btnPlay.Enabled = true;
                     readyServerButton1.Visible = false;
+                    instance.getbtnNotReady().Enabled = true;
+                    instance.getbtnNotReady().Visible = true;
                 }
+            }
+            else
+            {
+                btnPlay.Enabled = false;
+                readyServerButton1.Visible = true;
             }
         }
 
@@ -150,29 +181,71 @@ namespace WinFormsClient
                 labelReadyServer1.Text = "Ready: " + size.ToString() + "/2";
         }
 
-        public void joinServerButton1_Click(object sender, EventArgs e)
+        private void joinServerButton1_Click(object sender, EventArgs e)
         {
-            ClientOptionsAlgorithm ServerGroup = new JoinServerGroup();
-            ServerGroup.action(ref _signalRConnection, ref _hubProxy, instance);
+            pickCommand("join");
         }
 
-        public void leaveServerButton1_Click(object sender, EventArgs e)
+        private void leaveServerButton1_Click(object sender, EventArgs e)
         {
-            ClientOptionsAlgorithm LeaveServerGroup = new LeaveServerGroup();
-            LeaveServerGroup.action(ref _signalRConnection, ref _hubProxy, instance);
+            pickCommand("leaveGroup");
         }
 
-        public void readyServerButton1_Click(object sender, EventArgs e)
+        private void readyServerButton1_Click(object sender, EventArgs e)
         {
-            ClientOptionsAlgorithm Ready = new ReadyForGame();
-            Ready.action(ref _signalRConnection, ref _hubProxy, instance);
+            pickCommand("ready");
+        }
+
+        private void btnUndo_Click(object sender, EventArgs e)
+        {
+            if(CommandRunner.undo() == "disable")
+            {
+                btnUndo.Visible = btnUndo.Enabled = false;
+            }
+        }
+
+        private void btnNotReady_Click(object sender, EventArgs e)
+        {
+            pickCommand("notReady");
         }
 
         public void btnPlay_Click(object sender, EventArgs e)
         {
-            ClientOptionsAlgorithm Start = new PlayGame();
-            Start.action(ref _signalRConnection, ref _hubProxy, instance);
-            
+            _hubProxy.Invoke("ResetReadyCheck", instance.getgrpServer1().Text);
+            instance.getreadyServerButton1().Visible = true;
+            instance.getreadyServerButton1().Enabled = true;
+            instance.getbtnPlay().Visible = false;
+            instance.getbtnPlay().Enabled = false;
+            //FormGame gamefrm = new FormGame(_signalRConnection, _hubProxy, grpServer1.Text, txtUserName.Text);
+            FormGame gamefrm = new FormGame(instance);
+            gamefrm.Show();
+        }
+
+        private void pickCommand(string command)
+        {
+            ICommand runnableCommand = null;
+
+            if(command == "join")
+            {
+                runnableCommand = new JoinServerGroup(_signalRConnection, _hubProxy, instance);
+            }
+            else if(command == "ready")
+            {
+                runnableCommand = new ReadyForGame(_signalRConnection, _hubProxy, instance);
+            }
+            else if(command == "leaveGroup")
+            {
+                runnableCommand = new LeaveServerGroup(_signalRConnection, _hubProxy, instance);
+            }
+            else if(command == "notReady")
+            {
+                runnableCommand = new LeaveReadyState(_signalRConnection, _hubProxy, instance);
+            }
+
+            if(runnableCommand != null)
+            {
+                CommandRunner.run(runnableCommand);
+            }
         }
 
         public string GetName()
@@ -206,6 +279,14 @@ namespace WinFormsClient
         public Button getjoinServerButton1()
         {
             return joinServerButton1;
+        }
+        public Button getbtnUndo()
+        {
+            return btnUndo;
+        }
+        public Button getbtnNotReady()
+        {
+            return btnNotReady;
         }
         public TextBox gettxtUrl()
         {
@@ -243,5 +324,7 @@ namespace WinFormsClient
         {
             return grpServer1;
         }
+
+        
     }
 }

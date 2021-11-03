@@ -33,8 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.4.0\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -85,6 +85,14 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes Test\Weapon.cs" />
+    <Compile Include="Command\CommandController.cs" />
+    <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\LeaveReadyState.cs" />
+    <Compile Include="Command\LeaveServerGroup.cs" />
+    <Compile Include="Decorator\Decorator.cs" />
+    <Compile Include="Decorator\FireBullet.cs" />
+    <Compile Include="Decorator\IceBullet.cs" />
+    <Compile Include="Decorator\LightningBullet.cs" />
     <Compile Include="FormGame.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,15 +123,12 @@
     <Compile Include="Classes Test\Zombie.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Strategy\JoinServerGroup.cs" />
-    <Compile Include="Strategy\LeaveGroup.cs" />
-    <Compile Include="Strategy\ClientOptionsAlgorithm.cs" />
-    <Compile Include="Strategy\DisconnectFromServer.cs" />
-    <Compile Include="Strategy\JoinGroup.cs" />
-    <Compile Include="Strategy\LeaveServerGroup.cs" />
-    <Compile Include="Strategy\ReadyForGame.cs" />
-    <Compile Include="Strategy\SendToTheHub.cs" />
-    <Compile Include="Strategy\PlayGame.cs" />
+    <Compile Include="Strategy\FirstLevelStrategy.cs" />
+    <Compile Include="Command\JoinServerGroup.cs" />
+    <Compile Include="Strategy\LevelStrategy.cs" />
+    <Compile Include="Command\ReadyForGame.cs" />
+    <Compile Include="Strategy\SecondLevelStrategy.cs" />
+    <Compile Include="Strategy\ThirdLevelStrategy.cs" />
     <EmbeddedResource Include="FormGame.resx">
       <DependentUpon>FormGame.cs</DependentUpon>
     </EmbeddedResource>
@@ -131,7 +136,7 @@
       <DependentUpon>FrmClient.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
