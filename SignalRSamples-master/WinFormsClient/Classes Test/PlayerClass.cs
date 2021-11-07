@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SgClient1.Adapter;
 using SgClient1.Observer;
 
 namespace SgClient1.Classes_Test
@@ -45,7 +46,10 @@ namespace SgClient1.Classes_Test
             });
         }
 
-       
+        public void DoDamage(Zombie zombie, Control x)
+        {
+            zombie.TakeDamage(this.Weapon.GetWeaponDamage());
+        }
 
         public override void TakeDamage(int damage)
         {

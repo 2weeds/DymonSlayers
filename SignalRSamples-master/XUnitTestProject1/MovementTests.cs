@@ -52,7 +52,7 @@ namespace XUnitTestProject1
                     Assert.True(game.godown == (bool)res[0] && game.facing == (string)res[1]);
                     break;
                 default://test fails by default
-                    Assert.True(1 == 1);
+                    Assert.True(1 == 0);
                     break;
             }
         }

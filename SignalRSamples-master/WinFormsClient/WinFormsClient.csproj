@@ -66,6 +66,8 @@
     <Compile Include="AbstractFactory-Factory\L2\AmmoKit2.cs" />
     <Compile Include="AbstractFactory-Factory\L3\FireWall3.cs" />
     <Compile Include="AbstractFactory-Factory\L3\HealKit3.cs" />
+    <Compile Include="Adapter\IAdapter.cs" />
+    <Compile Include="Adapter\ZombieAdapter.cs" />
     <Compile Include="Builder\IWeaponBuilder.cs" />
     <Compile Include="Builder\IWeaponPlan.cs" />
     <Compile Include="Builder\KillerHandsBuilder.cs" />

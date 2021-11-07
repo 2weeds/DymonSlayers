@@ -372,10 +372,10 @@ namespace SgClient1
                 {
                     if ((j is PictureBox && j.Name == "bulletF" || j is PictureBox && j.Name == "bulletI" || j is PictureBox && j.Name == "bulletL") && (x is PictureBox && zm.names.Contains(x.Name)))
                     {
-                        if (x.Bounds.IntersectsWith(j.Bounds))//if bullet intercepts zombie
+                        if (x.Bounds.IntersectsWith(j.Bounds))//if bullet intercepts zombie (j is bullet) 
                         {
                             Zombie z = zm.Find(x.Name);
-                            if (z.Health < 1) //zombie dies
+                            if (z.Health < 2) //zombie dies if bullet hits and health is 1 or less
                             {
                                 score++;
                                 fireWallPlaced = false;
@@ -390,23 +390,23 @@ namespace SgClient1
                             }
                             else//  zombie takes dmg
                             {
-                             /*  if (j.Name == "bulletI")
-                                {
-                                    zm.RemoveZombie(z);
-                                    zombieCount--;
-                                    _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
-                                    this.Controls.Remove(x);
-                                    z.Dispose();
-                                }
-                                if (j.Name == "bulletL")
-                                {
-                                    zm.RemoveZombie(z);
-                                    zombieCount--;
-                                    _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
-                                    this.Controls.Remove(x);
-                                    z.Dispose();
-                                } */
-                                z.TakeDamage(playerInteractions.Weapon.GetWeaponDamage());
+                                /*  if (j.Name == "bulletI")
+                                   {
+                                       zm.RemoveZombie(z);
+                                       zombieCount--;
+                                       _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
+                                       this.Controls.Remove(x);
+                                       z.Dispose();
+                                   }
+                                   if (j.Name == "bulletL")
+                                   {
+                                       zm.RemoveZombie(z);
+                                       zombieCount--;
+                                       _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
+                                       this.Controls.Remove(x);
+                                       z.Dispose();
+                                   } */
+                                playerInteractions.DoDamage(z, x);
                             }
                             //remove bullet
                             this.Controls.Remove(j);

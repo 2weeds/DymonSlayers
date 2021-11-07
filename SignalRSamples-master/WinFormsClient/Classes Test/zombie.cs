@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SgClient1.Adapter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace SgClient1.Classes_Test
 {
     class Zombie : Entity
     {
-
+        ZombieAdapter adapter;
         Random rnd = new Random();
         public int speed = 2;
         //PictureBox zombie = new PictureBox();
@@ -77,7 +78,10 @@ namespace SgClient1.Classes_Test
             form.Controls.Add(zombie);
             zombies.Add(zombie);
         }
-
+        public void Scratch(PlayerClass playerClass, Control x)
+        {
+            playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
+        }
         public void zombieInteractions(PlayerClass playerClass, int chaseCase)
         {
             foreach (Control x in form.Controls)
@@ -86,7 +90,9 @@ namespace SgClient1.Classes_Test
                 {
                     if (((PictureBox)x).Bounds.IntersectsWith(playerClass.player.Bounds))
                     {
-                        playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
+                        //playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
+                        //Scratch(playerClass, x);
+                        new ZombieAdapter(this).DoDamage(playerClass, x);
                         if (playerClass.GetHealth() == 30 || playerClass.GetHealth() == 20)
                         {
                             _hubProxy.Invoke("UpdateHealthPacks", group, rnd.Next(10, 790), rnd.Next(50, 500));
