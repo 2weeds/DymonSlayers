@@ -9,7 +9,7 @@ using SgClient1.Observer;
 
 namespace SgClient1.Classes_Test
 {
-    class PlayerClass : Entity, ISubject
+    public class PlayerClass : Entity, ISubject
     {
         //public int Health = 100;
         public int speed = 10;
@@ -169,8 +169,8 @@ namespace SgClient1.Classes_Test
             shoot.bulletLeft = player.Left + (player.Width / 2);
             shoot.bulletTop = player.Top + (player.Height / 2);
             shoot.mkBullet(form, bulletType);
-            _hubProxy.Invoke("Send", $"s;{direct};{bulletType};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
-
+            if (_hubProxy != null)
+                _hubProxy.Invoke("Send", $"s;{direct};{bulletType};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
         }
     }
 }

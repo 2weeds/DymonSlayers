@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SgClient1.Decorator
 {
-    class IceBullet : Decorator
+    public class IceBullet : Decorator
     {
         public IceBullet(PlayerClass component) : base(component)
         {

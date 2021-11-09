@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SgClient1.Classes_Test
 {
-    abstract class Entity : GameClass
+    public abstract class Entity : GameClass
     {
         public int Health { get; set; }
         public Weapon Weapon { get; set; }

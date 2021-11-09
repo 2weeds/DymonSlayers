@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SgClient1.Decorator
 {
-    class FireBullet : Decorator
+    public class FireBullet : Decorator
     {
         public FireBullet(PlayerClass component) : base (component)
         {

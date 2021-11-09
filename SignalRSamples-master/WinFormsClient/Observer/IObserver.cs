@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SgClient1.Observer
 {
-    interface IObserver
+    public interface IObserver
     {
         void Update(ISubject subject);
     }

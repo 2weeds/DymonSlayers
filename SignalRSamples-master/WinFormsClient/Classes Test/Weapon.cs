@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SgClient1.Classes_Test
 {
-    class Weapon : IWeaponPlan
+    public class Weapon : IWeaponPlan
     {
         private int Range;
         private string Type;

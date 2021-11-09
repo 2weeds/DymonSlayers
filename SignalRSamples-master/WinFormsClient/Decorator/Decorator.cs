@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SgClient1.Decorator
 {
-    abstract class Decorator
+    public abstract class Decorator
     {
         protected PlayerClass wrappee;
         public Decorator (PlayerClass component)
