@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SgClient1.Decorator
 {
-    class LightningBullet : Decorator
+    public class LightningBullet : Decorator
     {
         public LightningBullet(PlayerClass component) : base(component)
         {
