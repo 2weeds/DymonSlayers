@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SgClient1
+﻿namespace SgClient1
 {
     public class LevelCreator : Creator
     {
@@ -13,10 +7,12 @@ namespace SgClient1
             if (level == 1)
             {
                 return new L1();
-            } else if (level == 2)
+            }
+            else if (level == 2)
             {
                 return new L2();
-            } else
+            }
+            else
             {
                 return new L3();
             }

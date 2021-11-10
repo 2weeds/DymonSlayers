@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SgClient1.Classes_Test
@@ -24,11 +20,13 @@ namespace SgClient1.Classes_Test
             {
                 bullet.BackColor = System.Drawing.Color.Orange;
                 bullet.Name = "bulletF";
-            } else if (bulletType == "Ice")
+            }
+            else if (bulletType == "Ice")
             {
                 bullet.BackColor = System.Drawing.Color.White;
                 bullet.Name = "bulletI";
-            } else if (bulletType == "Lightning")
+            }
+            else if (bulletType == "Lightning")
             {
                 bullet.BackColor = System.Drawing.Color.Yellow;
                 bullet.Name = "bulletL";

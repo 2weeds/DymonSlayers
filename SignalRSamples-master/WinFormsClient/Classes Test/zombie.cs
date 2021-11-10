@@ -2,13 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SgClient1.Classes_Test
 {
-    class Zombie : Entity
+    public class Zombie : Entity
     {
         ZombieAdapter adapter;
         Random rnd = new Random();

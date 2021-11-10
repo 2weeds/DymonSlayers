@@ -1,10 +1,4 @@
 ﻿using SgClient1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using WinFormsClient;
 using Xunit;
 

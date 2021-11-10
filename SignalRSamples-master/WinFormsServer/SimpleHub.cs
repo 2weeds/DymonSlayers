@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNet.SignalR;
 using System.Collections.Concurrent;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Infrastructure;
+using System.Threading.Tasks;
 
 namespace WinFormsServer
 {

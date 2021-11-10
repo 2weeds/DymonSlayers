@@ -3,12 +3,6 @@ using SgClient1;
 using SgClient1.Command;
 using SgClient1.Strategy;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 namespace WinFormsClient
@@ -198,7 +192,7 @@ namespace WinFormsClient
 
         private void btnUndo_Click(object sender, EventArgs e)
         {
-            if(CommandRunner.undo() == "disable")
+            if (CommandRunner.undo() == "disable")
             {
                 btnUndo.Visible = btnUndo.Enabled = false;
             }
@@ -225,24 +219,24 @@ namespace WinFormsClient
         {
             ICommand runnableCommand = null;
 
-            if(command == "join")
+            if (command == "join")
             {
                 runnableCommand = new JoinServerGroup(_signalRConnection, _hubProxy, instance);
             }
-            else if(command == "ready")
+            else if (command == "ready")
             {
                 runnableCommand = new ReadyForGame(_signalRConnection, _hubProxy, instance);
             }
-            else if(command == "leaveGroup")
+            else if (command == "leaveGroup")
             {
                 runnableCommand = new LeaveServerGroup(_signalRConnection, _hubProxy, instance);
             }
-            else if(command == "notReady")
+            else if (command == "notReady")
             {
                 runnableCommand = new LeaveReadyState(_signalRConnection, _hubProxy, instance);
             }
 
-            if(runnableCommand != null)
+            if (runnableCommand != null)
             {
                 CommandRunner.run(runnableCommand);
             }
@@ -325,6 +319,6 @@ namespace WinFormsClient
             return grpServer1;
         }
 
-        
+
     }
 }

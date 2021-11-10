@@ -1,12 +1,6 @@
-﻿using Microsoft.AspNet.SignalR.Client;
-using SgClient1;
-using SgClient1.Decorator;
+﻿using SgClient1;
 using SgClient1.Classes_Test;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SgClient1.Decorator;
 using System.Windows.Forms;
 using WinFormsClient;
 using Xunit;

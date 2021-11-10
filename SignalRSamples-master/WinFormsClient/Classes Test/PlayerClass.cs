@@ -1,11 +1,7 @@
-﻿using System;
+﻿using SgClient1.Observer;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using SgClient1.Adapter;
-using SgClient1.Observer;
 
 namespace SgClient1.Classes_Test
 {
@@ -24,13 +20,14 @@ namespace SgClient1.Classes_Test
             }
         }
         private int _health;
+        private List<IObserver> _observers;
         public PlayerClass()
         {
             _observers = new List<IObserver>();
         }
-        
-        
-        private List<IObserver> _observers;
+
+
+
 
 
         public void Attach(IObserver observer)

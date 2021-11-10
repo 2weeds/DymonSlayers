@@ -1,14 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Owin;
-using Microsoft.Owin.Cors;
+﻿using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Hosting;
-using Microsoft.AspNet.SignalR;
-using System.ComponentModel;
+using System;
 using System.Collections.Concurrent;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace WinFormsServer
 {
@@ -45,7 +41,7 @@ namespace WinFormsServer
             SimpleHub.DeadPlayer += SimpleHub_ShowPlayerDeath;
         }
 
-        private void bindListsToControls()
+        public void bindListsToControls()
         {
             //Clients list
             cmbClients.DisplayMember = "Name";
@@ -56,17 +52,23 @@ namespace WinFormsServer
             cmbGroups.DataSource = _groups;
         }
 
-        private void SimpleHub_ClientConnected(string clientId)
+        public void SimpleHub_ClientConnected(string clientId)
         {
+            if (IsHandleCreated)
+            {
+                this.BeginInvoke(new Action(() => _clients.Add(new ClientItem() { Id = clientId, Name = clientId })));
+                writeToLog($"Client connected:{clientId}");
+            }
             //Add client to our clients list
-            this.BeginInvoke(new Action(() => _clients.Add(new ClientItem() { Id = clientId, Name = clientId })));
-
-            writeToLog($"Client connected:{clientId}");
+            else
+            {
+                return;
+            }
         }
 
-        private void SimpleHub_ClientDisconnected(string clientId)
+        public void SimpleHub_ClientDisconnected(string clientId)
         {
-            //Remove client from the list
+            if (!IsHandleCreated) return;
             this.BeginInvoke(new Action(() =>
             {
                 var client = _clients.FirstOrDefault(x => x.Id == clientId);
@@ -75,6 +77,7 @@ namespace WinFormsServer
             }));
 
             writeToLog($"Client disconnected:{clientId}");
+            //Remove client from the list
         }
 
         private void SimpleHub_ClientNameChanged(string clientId, string newName)
@@ -137,14 +140,14 @@ namespace WinFormsServer
                 //writeToLog($"Ready count: :{groupSize}");
             }));
             writeToLog($"Client is ready. Id:{clientId}, Group:{groupName}");
-            
+
         }
 
         private void SimpleHub_ResetClientReadyCheck(string clientId, string groupName)
         {
             this.BeginInvoke(new Action(() =>
             {
-                 int lastReadySize;
+                int lastReadySize;
                 _readyCount.TryRemove(groupName, out lastReadySize);
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
                 hubContext.Clients.Group(groupName).updateReady(0);
@@ -191,7 +194,7 @@ namespace WinFormsServer
             {
                 int groupSize;
                 int checkSize;
-               // var group = _groups.FirstOrDefault(x => x == groupName);
+                // var group = _groups.FirstOrDefault(x => x == groupName);
                 _readyCount.TryGetValue(groupName, out groupSize);
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<SimpleHub>();
                 if (/*group != null && */groupSize > 1)
@@ -199,7 +202,7 @@ namespace WinFormsServer
                     _readyCount.AddOrUpdate(groupName, 1, (groupname, count) => count - 1);
                     _readyCount.TryGetValue(groupName, out groupSize);
                 }
-                else if(/*group != null && */groupSize == 1)
+                else if (/*group != null && */groupSize == 1)
                 {
                     int lastSize;
                     int lastReadySize;

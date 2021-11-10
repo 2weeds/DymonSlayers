@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinFormsClient;
 
 namespace SgClient1.Command
 {
-    class LeaveServerGroup: ICommand
+    class LeaveServerGroup : ICommand
     {
         private HubConnection _signalRConnection { get; set; }
         private IHubProxy _hubProxy { get; set; }

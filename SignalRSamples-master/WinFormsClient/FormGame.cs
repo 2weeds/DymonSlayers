@@ -2,17 +2,12 @@
 using SgClient1.Builder;
 using SgClient1.Classes_Test;
 using SgClient1.Decorator;
+using SgClient1.Strategy;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SgClient1.Observer;
-using SgClient1.Strategy;
 
 namespace SgClient1
 {
@@ -35,12 +30,12 @@ namespace SgClient1
         HubConnection _signalRConnection;
         PlayerClass playerInteractions = new PlayerClass();
 
-        private NewsReporter reporter = new NewsReporter();
+        NewsReporter reporter = new NewsReporter();
 
-        
+
         Zombie zm = new Zombie();
         IHubProxy _hubProxy;
-        
+
         string group;
         string userName;
         Random rnd = new Random();
@@ -94,7 +89,7 @@ namespace SgClient1
 
         async Task asStuf()
         {
-            _hubProxy.On<int,int>("DropAmmo", (x, y) => dropAmmo(x, y));
+            _hubProxy.On<int, int>("DropAmmo", (x, y) => dropAmmo(x, y));
             _hubProxy.On<int, int>("SpawnHealthPack", (x, y) => createHealthPack(x, y));
             _hubProxy.On<int, int>("SpawnFireWall", (x, y) => createFireWall(x, y));
             _hubProxy.On<int, int>("SpawnZombie", (x, y) => makeZombies(x, y));
@@ -191,7 +186,8 @@ namespace SgClient1
             if (parts[1] == "m")
             {
                 getMovement(parts[0] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4], player1);
-            } else if (parts[1] == "s")
+            }
+            else if (parts[1] == "s")
             {
                 bulletShot(parts[0], parts[2], parts[3], int.Parse(parts[4]), int.Parse(parts[5]));
             }
@@ -335,7 +331,8 @@ namespace SgClient1
                 objectFactory = level.getAbstractFactory();
                 //strategy
                 setStrategy(2);
-            } else if (score == 20)
+            }
+            else if (score == 20)
             {
                 level = lvCreator.factoryMethod(3);
                 objectFactory = level.getAbstractFactory();
@@ -495,7 +492,7 @@ namespace SgClient1
 
         private void setStrategy(int level)
         {
-            if(level == 1)
+            if (level == 1)
             {
                 Strategy = new FirstLevelStrategy();
             }

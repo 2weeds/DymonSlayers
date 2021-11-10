@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace WinFormsServer
 {
-    class ClientItem : INotifyPropertyChanged
+    public class ClientItem : INotifyPropertyChanged
     {
         private string _name;
 
@@ -23,6 +18,6 @@ namespace WinFormsServer
                 _name = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Name"));
             }
-        }        
+        }
     }
 }

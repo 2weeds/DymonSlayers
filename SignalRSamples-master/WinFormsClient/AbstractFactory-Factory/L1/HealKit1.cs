@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace SgClient1
 {
     public class HealKit1 : HealKit
-    { 
+    {
         public override void spawnUnit(FormGame form, int x, int y)
         {
             PictureBox healthKit = new PictureBox();

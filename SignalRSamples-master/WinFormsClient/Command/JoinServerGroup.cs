@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using SgClient1.Command;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinFormsClient;
 
 namespace SgClient1.Strategy
@@ -34,7 +29,7 @@ namespace SgClient1.Strategy
             instance.getbtnUndo().Enabled = true;
             instance.getbtnUndo().Visible = true;
         }
-        
+
         public override void undo()
         {
             _hubProxy.Invoke("LeaveGroup", instance.getgrpServer1().Text);

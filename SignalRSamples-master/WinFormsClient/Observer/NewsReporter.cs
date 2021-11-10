@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.AspNet.SignalR.Client;
+﻿using Microsoft.AspNet.SignalR.Client;
 using SgClient1.Observer;
+using System;
 
 namespace SgClient1.Classes_Test
 {
-    class NewsReporter : IObserver
+    public class NewsReporter : IObserver
     {
         public IHubProxy _IHubProxy;
 
@@ -20,7 +15,7 @@ namespace SgClient1.Classes_Test
         {
             if (subject is PlayerClass player)
             {
-                _IHubProxy.Invoke("Send", String.Format("reporting health {0}",player.Health));
+                _IHubProxy.Invoke("Send", String.Format("reporting health {0}", player.Health));
             }
         }
     }

@@ -1,15 +1,10 @@
 ﻿using SgClient1.Classes_Test;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SgClient1.Decorator
 {
     public class FireBullet : Decorator
     {
-        public FireBullet(PlayerClass component) : base (component)
+        public FireBullet(PlayerClass component) : base(component)
         {
         }
         public void FireShoot(string direct)
@@ -21,5 +16,5 @@ namespace SgClient1.Decorator
         {
             base.shoot(direct, bulletType);
         }
-    } 
+    }
 }
