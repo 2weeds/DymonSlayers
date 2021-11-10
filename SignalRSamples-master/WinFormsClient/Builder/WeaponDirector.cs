@@ -2,7 +2,7 @@
 
 namespace SgClient1.Builder
 {
-    class WeaponDirector
+    public class WeaponDirector
     {
         private IWeaponBuilder weaponBuilder;
         public WeaponDirector(IWeaponBuilder builder)

@@ -298,6 +298,10 @@ namespace WinFormsClient
         {
             return txtUserName;
         }
+        public void settxtUserName(string uname)
+        {
+            txtUserName.Text = uname;
+        }
         public Label getlabelServerPlayers()
         {
             return labelServerPlayers;

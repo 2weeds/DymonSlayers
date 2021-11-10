@@ -2,7 +2,7 @@
 
 namespace SgClient1.Builder
 {
-    interface IWeaponBuilder
+    public interface IWeaponBuilder
     {
         void BuildWeaponRange();
         void BuildWeaponType();
