@@ -14,7 +14,8 @@ namespace WinFormsClient
         //Proxy object for a hub hosted on the SignalR server
         public IHubProxy _hubProxy;
         public static FrmClient instance;
-        private CommandController CommandRunner;
+        public CommandController CommandRunner;
+        public string tekstas = "none";
         public FrmClient()
         {
             instance = this;
@@ -215,7 +216,7 @@ namespace WinFormsClient
             gamefrm.Show();
         }
 
-        private void pickCommand(string command)
+        public void pickCommand(string command)
         {
             ICommand runnableCommand = null;
 

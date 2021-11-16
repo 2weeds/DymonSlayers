@@ -19,10 +19,14 @@ namespace SgClient1.Strategy
 
         public override void run()
         {
-            _hubProxy.Invoke("ReadyCheck", instance.getgrpServer1().Text);
+            if(_hubProxy != null)
+            {
+                _hubProxy.Invoke("ReadyCheck", instance.getgrpServer1().Text);
+            }
             instance.getreadyServerButton1().Enabled = false;
             instance.getbtnNotReady().Enabled = true;
             instance.getbtnNotReady().Visible = true;
+            instance.tekstas = "leaveready";
         }
 
         public override void undo()

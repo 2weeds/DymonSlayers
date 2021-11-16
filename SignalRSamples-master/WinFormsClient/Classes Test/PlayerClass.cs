@@ -8,7 +8,7 @@ namespace SgClient1.Classes_Test
     public class PlayerClass : Entity, ISubject
     {
         //public int Health = 100;
-        public int speed = 10;
+        public int speed = 0;
         public int ammo = 10;
         public int Health
         {

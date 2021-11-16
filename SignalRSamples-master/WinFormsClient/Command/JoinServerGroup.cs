@@ -4,7 +4,7 @@ using WinFormsClient;
 
 namespace SgClient1.Strategy
 {
-    class JoinServerGroup : ICommand
+    public class JoinServerGroup : ICommand
     {
         private HubConnection _signalRConnection { get; set; }
         private IHubProxy _hubProxy { get; set; }
@@ -19,7 +19,10 @@ namespace SgClient1.Strategy
 
         public override void run()
         {
-            _hubProxy.Invoke("JoinGroup", instance.getgrpServer1().Text);
+            if(_hubProxy != null)
+            {
+                _hubProxy.Invoke("JoinGroup", instance.getgrpServer1().Text);
+            }
             instance.getreadyServerButton1().Visible = true;
             instance.getjoinServerButton1().Visible = false;
             instance.getreadyServerButton1().Enabled = true;
@@ -28,6 +31,7 @@ namespace SgClient1.Strategy
             instance.getleaveServerButton1().Enabled = true;
             instance.getbtnUndo().Enabled = true;
             instance.getbtnUndo().Visible = true;
+            instance.tekstas = "join";
         }
 
         public override void undo()

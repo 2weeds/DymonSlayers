@@ -18,7 +18,10 @@ namespace SgClient1.Command
 
         public override void run()
         {
-            _hubProxy.Invoke("LeaveReady", instance.getgrpServer1().Text);
+            if(_hubProxy != null)
+            {
+                _hubProxy.Invoke("LeaveReady", instance.getgrpServer1().Text);
+            }
             instance.getlabelReadyServer1().Text = "Ready 0/2";
             instance.getreadyServerButton1().Visible = true;
             instance.getreadyServerButton1().Enabled = true;
@@ -28,6 +31,7 @@ namespace SgClient1.Command
             instance.getbtnPlay().Enabled = false;
             instance.getbtnNotReady().Enabled = false;
             instance.getbtnNotReady().Visible = false;
+            instance.tekstas = "leaveready";
         }
 
         public override void undo()
