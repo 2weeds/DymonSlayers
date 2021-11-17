@@ -17,30 +17,32 @@ namespace XUnitTestProject1
             return new FormGame();
         }
 
-        [Fact]
-        public void TestingCopy()
+        [Theory]
+        [InlineData("deep")]
+        [InlineData("shallow")]
+        public void TestingCopy(string type)
         {
             //ARRANGE
             FormGame instance = CreateGame();
 
-            //ACT
-            FormGame deepCopy = instance.copyDeep();
-            
-            //ASSERT
-            Assert.NotEqual(instance.GetHashCode(), deepCopy.GetHashCode());
-        }
-
-        [Fact]
-        public void TestingShallowCopy()
-        {
-            //ARRANGE
-            FormGame instance = CreateGame();
-
-            //ACT
-            FormGame shallowCopy = instance.copyShallow();
-
-            //ASSERT
-            Assert.Equal(instance.GetHashCode(), shallowCopy.GetHashCode());
+            switch (type)
+            {
+                case "deep":
+                    //ACT
+                    FormGame deepCopy = instance.copyDeep();
+                    //ASSERT
+                    Assert.NotEqual(instance.GetHashCode(), deepCopy.GetHashCode());
+                    break;
+                case "shallow":
+                    //ACT
+                    FormGame shallowCopy = instance.copyShallow();
+                    //ASSERT
+                    Assert.Equal(instance.GetHashCode(), shallowCopy.GetHashCode());
+                    break;
+                default:
+                    Assert.Equal(0, 1);
+                    break;
+            }
         }
     }
 }
