@@ -11,7 +11,6 @@ namespace XUnitTestProject1
 {
     public class PrototypeTests
     {
-
         FormGame CreateGame()
         {
             return new FormGame();
