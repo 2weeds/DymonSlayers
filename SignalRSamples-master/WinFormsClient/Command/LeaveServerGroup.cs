@@ -39,7 +39,8 @@ namespace SgClient1.Command
 
         public override void undo()
         {
-            _hubProxy.Invoke("JoinGroup", instance.getgrpServer1().Text);
+            if (_hubProxy != null)
+                _hubProxy.Invoke("JoinGroup", instance.getgrpServer1().Text);
             instance.getreadyServerButton1().Visible = true;
             instance.getjoinServerButton1().Visible = false;
             instance.getreadyServerButton1().Enabled = true;
@@ -48,6 +49,7 @@ namespace SgClient1.Command
             instance.getleaveServerButton1().Enabled = true;
             instance.getbtnUndo().Enabled = true;
             instance.getbtnUndo().Visible = true;
+            instance.tekstas = "join";
         }
     }
 }

@@ -36,7 +36,9 @@ namespace SgClient1.Strategy
 
         public override void undo()
         {
-            _hubProxy.Invoke("LeaveGroup", instance.getgrpServer1().Text);
+            if (_hubProxy != null)
+                _hubProxy.Invoke("LeaveGroup", instance.getgrpServer1().Text);
+
             instance.getlabelServerPlayers().Text = "Players 0/2";
             instance.getlabelReadyServer1().Text = "Ready 0/2";
             instance.getjoinServerButton1().Visible = true;
@@ -51,6 +53,7 @@ namespace SgClient1.Strategy
             instance.getbtnUndo().Visible = false;
             instance.getbtnNotReady().Enabled = false;
             instance.getbtnNotReady().Visible = false;
+            instance.tekstas = "leavegrp";
         }
     }
 }

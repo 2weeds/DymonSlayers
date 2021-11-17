@@ -26,12 +26,13 @@ namespace SgClient1.Strategy
             instance.getreadyServerButton1().Enabled = false;
             instance.getbtnNotReady().Enabled = true;
             instance.getbtnNotReady().Visible = true;
-            instance.tekstas = "leaveready";
+            instance.tekstas = "ready";
         }
 
         public override void undo()
         {
-            _hubProxy.Invoke("LeaveReady", instance.getgrpServer1().Text);
+            if (_hubProxy != null)
+                _hubProxy.Invoke("LeaveReady", instance.getgrpServer1().Text);
             instance.getlabelReadyServer1().Text = "Ready 0/2";
             instance.getreadyServerButton1().Visible = true;
             instance.getreadyServerButton1().Enabled = true;
@@ -41,6 +42,7 @@ namespace SgClient1.Strategy
             instance.getbtnPlay().Enabled = false;
             instance.getbtnNotReady().Enabled = false;
             instance.getbtnNotReady().Visible = false;
+            instance.tekstas = "leaveready";
         }
     }
 }

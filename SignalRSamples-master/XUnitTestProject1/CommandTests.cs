@@ -28,14 +28,34 @@ namespace XUnitTestProject1
         {
             //ARRANGE
             FrmClient cl = getclient();
-            var players = (cl.tekstas);
+            var state = (cl.tekstas);
 
             //ACT
             cl.pickCommand(command);
 
             //ASSERT
-            var players2 = (cl.tekstas);
-            Assert.NotEqual(players, players2);
-        } 
+            var stateAfter = (cl.tekstas);
+            Assert.NotEqual(state, stateAfter);
+        }
+
+        [Theory]
+        [InlineData("join")]
+        [InlineData("ready")]
+        [InlineData("leaveGroup")]
+        [InlineData("notReady")]
+        public void TestCommandUndo(string command)
+        {
+            //ARRANGE
+            FrmClient cl = getclient();
+            cl.pickCommand(command);
+            var state = (cl.tekstas);
+
+            //ACT
+            cl.CommandRunner.undo();
+
+            //ASSERT
+            var stateAfter = (cl.tekstas);
+            Assert.NotEqual(state, stateAfter);
+        }
     }
 }
