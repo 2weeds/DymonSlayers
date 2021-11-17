@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace SgClient1.Adapter
 {
-    class ZombieAdapter : IAdapter
+    public class ZombieAdapter : IAdapter
     {
         Zombie zombie;
         public ZombieAdapter(Zombie z)
@@ -11,9 +11,9 @@ namespace SgClient1.Adapter
             zombie = z;
         }
 
-        public void DoDamage(Entity entity, Control x)
+        public void DoDamage(Entity entity)
         {
-            zombie.Scratch((PlayerClass)entity, x);
+            zombie.Scratch((PlayerClass)entity);
         }
     }
 }

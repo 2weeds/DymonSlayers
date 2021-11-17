@@ -61,21 +61,28 @@ namespace SgClient1
         {
 
         }
-
-        private async void Form1_Load(object sender, EventArgs e)
+        public void clearPbs()
         {
-            reporter._IHubProxy = _hubProxy;
-            playerInteractions.Health = 100;
-            playerInteractions.Attach(reporter);
-            zm.createAZombie(this, pictureBox1.Left, pictureBox1.Top, hands.MakeWeapon().GetWeapon());
-            zm.createAZombie(this, pictureBox2.Left, pictureBox2.Top, hands.MakeWeapon().GetWeapon());
-            zm.createAZombie(this, pictureBox3.Left, pictureBox3.Top, hands.MakeWeapon().GetWeapon());
             this.Controls.Remove(pictureBox1);
             pictureBox1.Dispose();
             this.Controls.Remove(pictureBox2);
             pictureBox2.Dispose();
             this.Controls.Remove(pictureBox3);
             pictureBox3.Dispose();
+        }
+        public void recreateZombies()
+        {
+            zm.createAZombie(this, pictureBox1.Left, pictureBox1.Top, hands.MakeWeapon().GetWeapon());
+            zm.createAZombie(this, pictureBox2.Left, pictureBox2.Top, hands.MakeWeapon().GetWeapon());
+            zm.createAZombie(this, pictureBox3.Left, pictureBox3.Top, hands.MakeWeapon().GetWeapon());
+        }
+        public async void Form1_Load(object sender, EventArgs e)
+        {
+            reporter._IHubProxy = _hubProxy;
+            playerInteractions.Health = 100;
+            playerInteractions.Attach(reporter);
+            recreateZombies();
+            clearPbs();
 
             playerInteractions.Weapon = pistol.MakeWeapon().GetWeapon();
 
@@ -425,7 +432,7 @@ namespace SgClient1
                                        this.Controls.Remove(x);
                                        z.Dispose();
                                    } */
-                                playerInteractions.DoDamage(z, x);
+                                playerInteractions.DoDamage(z);
                             }
                             //remove bullet
                             this.Controls.Remove(j);
@@ -495,7 +502,7 @@ namespace SgClient1
             player.BringToFront();
         }
 
-        private void makeZombies(int x, int y)
+        public void makeZombies(int x, int y)
         {
             if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
             {

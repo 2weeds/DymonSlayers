@@ -76,9 +76,10 @@ namespace SgClient1.Classes_Test
             form.Controls.Add(zombie);
             zombies.Add(zombie);
         }
-        public void Scratch(PlayerClass playerClass, Control x)
+        public void Scratch(PlayerClass playerClass)
         {
-            playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
+            //playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
+            playerClass.TakeDamage(this.Weapon.GetWeaponDamage());      //zombie do dmg to player
         }
         public void zombieInteractions(PlayerClass playerClass, int chaseCase)
         {
@@ -90,7 +91,7 @@ namespace SgClient1.Classes_Test
                     {
                         //playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
                         //Scratch(playerClass, x);
-                        new ZombieAdapter(this).DoDamage(playerClass, x);
+                        new ZombieAdapter(this).DoDamage(playerClass);
                         if (playerClass.GetHealth() == 30 || playerClass.GetHealth() == 20)
                         {
                             _hubProxy.Invoke("UpdateHealthPacks", group, rnd.Next(10, 790), rnd.Next(50, 500));
