@@ -29,7 +29,11 @@ namespace SgClient1.Strategy
             instance.tekstas = "ready";
         }
 
+<<<<<<< Updated upstream
         /*public string undo()
+=======
+        /*public override void undo()
+>>>>>>> Stashed changes
         {
             if (_hubProxy != null)
                 _hubProxy.Invoke("LeaveReady", instance.getgrpServer1().Text);
@@ -42,8 +46,11 @@ namespace SgClient1.Strategy
             instance.getbtnPlay().Enabled = false;
             instance.getbtnNotReady().Enabled = false;
             instance.getbtnNotReady().Visible = false;
+<<<<<<< Updated upstream
             instance.tekstas = "leaveready";
             return "good";
+=======
+>>>>>>> Stashed changes
         }*/
     }
 }

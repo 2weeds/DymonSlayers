@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.SignalR.Client;
+﻿
+using Microsoft.AspNet.SignalR.Client;
 using SgClient1;
 using SgClient1.Command;
 using SgClient1.Composite;
@@ -15,7 +16,11 @@ namespace WinFormsClient
         //Proxy object for a hub hosted on the SignalR server
         public IHubProxy _hubProxy;
         public static FrmClient instance;
+<<<<<<< Updated upstream
        // public CompositeCommand CommandRunner;
+=======
+        // public CompositeCommand CommandRunner;
+>>>>>>> Stashed changes
         public string tekstas = "none";
         public FrmClient()
         {
@@ -194,10 +199,17 @@ namespace WinFormsClient
 
         private void btnUndo_Click(object sender, EventArgs e)
         {
+<<<<<<< Updated upstream
            /* if (CommandRunner.undo() == "disable")
             {
                 btnUndo.Visible = btnUndo.Enabled = false;
             }*/
+=======
+            /* if (CommandRunner.undo() == "disable")
+             {
+                 btnUndo.Visible = btnUndo.Enabled = false;
+             }*/
+>>>>>>> Stashed changes
         }
 
         private void btnNotReady_Click(object sender, EventArgs e)

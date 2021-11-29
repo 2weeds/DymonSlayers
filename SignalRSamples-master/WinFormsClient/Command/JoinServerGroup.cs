@@ -34,7 +34,11 @@ namespace SgClient1.Strategy
             instance.tekstas = "join";
         }
 
+<<<<<<< Updated upstream
         /*public string undo()
+=======
+        /*public override void undo()
+>>>>>>> Stashed changes
         {
             if (_hubProxy != null)
                 _hubProxy.Invoke("LeaveGroup", instance.getgrpServer1().Text);
@@ -53,9 +57,12 @@ namespace SgClient1.Strategy
             instance.getbtnUndo().Visible = false;
             instance.getbtnNotReady().Enabled = false;
             instance.getbtnNotReady().Visible = false;
+<<<<<<< Updated upstream
             instance.tekstas = "leavegrp";
 
             return "good";
+=======
+>>>>>>> Stashed changes
         }*/
     }
 }

@@ -1,4 +1,14 @@
+<<<<<<< Updated upstream
 ﻿using SgClient1.Command;
+=======
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using SgClient1.Command;
+>>>>>>> Stashed changes
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +34,11 @@ namespace SgClient1.Composite
         public void run()
         {
             //Commands.Add(command);
+<<<<<<< Updated upstream
             foreach(var command in Commands)
+=======
+            foreach (var command in Commands)
+>>>>>>> Stashed changes
             {
                 command.run();
             }
