@@ -16,7 +16,7 @@ namespace SgClient1.Command
             this.instance = instance;
         }
 
-        public override void run()
+        public void run()
         {
             if(_hubProxy != null)
             {
@@ -34,7 +34,7 @@ namespace SgClient1.Command
             instance.tekstas = "leaveready";
         }
 
-        public override void undo()
+        /*public string undo()
         {
             if (_hubProxy != null)
                 _hubProxy.Invoke("ReadyCheck", instance.getgrpServer1().Text);
@@ -42,6 +42,8 @@ namespace SgClient1.Command
             instance.getbtnNotReady().Enabled = true;
             instance.getbtnNotReady().Visible = true;
             instance.tekstas = "ready";
-        }
+
+            return "good";
+        }*/
     }
 }

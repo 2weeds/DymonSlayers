@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using SgClient1;
 using SgClient1.Command;
+using SgClient1.Composite;
 using SgClient1.Strategy;
 using System;
 using System.Threading.Tasks;
@@ -14,13 +15,13 @@ namespace WinFormsClient
         //Proxy object for a hub hosted on the SignalR server
         public IHubProxy _hubProxy;
         public static FrmClient instance;
-        public CommandController CommandRunner;
+       // public CompositeCommand CommandRunner;
         public string tekstas = "none";
         public FrmClient()
         {
             instance = this;
             InitializeComponent();
-            CommandRunner = new CommandController();
+            //CommandRunner = new CompositeCommand();
         }
         public FrmClient getInstance() { return instance; }
 
@@ -193,10 +194,10 @@ namespace WinFormsClient
 
         private void btnUndo_Click(object sender, EventArgs e)
         {
-            if (CommandRunner.undo() == "disable")
+           /* if (CommandRunner.undo() == "disable")
             {
                 btnUndo.Visible = btnUndo.Enabled = false;
-            }
+            }*/
         }
 
         private void btnNotReady_Click(object sender, EventArgs e)
@@ -218,29 +219,30 @@ namespace WinFormsClient
 
         public void pickCommand(string command)
         {
-            ICommand runnableCommand = null;
-
+            var CommandRunner = new CompositeCommand();
             if (command == "join")
             {
-                runnableCommand = new JoinServerGroup(_signalRConnection, _hubProxy, instance);
+                //runnableCommand = new JoinServerGroup(_signalRConnection, _hubProxy, instance);
+                CommandRunner.add(new JoinServerGroup(_signalRConnection, _hubProxy, instance));
+                CommandRunner.add(new ReadyForGame(_signalRConnection, _hubProxy, instance));
             }
             else if (command == "ready")
             {
-                runnableCommand = new ReadyForGame(_signalRConnection, _hubProxy, instance);
+                CommandRunner.add(new ReadyForGame(_signalRConnection, _hubProxy, instance));
+                //runnableCommand = new ReadyForGame(_signalRConnection, _hubProxy, instance);
             }
             else if (command == "leaveGroup")
             {
-                runnableCommand = new LeaveServerGroup(_signalRConnection, _hubProxy, instance);
+                CommandRunner.add(new LeaveServerGroup(_signalRConnection, _hubProxy, instance));
+                //runnableCommand = new LeaveServerGroup(_signalRConnection, _hubProxy, instance);
             }
             else if (command == "notReady")
             {
-                runnableCommand = new LeaveReadyState(_signalRConnection, _hubProxy, instance);
+                CommandRunner.add(new LeaveReadyState(_signalRConnection, _hubProxy, instance));
+                //runnableCommand = new LeaveReadyState(_signalRConnection, _hubProxy, instance);
             }
 
-            if (runnableCommand != null)
-            {
-                CommandRunner.run(runnableCommand);
-            }
+            CommandRunner.run();
         }
 
         public string GetName()

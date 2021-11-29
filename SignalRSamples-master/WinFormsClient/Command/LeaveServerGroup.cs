@@ -16,7 +16,7 @@ namespace SgClient1.Command
             this.instance = instance;
         }
 
-        public override void run()
+        public void run()
         {
             if (_hubProxy != null)
             {
@@ -37,7 +37,7 @@ namespace SgClient1.Command
             instance.tekstas = "leavegrp";
         }
 
-        public override void undo()
+        /*public string undo()
         {
             if (_hubProxy != null)
                 _hubProxy.Invoke("JoinGroup", instance.getgrpServer1().Text);
@@ -47,9 +47,10 @@ namespace SgClient1.Command
             instance.getjoinServerButton1().Enabled = false;
             instance.getleaveServerButton1().Visible = true;
             instance.getleaveServerButton1().Enabled = true;
-            instance.getbtnUndo().Enabled = true;
-            instance.getbtnUndo().Visible = true;
+            *//*instance.getbtnUndo().Enabled = true;
+            instance.getbtnUndo().Visible = true;*//*
             instance.tekstas = "join";
-        }
+            return "good";
+        }*/
     }
 }

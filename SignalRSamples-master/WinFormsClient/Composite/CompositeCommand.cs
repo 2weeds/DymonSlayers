@@ -1,20 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using SgClient1.Command;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SgClient1.Command
+namespace SgClient1.Composite
 {
-    public class CommandController
+    public class CompositeCommand : ICommand
     {
         private List<ICommand> Commands { get; set; }
 
-        public CommandController()
+        public CompositeCommand()
         {
             Commands = new List<ICommand>();
         }
 
-        public void run(ICommand command)
+        public void add(ICommand command)
         {
             Commands.Add(command);
-            command.run();
+        }
+
+        public void run()
+        {
+            //Commands.Add(command);
+            foreach(var command in Commands)
+            {
+                command.run();
+            }
         }
 
         /*public string undo()

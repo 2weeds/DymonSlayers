@@ -1,4 +1,5 @@
 ﻿using SgClient1.Adapter;
+using SgClient1.Composite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -127,7 +128,6 @@ namespace SgClient1.Classes_Test
 
                     if (names.Contains(((PictureBox)x).Name))
                     {
-
                         if (((PictureBox)x).Left > p.Left)
                         {
                             ((PictureBox)x).Left -= speed;
