@@ -1,6 +1,8 @@
 ﻿using SgClient1;
 using WinFormsClient;
 using Xunit;
+using System.Diagnostics;
+using System;
 
 namespace XUnitTestProject1
 {
@@ -9,6 +11,8 @@ namespace XUnitTestProject1
         [Fact]
         public void testFactory()
         {
+            Process currentProcess = Process.GetCurrentProcess();
+            long usedMemoryBefore = currentProcess.PrivateMemorySize64;
             FrmClient cl = new FrmClient();
             FormGame game = new FormGame(cl.getInstance());
             Creator lvCreator = new LevelCreator();
@@ -23,6 +27,8 @@ namespace XUnitTestProject1
                 Unit healKit = objectFactory.createHealKit();
                 healKit.spawnUnit(game, 300, 300);
             }
+            long usedMemoryAfter = currentProcess.PrivateMemorySize64;
+            Console.WriteLine("Memory used before is {0}, memory used after is {1}", usedMemoryBefore, usedMemoryAfter);
         }
     }
 }

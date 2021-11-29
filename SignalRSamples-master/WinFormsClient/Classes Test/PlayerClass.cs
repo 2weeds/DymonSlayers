@@ -26,10 +26,6 @@ namespace SgClient1.Classes_Test
             _observers = new List<IObserver>();
         }
 
-
-
-
-
         public void Attach(IObserver observer)
         {
             _observers.Add(observer);
@@ -161,11 +157,7 @@ namespace SgClient1.Classes_Test
 
         public void shoot(string direct, string bulletType)
         {
-            Bullet shoot = new Bullet();
-            shoot.direction = direct;
-            shoot.bulletLeft = player.Left + (player.Width / 2);
-            shoot.bulletTop = player.Top + (player.Height / 2);
-            shoot.mkBullet(form, bulletType);
+            shoot(form, bulletType, player.Left + (player.Width / 2), player.Top + (player.Height / 2), direct);
             if (_hubProxy != null)
                 _hubProxy.Invoke("Send", $"s;{direct};{bulletType};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
         }

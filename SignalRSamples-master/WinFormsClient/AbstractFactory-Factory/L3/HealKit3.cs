@@ -7,7 +7,7 @@ namespace SgClient1
         public override void spawnUnit(FormGame form, int x, int y)
         {
             PictureBox healthKit = new PictureBox();
-            healthKit.Image = Properties.Resources.med_Image2;
+            healthKit.Image = p.getPickup(Properties.Resources.med_Image2, "healthKit2");
             healthKit.SizeMode = PictureBoxSizeMode.AutoSize;
             healthKit.Left = x;
             healthKit.Top = y;

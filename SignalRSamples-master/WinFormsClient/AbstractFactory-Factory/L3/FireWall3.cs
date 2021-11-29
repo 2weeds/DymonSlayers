@@ -7,7 +7,7 @@ namespace SgClient1
         public override void spawnUnit(FormGame form, int x, int y)
         {
             PictureBox fireWall = new PictureBox();
-            fireWall.Image = Properties.Resources.fireWall_Image2;
+            fireWall.Image = p.getPickup(Properties.Resources.fireWall_Image2, "fireWall2");
             fireWall.SizeMode = PictureBoxSizeMode.AutoSize;
             fireWall.Left = x;
             fireWall.Top = y;
