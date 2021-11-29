@@ -7,11 +7,11 @@ namespace SgClient1
         public override void spawnUnit(FormGame form, int x, int y)
         {
             PictureBox ammo = new PictureBox();
-            ammo.Image = Properties.Resources.ammo_Image;
+            ammo.Image = p.getPickup(Properties.Resources.ammo_Image, "ammo");
             ammo.SizeMode = PictureBoxSizeMode.AutoSize;
+            ammo.Name = "ammo";
             ammo.Left = x;
             ammo.Top = y;
-            ammo.Name = "ammo";
             form.Controls.Add(ammo);
             ammo.BringToFront();
         }
