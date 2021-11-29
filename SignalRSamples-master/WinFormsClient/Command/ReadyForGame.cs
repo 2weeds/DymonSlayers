@@ -17,7 +17,7 @@ namespace SgClient1.Strategy
             this.instance = instance;
         }
 
-        public override void run()
+        public void run()
         {
             if(_hubProxy != null)
             {
@@ -29,7 +29,7 @@ namespace SgClient1.Strategy
             instance.tekstas = "leaveready";
         }
 
-        public override void undo()
+        public void undo()
         {
             _hubProxy.Invoke("LeaveReady", instance.getgrpServer1().Text);
             instance.getlabelReadyServer1().Text = "Ready 0/2";

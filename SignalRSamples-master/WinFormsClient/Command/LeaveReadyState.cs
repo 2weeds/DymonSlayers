@@ -16,7 +16,7 @@ namespace SgClient1.Command
             this.instance = instance;
         }
 
-        public override void run()
+        public void run()
         {
             if(_hubProxy != null)
             {
@@ -34,7 +34,7 @@ namespace SgClient1.Command
             instance.tekstas = "leaveready";
         }
 
-        public override void undo()
+        public void undo()
         {
             _hubProxy.Invoke("ReadyCheck", instance.getgrpServer1().Text);
             instance.getreadyServerButton1().Enabled = false;
