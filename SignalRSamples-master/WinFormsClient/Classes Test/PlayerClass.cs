@@ -1,6 +1,7 @@
 ﻿using SgClient1.Observer;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace SgClient1.Classes_Test
@@ -160,6 +161,64 @@ namespace SgClient1.Classes_Test
             shoot(form, bulletType, player.Left + (player.Width / 2), player.Top + (player.Height / 2), direct);
             if (_hubProxy != null)
                 _hubProxy.Invoke("Send", $"s;{direct};{bulletType};{player.Left + (player.Width / 2)};{player.Top + (player.Height / 2)}");
+        }
+
+        public override void create(FormGame form, string bulletType, Timer tm, PictureBox bullet, int bulletLeft, int bulletTop)
+        {
+            if (bulletType == "Fire")
+            {
+                bullet.BackColor = System.Drawing.Color.Orange;
+                bullet.Name = "bulletF";
+            }
+            else if (bulletType == "Ice")
+            {
+                bullet.BackColor = System.Drawing.Color.White;
+                bullet.Name = "bulletI";
+            }
+            else if (bulletType == "Lightning")
+            {
+                bullet.BackColor = System.Drawing.Color.Yellow;
+                bullet.Name = "bulletL";
+            }
+            bullet.Size = new Size(5, 5);
+            bullet.Left = bulletLeft;
+            bullet.Top = bulletTop;
+            bullet.BringToFront();
+            form.Controls.Add(bullet);
+        }
+
+        public override void travel(object sender, EventArgs e, string direction, PictureBox bullet)
+        {
+            int bSpeed = 20;
+            if (direction == "left")
+            {
+                bullet.Left -= bSpeed;
+            }
+
+            if (direction == "right")
+            {
+                bullet.Left += bSpeed;
+            }
+
+            if (direction == "up")
+            {
+                bullet.Top -= bSpeed;
+            }
+
+            if (direction == "down")
+            {
+                bullet.Top += bSpeed;
+            }
+        }
+
+        public override void contact(Timer tm, PictureBox bullet)
+        {
+            if (bullet.Left < 16 || bullet.Left > 860 || bullet.Top < 10 || bullet.Top > 616)
+            {
+                tm.Stop();
+                tm.Dispose();
+                bullet.Dispose();
+            }
         }
     }
 }

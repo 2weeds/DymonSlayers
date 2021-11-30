@@ -155,5 +155,20 @@ namespace SgClient1.Classes_Test
                 }
             }
         }
+
+        public override void create(FormGame form, string bulletType, Timer tm, PictureBox bullet, int bulletLeft, int bulletTop)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void travel(object sender, EventArgs e, string direction, PictureBox bullet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void contact(Timer tm, PictureBox bullet)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
