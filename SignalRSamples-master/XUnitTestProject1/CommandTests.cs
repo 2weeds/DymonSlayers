@@ -51,7 +51,7 @@ namespace XUnitTestProject1
             var state = (cl.tekstas);
 
             //ACT
-            cl.CommandRunner.undo();
+            //cl.CommandRunner.undo();
 
             //ASSERT
             var stateAfter = (cl.tekstas);
