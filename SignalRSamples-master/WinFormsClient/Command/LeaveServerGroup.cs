@@ -16,7 +16,7 @@ namespace SgClient1.Command
             this.instance = instance;
         }
 
-        public override void run()
+        public void run()
         {
             if (_hubProxy != null)
             {
@@ -37,7 +37,7 @@ namespace SgClient1.Command
             instance.tekstas = "leavegrp";
         }
 
-        public override void undo()
+        public void undo()
         {
             if (_hubProxy != null)
                 _hubProxy.Invoke("JoinGroup", instance.getgrpServer1().Text);

@@ -17,7 +17,7 @@ namespace SgClient1.Strategy
             this.instance = instance;
         }
 
-        public override void run()
+        public void run()
         {
             if(_hubProxy != null)
             {
@@ -29,12 +29,12 @@ namespace SgClient1.Strategy
             instance.getjoinServerButton1().Enabled = false;
             instance.getleaveServerButton1().Visible = true;
             instance.getleaveServerButton1().Enabled = true;
-            instance.getbtnUndo().Enabled = true;
-            instance.getbtnUndo().Visible = true;
+           /* instance.getbtnUndo().Enabled = true;
+            instance.getbtnUndo().Visible = true;*/
             instance.tekstas = "join";
         }
 
-        public override void undo()
+        public void undo()
         {
             if (_hubProxy != null)
                 _hubProxy.Invoke("LeaveGroup", instance.getgrpServer1().Text);

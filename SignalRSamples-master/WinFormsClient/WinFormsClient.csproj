@@ -117,10 +117,12 @@
     <Compile Include="Command\ICommand.cs" />
     <Compile Include="Command\LeaveReadyState.cs" />
     <Compile Include="Command\LeaveServerGroup.cs" />
+    <Compile Include="Compopsite\CompositeCommand.cs" />
     <Compile Include="Decorator\Decorator.cs" />
     <Compile Include="Decorator\FireBullet.cs" />
     <Compile Include="Decorator\IceBullet.cs" />
     <Compile Include="Decorator\LightningBullet.cs" />
+    <Compile Include="Flyweight\PickupFactory.cs" />
     <Compile Include="FormGame.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -254,8 +256,13 @@
     <None Include="Resources\fireWall-Image2.png" />
   </ItemGroup>
   <ItemGroup>
+    <Analyzer Include="..\packages\SonarAnalyzer.CSharp.8.32.0.39516\analyzers\Google.Protobuf.dll" />
+    <Analyzer Include="..\packages\SonarAnalyzer.CSharp.8.32.0.39516\analyzers\SonarAnalyzer.CFG.dll" />
+    <Analyzer Include="..\packages\SonarAnalyzer.CSharp.8.32.0.39516\analyzers\SonarAnalyzer.CSharp.dll" />
+    <Analyzer Include="..\packages\SonarAnalyzer.CSharp.8.32.0.39516\analyzers\SonarAnalyzer.dll" />
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

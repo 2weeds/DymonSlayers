@@ -17,7 +17,7 @@ namespace SgClient1.Command
             command.run();
         }
 
-        public string undo()
+        /*public string undo()
         {
             int lastIndex = Commands.Count - 1;
             Commands[lastIndex].undo();
@@ -29,6 +29,6 @@ namespace SgClient1.Command
             }
 
             else return "";
-        }
+        }*/
     }
 }
