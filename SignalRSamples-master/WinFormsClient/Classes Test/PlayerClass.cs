@@ -39,7 +39,7 @@ namespace SgClient1.Classes_Test
             });
         }
 
-        public void DoDamage(Zombie zombie)
+        public void DoDamage(Zombie zombie, Control x)
         {
             zombie.TakeDamage(this.Weapon.GetWeaponDamage());
         }

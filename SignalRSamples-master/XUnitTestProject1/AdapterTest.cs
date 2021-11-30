@@ -26,8 +26,8 @@ namespace XUnitTestProject1
             frm.playerInteractions.Weapon = new WeaponDirector(new PistolBuilder()).MakeWeapon().GetWeapon();
             //frm.Form1_Load(this, new EventArgs());
             Zombie zombie = frm.zm.Find("zombie1");
-            frm.playerInteractions.DoDamage(zombie);
-            new ZombieAdapter(zombie).DoDamage(frm.playerInteractions);
+            frm.playerInteractions.DoDamage(zombie, new Control());
+            new ZombieAdapter(zombie).DoDamage(frm.playerInteractions, new Control());
             int phealth2 = frm.playerInteractions.GetHealth();
             int zhealth2 = frm.playerInteractions.GetHealth();
             Assert.True(100 > phealth2 && 3 > zhealth2);

@@ -432,7 +432,7 @@ namespace SgClient1
                                        this.Controls.Remove(x);
                                        z.Dispose();
                                    } */
-                                playerInteractions.DoDamage(z);
+                                playerInteractions.DoDamage(z, x);
                             }
                             //remove bullet
                             this.Controls.Remove(j);

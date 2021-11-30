@@ -11,9 +11,9 @@ namespace SgClient1.Adapter
             zombie = z;
         }
 
-        public void DoDamage(Entity entity)
+        public void DoDamage(Entity entity, Control x)
         {
-            zombie.Scratch((PlayerClass)entity);
+            zombie.Scratch((PlayerClass)entity, x);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace SgClient1.Adapter
 {
     interface IAdapter
     {
-        void DoDamage(Entity entity);
+        void DoDamage(Entity entity, Control x);
     }
 }
