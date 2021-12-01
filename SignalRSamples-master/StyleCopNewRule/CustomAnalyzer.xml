@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SourceAnalyzer Name="CustomRules">
+  <Description>Description for test rule1</Description>
+  <Rules>
+      <Rule Name="TooLongMethod" CheckId="CR0001">
+        <Context>The method '{0}' has about {1} lines (allowed are {2} lines) and is too long.</Context>
+        <Description>Description for test rule2</Description>
+      </Rule>
+  </Rules>
+</SourceAnalyzer>
