@@ -17,8 +17,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5DE2257-5EC7-402B-81CD-047EA1E06A47}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		Settings.StyleCop = Settings.StyleCop
-		StyleCopNewRule.dll = StyleCopNewRule.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCopNewRule", "StyleCopNewRule\StyleCopNewRule.csproj", "{E45E20C5-337C-4150-BA4A-A2EFA2A1E472}"
