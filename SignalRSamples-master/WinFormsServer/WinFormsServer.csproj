@@ -107,6 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChainOfResponsibility\FormLogger.cs" />
+    <Compile Include="ChainOfResponsibility\Logger.cs" />
+    <Compile Include="ChainOfResponsibility\TextLogger.cs" />
     <Compile Include="ClientItem.cs" />
     <Compile Include="FrmServer.cs">
       <SubType>Form</SubType>
