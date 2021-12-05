@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Hosting;
+using SgTest3.ChainOfResponsibility;
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
@@ -15,12 +16,17 @@ namespace WinFormsServer
         private BindingList<string> _groups = new BindingList<string>();
         private ConcurrentDictionary<string, int> _groupsCount = new ConcurrentDictionary<string, int>();
         private ConcurrentDictionary<string, int> _readyCount = new ConcurrentDictionary<string, int>();
+        private Logger frmLogger = new FormLogger();
+        private Logger txtLogger = new TextLogger();
 
         public FrmServer()
         {
             InitializeComponent();
 
             bindListsToControls();
+
+            frmLogger.setNextChain(txtLogger);
+            txtLogger.setNextChain(null);
 
             //Register to static hub events
             SimpleHub.ClientConnected += SimpleHub_ClientConnected;
@@ -347,10 +353,9 @@ namespace WinFormsServer
 
         private void writeToLog(string log)
         {
-            if (this.InvokeRequired)
-                this.BeginInvoke(new Action(() => txtLog.AppendText(log + Environment.NewLine)));
-            else
-                txtLog.AppendText(log + Environment.NewLine);
+            //this.txtLog = null;
+            frmLogger.writeToLog(log, this);
+            //txtLogger.writeToLog(log, this);
         }
 
         private void FrmServer_Load(object sender, EventArgs e)
