@@ -158,6 +158,8 @@
     <Compile Include="Iterator\Iterator.cs" />
     <Compile Include="Iterator\ZombiesCollection.cs" />
     <Compile Include="Iterator\ZombiesIterator.cs" />
+    <Compile Include="Mediator\Mediator.cs" />
+    <Compile Include="Mediator\IMediator.cs" />
     <Compile Include="Observer\IObserver.cs" />
     <Compile Include="Observer\ISubject.cs" />
     <Compile Include="Observer\NewsReporter.cs" />

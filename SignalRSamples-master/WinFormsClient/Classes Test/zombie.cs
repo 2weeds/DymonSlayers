@@ -88,7 +88,10 @@ namespace SgClient1.Classes_Test
         }
         public void Scratch(PlayerClass playerClass, Control x)
         {
-            playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
+            Mediator.Mediator mediator = new Mediator.Mediator(playerClass);
+            mediator.Interaction(playerClass);
+
+            // playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
         }
         public void zombieInteractions(PlayerClass playerClass, int chaseCase)
         {

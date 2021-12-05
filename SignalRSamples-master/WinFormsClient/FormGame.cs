@@ -29,9 +29,8 @@ namespace SgClient1
         AbstractFactory objectFactory;
         HubConnection _signalRConnection;
         public PlayerClass playerInteractions = new PlayerClass();
-
+        
         NewsReporter reporter = new NewsReporter();
-
 
         public Zombie zm = new Zombie();
         IHubProxy _hubProxy;

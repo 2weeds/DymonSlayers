@@ -42,7 +42,9 @@ namespace SgClient1.Classes_Test
 
         public void DoDamage(Zombie zombie, Control x)
         {
-            zombie.TakeDamage(this.Weapon.GetWeaponDamage());
+            Mediator.Mediator mediator = new Mediator.Mediator(zombie);
+            mediator.Interaction(zombie);
+            //zombie.TakeDamage(this.Weapon.GetWeaponDamage());
         }
 
         public override void TakeDamage(int damage)
@@ -94,61 +96,42 @@ namespace SgClient1.Classes_Test
                 _hubProxy.Invoke("Send", $"m;down;{player.Location.X};{player.Location.Y}");
             }
 
+            Mediator.Mediator mediator = new Mediator.Mediator();
             foreach (Control x in form.Controls)
             {
                 if (x is PictureBox && x.Name == "ammo" || x is PictureBox && x.Name == "ammo1" || x is PictureBox && x.Name == "ammo2")
                 {
-                    int ammoAdd = 0;
-                    if (x is PictureBox && x.Name == "ammo")
-                        ammoAdd = 5;
-                    else if (x is PictureBox && x.Name == "ammo1")
-                        ammoAdd = 10;
-                    else if (x is PictureBox && x.Name == "ammo2")
-                        ammoAdd = 15;
                     if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
                     {
                         form.Controls.Remove(((PictureBox)x));
                         ((PictureBox)x).Dispose();
-                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { ammo += ammoAdd; }
+                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { ammo += mediator.Interaction(x.Name); }
                     }
                 }
 
                 if (x is PictureBox && x.Name == "healthKit" || x is PictureBox && x.Name == "healthKit1" || x is PictureBox && x.Name == "healthKit2")
                 {
-                    int healAmount = 0;
-                    if (x is PictureBox && x.Name == "healthKit")
-                        healAmount = 5;
-                    else if (x is PictureBox && x.Name == "healthKit1")
-                        healAmount = 10;
-                    else if (x is PictureBox && x.Name == "healthKit2")
-                        healAmount = 15;
+
                     if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
                     {
                         form.Controls.Remove(((PictureBox)x));
                         ((PictureBox)x).Dispose();
-                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { Health += healAmount; if (Health > 100) { Health = 100; } }
+                        if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds)) { Health += mediator.Interaction(x.Name); if (Health > 100) { Health = 100; } }
                     }
                 }
 
                 if (x is PictureBox && x.Name == "fireWall" || x is PictureBox && x.Name == "fireWall1" || x is PictureBox && x.Name == "fireWall2")
                 {
-                    int damage = 0;
-                    if (x is PictureBox && x.Name == "fireWall")
-                        damage = 15;
-                    else if (x is PictureBox && x.Name == "fireWall1")
-                        damage = 25;
-                    else if (x is PictureBox && x.Name == "fireWall2")
-                        damage = 35;
                     if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds) || ((PictureBox)x).Bounds.IntersectsWith(player1.Bounds))
                     {
                         form.Controls.Remove(((PictureBox)x));
                         ((PictureBox)x).Dispose();
                         if (((PictureBox)x).Bounds.IntersectsWith(player.Bounds))
                         {
-                            if (Health < damage)
+                            if (Health < mediator.Interaction(x.Name))
                                 Health = 0;
                             else
-                                Health -= damage;
+                                Health -= mediator.Interaction(x.Name);
                         }
                     }
                 }
