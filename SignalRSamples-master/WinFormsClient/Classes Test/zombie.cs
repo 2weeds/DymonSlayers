@@ -1,4 +1,5 @@
 ﻿using SgClient1.Adapter;
+using SgClient1.Iterator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,23 +15,31 @@ namespace SgClient1.Classes_Test
         //PictureBox zombie = new PictureBox();
         public int zombieLeft;
         public int zombieTop;
-        public string[] names = { "zombie1", "zombie2", "zombie3", "zombie4" };
-        public List<Zombie> zombies = new List<Zombie>();
+        private ZombieNameCollection names = new ZombieNameCollection();
+        private ZombiesCollection zombies = new ZombiesCollection();
+
+        public bool ContainsName(string name)
+        {
+            if (names.Contains(name))
+                return true;
+            return false;
+        }
 
         public Zombie Find(string name)
         {
-            foreach (var z in zombies)
+            for(var z = zombies.CreateIterator(); z.HasMore();)
             {
-                if (z.Name == name)
+                Zombie currItem = (Zombie) z.GetNext();
+                if (currItem.Name == name)
                 {
-                    return z;
+                    return currItem;
                 }
             }
             return null;
         }
         public void RemoveZombie(Zombie z)
         {
-            zombies.Remove(z);
+            zombies.RemoveItem(z);
         }
         public override void TakeDamage(int damage)
         {
@@ -38,14 +47,15 @@ namespace SgClient1.Classes_Test
         }
         public string UnusedName()
         {
-            int index = -1;
-            bool used = false;
-            for (int i = 0; i < names.Length; i++)
+            string UnusedName = "";
+            for (var nm = names.CreateIterator(); nm.HasMore();)
             {
-                used = false;
-                foreach (var z in zombies)
+                string currItem = (string)nm.GetNext();
+                bool used = false;
+                for (var z = zombies.CreateIterator(); z.HasMore();)
                 {
-                    if (names[i] == z.Name)
+                    Zombie zomb = (Zombie)z.GetNext();
+                    if (currItem == zomb.Name)
                     {
                         used = true;
                         break;
@@ -53,11 +63,11 @@ namespace SgClient1.Classes_Test
                 }
                 if (!used)
                 {
-                    index = i;
+                    UnusedName = currItem;
                     break;
                 }
             }
-            return names[index];
+            return UnusedName;
         }
         public void createAZombie(FormGame form, int x, int y, Weapon weapon)
         {
@@ -74,12 +84,11 @@ namespace SgClient1.Classes_Test
             zombie.Top = y;
             zombie.BringToFront();
             form.Controls.Add(zombie);
-            zombies.Add(zombie);
+            zombies.AddItem(zombie);
         }
         public void Scratch(PlayerClass playerClass, Control x)
         {
             playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
-            //playerClass.TakeDamage(this.Weapon.GetWeaponDamage());      //zombie do dmg to player
         }
         public void zombieInteractions(PlayerClass playerClass, int chaseCase)
         {

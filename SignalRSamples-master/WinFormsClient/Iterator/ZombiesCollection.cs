@@ -16,6 +16,14 @@ namespace SgClient1.Iterator
             return new ZombiesIterator(ZombiesList);
         }
 
+        public void AddItem(Zombie zombie)
+        {
+            ZombiesList.Add(zombie);
+        }
 
+        public void RemoveItem(Zombie zombie)
+        {
+            ZombiesList.Remove(zombie);
+        }
     }
 }

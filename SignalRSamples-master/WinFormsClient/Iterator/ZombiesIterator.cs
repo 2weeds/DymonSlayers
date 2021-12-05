@@ -20,7 +20,9 @@ namespace SgClient1.Iterator
 
         public Object GetNext()
         {
-            return ZombiesList[currentPosition++];
+            if (HasMore())
+                return ZombiesList[currentPosition++];
+            return null;
         }
 
         public bool HasMore()

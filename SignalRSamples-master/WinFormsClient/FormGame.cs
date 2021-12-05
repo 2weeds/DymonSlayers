@@ -396,7 +396,7 @@ namespace SgClient1
 
                 foreach (Control j in this.Controls)
                 {
-                    if ((j is PictureBox && j.Name == "bulletF" || j is PictureBox && j.Name == "bulletI" || j is PictureBox && j.Name == "bulletL") && (x is PictureBox && zm.names.Contains(x.Name)))
+                    if ((j is PictureBox && j.Name == "bulletF" || j is PictureBox && j.Name == "bulletI" || j is PictureBox && j.Name == "bulletL") && (x is PictureBox && zm.ContainsName(x.Name)))
                     {
                         if (x.Bounds.IntersectsWith(j.Bounds))//if bullet intercepts zombie (j is bullet) 
                         {

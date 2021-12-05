@@ -14,5 +14,12 @@ namespace SgClient1.Iterator
         {
             return new ZombieNameIterator(ZombiesList);
         }
+
+        public bool Contains(string name)
+        {
+            if (ZombiesList.Contains(name))
+                return true;
+            return false;
+        }
     }
 }
