@@ -169,6 +169,10 @@
     <Compile Include="Classes Test\Zombie.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="State\HealthState.cs" />
+    <Compile Include="State\StateDamaged.cs" />
+    <Compile Include="State\StateDead.cs" />
+    <Compile Include="State\StateHealthy.cs" />
     <Compile Include="Strategy\FirstLevelStrategy.cs" />
     <Compile Include="Command\JoinServerGroup.cs" />
     <Compile Include="Strategy\LevelStrategy.cs" />

@@ -522,14 +522,17 @@ namespace SgClient1
         {
             if (level == 1)
             {
+                playerInteractions.level = 1;
                 Strategy = new FirstLevelStrategy();
             }
             else if (level == 2)
             {
+                playerInteractions.level = 2;
                 Strategy = new SecondLevelStrategy();
             }
             else if (level == 3)
             {
+                playerInteractions.level = 3;
                 Strategy = new ThirdLevelStrategy();
             }
 

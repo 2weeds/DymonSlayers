@@ -38,7 +38,7 @@ namespace SgClient1.Mediator
         {
             if (obj is PlayerClass)
             {
-                player.Health-= 1;
+                player.TakeDamage(1);
             }   
             else if (obj is Zombie)
             {

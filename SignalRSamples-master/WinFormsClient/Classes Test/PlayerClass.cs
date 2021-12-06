@@ -1,4 +1,5 @@
 ﻿using SgClient1.Observer;
+using SgClient1.State;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +9,9 @@ namespace SgClient1.Classes_Test
 {
     public class PlayerClass : Entity, ISubject
     {
+        private HealthState healthState;
         //public int Health = 100;
+        public int level = 1;
         public int speed = 0;
         public int ammo = 10;
         public int Health
@@ -24,6 +27,7 @@ namespace SgClient1.Classes_Test
         private List<IObserver> _observers;
         public PlayerClass()
         {
+            healthState = new StateHealthy(this);
             _observers = new List<IObserver>();
         }
 
@@ -46,7 +50,21 @@ namespace SgClient1.Classes_Test
             mediator.Interaction(zombie);
             //zombie.TakeDamage(this.Weapon.GetWeaponDamage());
         }
-
+        /// <summary>
+        /// Sets player to new state.
+        /// </summary>
+        /// <param name="newState">New HealthState state</param>
+        public void ChangeState(HealthState newState)
+        {
+            healthState = newState;
+        }
+        /// <summary>
+        /// Sets players speed by curent HealthState state only (auto takes account of level)
+        /// </summary>
+        public void SetSpeed()
+        {
+            this.healthState.SetSpeed();
+        }
         public override void TakeDamage(int damage)
         {
             Health -= damage;
@@ -55,23 +73,10 @@ namespace SgClient1.Classes_Test
         {
             return Health;
         }
-        public bool playerGameEngine(ProgressBar progressBar, bool goleft, bool goup, bool goright, bool godown)
+
+        public void PlayerMove(ProgressBar progressBar, bool goleft, bool goup, bool goright, bool godown)
         {
-            if (Health > 1)
-            {
-                progressBar.Value = Convert.ToInt32(Health);
-            }
-            else
-            {
-                player.Image = Properties.Resources.dead;
-                return true;
-            }
-
-            if (Health < 20)
-            {
-                progressBar.ForeColor = System.Drawing.Color.Red;
-            }
-
+            this.SetSpeed();
             if (goleft && player.Left > 0)
             {
                 player.Left -= speed;
@@ -95,6 +100,25 @@ namespace SgClient1.Classes_Test
                 player.Top += speed;
                 _hubProxy.Invoke("Send", $"m;down;{player.Location.X};{player.Location.Y}");
             }
+        }
+        public bool playerGameEngine(ProgressBar progressBar, bool goleft, bool goup, bool goright, bool godown)
+        {
+            if (Health > 1)
+            {
+                progressBar.Value = Convert.ToInt32(Health);
+            }
+            else
+            {
+                player.Image = Properties.Resources.dead;
+                return true;
+            }
+
+            if (Health < 20)
+            {
+                progressBar.ForeColor = System.Drawing.Color.Red;
+            }
+
+            PlayerMove(progressBar, goleft, goup, goright, godown);
 
             Mediator.Mediator mediator = new Mediator.Mediator();
             foreach (Control x in form.Controls)

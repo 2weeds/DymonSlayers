@@ -135,6 +135,14 @@ namespace WinFormsClient
 
         public void triggerGameForm(int size)
         {
+            if (this.InvokeRequired)//to prevent multiple threads accessing same form or smth idk
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    triggerGameForm(size);
+                });
+                return;
+            }
             if (size == 2)
             {
                 if (this.InvokeRequired)
