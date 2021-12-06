@@ -30,6 +30,7 @@ namespace SgClient1
         HubConnection _signalRConnection;
         public PlayerClass playerInteractions = new PlayerClass();
         
+        
         NewsReporter reporter = new NewsReporter();
 
         public Zombie zm = new Zombie();
@@ -78,6 +79,7 @@ namespace SgClient1
         public async void Form1_Load(object sender, EventArgs e)
         {
             reporter._IHubProxy = _hubProxy;
+            playerInteractions.SetHub(_hubProxy);
             playerInteractions.Health = 100;
             playerInteractions.Attach(reporter);
             recreateZombies();

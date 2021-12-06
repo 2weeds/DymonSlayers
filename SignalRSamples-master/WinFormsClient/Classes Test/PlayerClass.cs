@@ -1,8 +1,11 @@
-﻿using SgClient1.Observer;
+﻿using Microsoft.AspNet.SignalR.Client;
+using SgClient1.Observer;
+using SgClient1.Proxy;
 using SgClient1.State;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SgClient1.Classes_Test
@@ -25,12 +28,19 @@ namespace SgClient1.Classes_Test
         }
         private int _health;
         private List<IObserver> _observers;
+        private ProxyHub proxy;
         public PlayerClass()
         {
             healthState = new StateHealthy(this);
             _observers = new List<IObserver>();
+            
         }
-
+        public void SetHub(IHubProxy hubProxy)
+        {
+            this._hubProxy = hubProxy;
+            proxy = new MovementProxy(_hubProxy);
+            proxy.AddPlayer(this);
+        }
         public void Attach(IObserver observer)
         {
             _observers.Add(observer);
@@ -59,7 +69,7 @@ namespace SgClient1.Classes_Test
             healthState = newState;
         }
         /// <summary>
-        /// Sets players speed by curent HealthState state only (auto takes account of level)
+        /// Sets players speed by curent HealthState state only (sets it by game level)
         /// </summary>
         public void SetSpeed()
         {
@@ -74,32 +84,53 @@ namespace SgClient1.Classes_Test
             return Health;
         }
 
-        public void PlayerMove(ProgressBar progressBar, bool goleft, bool goup, bool goright, bool godown)
+        public void PlayerMove(bool left, bool up, bool right, bool down)
         {
-            this.SetSpeed();
-            if (goleft && player.Left > 0)
+            SetSpeed();
+            string dir = GetPictureDirection(left, up, right, down);
+            Tuple<int, int> xy = GetPlayerCoords(left, up, right, down);
+            SendMovementToServer(dir, xy.Item1, xy.Item2);
+            //SetNewCoordinates(xy.Item1, xy.Item2);
+        }
+        Task SendMovementToServer(string direction, int x, int y)
+        {
+            return proxy.Invoke("Send", $"m;{direction};{x};{y}");
+        }
+        public void SetNewCoordinates(int x, int y)
+        {
+            player.Left = x;
+            player.Top = y;
+        }
+        Tuple<int, int> GetPlayerCoords(bool left, bool up, bool right, bool down)
+        {
+            int x = player.Left;
+            int y = player.Top;
+            if (left)// && player.Left > 0
             {
-                player.Left -= speed;
-                _hubProxy.Invoke("Send", $"m;left;{player.Location.X};{player.Location.Y}");
+                x -= speed;
             }
-
-            if (goright && player.Left + player.Width < 930)
+            if (right)// && player.Left + player.Width < 930
             {
-                player.Left += speed;
-                _hubProxy.Invoke("Send", $"m;right;{player.Location.X};{player.Location.Y}");
+                x += speed;
             }
-
-            if (goup && player.Top > 60)
+            if (up)// && player.Top > 60
             {
-                player.Top -= speed;
-                _hubProxy.Invoke("Send", $"m;up;{player.Location.X};{player.Location.Y}");
+                y -= speed;
             }
-
-            if (godown && player.Top + player.Height < 700)
+            if (down)//&& player.Top + player.Height < 700
             {
-                player.Top += speed;
-                _hubProxy.Invoke("Send", $"m;down;{player.Location.X};{player.Location.Y}");
+                y += speed;
             }
+            return new Tuple<int, int>(x, y);
+        }
+        string GetPictureDirection(bool left, bool up, bool right, bool down)
+        {
+            string retString = "up";
+            if (left) retString = nameof(left);
+            if (right) retString = nameof(right);
+            if (up) retString = nameof(up);
+            if (down) retString = nameof(down);
+            return retString;
         }
         public bool playerGameEngine(ProgressBar progressBar, bool goleft, bool goup, bool goright, bool godown)
         {
@@ -118,7 +149,7 @@ namespace SgClient1.Classes_Test
                 progressBar.ForeColor = System.Drawing.Color.Red;
             }
 
-            PlayerMove(progressBar, goleft, goup, goright, godown);
+            PlayerMove(goleft, goup, goright, godown);
 
             Mediator.Mediator mediator = new Mediator.Mediator();
             foreach (Control x in form.Controls)
