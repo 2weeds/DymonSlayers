@@ -181,6 +181,9 @@
     <Compile Include="Command\ReadyForGame.cs" />
     <Compile Include="Strategy\SecondLevelStrategy.cs" />
     <Compile Include="Strategy\ThirdLevelStrategy.cs" />
+    <Compile Include="Visitor\PlayerReporter.cs" />
+    <Compile Include="Visitor\IReportToServer.cs" />
+    <Compile Include="Visitor\ZombieReporter.cs" />
     <EmbeddedResource Include="FormGame.resx">
       <DependentUpon>FormGame.cs</DependentUpon>
     </EmbeddedResource>

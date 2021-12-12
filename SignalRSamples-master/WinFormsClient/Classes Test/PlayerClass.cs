@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SgClient1.Visitor;
 
 namespace SgClient1.Classes_Test
 {
@@ -100,6 +101,11 @@ namespace SgClient1.Classes_Test
         {
             player.Left = x;
             player.Top = y;
+        }
+
+        public override string ReportToServer()
+        {
+            return  String.Format("Player {0} spawned a pickup", this.Name);
         }
         Tuple<int, int> GetPlayerCoords(bool left, bool up, bool right, bool down)
         {

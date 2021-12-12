@@ -86,6 +86,10 @@ namespace SgClient1.Classes_Test
             form.Controls.Add(zombie);
             zombies.AddItem(zombie);
         }
+        public override string ReportToServer()
+        {
+            return String.Format("Zombie {0} was created", this.Name);
+        }
         public void Scratch(PlayerClass playerClass, Control x)
         {
             Mediator.Mediator mediator = new Mediator.Mediator(playerClass);

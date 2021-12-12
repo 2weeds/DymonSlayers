@@ -31,5 +31,6 @@ namespace SgClient1.Classes_Test
         public abstract void travel(object sender, EventArgs e, string direction, PictureBox bullet);
 
         public abstract void contact(Timer tm, PictureBox bullet);
+        public abstract string ReportToServer();
     }
 }

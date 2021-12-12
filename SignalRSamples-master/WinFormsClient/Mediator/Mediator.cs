@@ -14,14 +14,6 @@ namespace SgClient1.Mediator
         public Bullet bullet;
         public Zombie zombie;
 
-        public Mediator(PlayerClass player, Unit unit, Bullet bullet, Zombie zombie)
-        {
-            this.player = player;
-            this.unit = unit;
-            this.bullet = bullet;
-            this.zombie = zombie;
-        }
-
         public Mediator(PlayerClass player)
         {
             this.player = player;

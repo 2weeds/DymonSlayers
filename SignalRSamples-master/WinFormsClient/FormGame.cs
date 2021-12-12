@@ -6,8 +6,10 @@ using SgClient1.Strategy;
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SgClient1.Visitor;
 
 namespace SgClient1
 {
@@ -30,12 +32,14 @@ namespace SgClient1
         HubConnection _signalRConnection;
         public PlayerClass playerInteractions = new PlayerClass();
         
-        
+
         NewsReporter reporter = new NewsReporter();
 
         public Zombie zm = new Zombie();
         IHubProxy _hubProxy;
-
+        ZombieReporter zombieReporter = new ZombieReporter();
+        private PlayerReporter playerReporter = new PlayerReporter();
+        
         public string group;
         public string userName;
         Random rnd = new Random();
@@ -75,6 +79,7 @@ namespace SgClient1
             zm.createAZombie(this, pictureBox1.Left, pictureBox1.Top, hands.MakeWeapon().GetWeapon());
             zm.createAZombie(this, pictureBox2.Left, pictureBox2.Top, hands.MakeWeapon().GetWeapon());
             zm.createAZombie(this, pictureBox3.Left, pictureBox3.Top, hands.MakeWeapon().GetWeapon());
+
         }
         public async void Form1_Load(object sender, EventArgs e)
         {
@@ -318,12 +323,12 @@ namespace SgClient1
                 var addressDeep = copyD.GetHashCode();
                 var copyS = copyShallow();
                 var addressShallow = copyS.GetHashCode();
-                _hubProxy.Invoke("Send", String.Format("{0} {1}", "Deep copy address", addressDeep));
-                _hubProxy.Invoke("Send", String.Format("{0} {1}", "Shallow copy address", addressShallow));
-                _hubProxy.Invoke("Send", String.Format("{0} {1}", "Real address", this.GetHashCode()));
-                _hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Deep player1 and player2 coordinates", copyD.player.Location, copyD.player1.Location));
-                _hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Shallow player1 and player2 coordinates", copyS.player.Location, copyS.player1.Location));
-                _hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Real player1 and player2 coordinates", this.player.Location, this.player1.Location));
+                //_hubProxy.Invoke("Send", String.Format("{0} {1}", "Deep copy address", addressDeep));
+                //_hubProxy.Invoke("Send", String.Format("{0} {1}", "Shallow copy address", addressShallow));
+                //_hubProxy.Invoke("Send", String.Format("{0} {1}", "Real address", this.GetHashCode()));
+                //_hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Deep player1 and player2 coordinates", copyD.player.Location, copyD.player1.Location));
+                //_hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Shallow player1 and player2 coordinates", copyS.player.Location, copyS.player1.Location));
+                //_hubProxy.Invoke("Send", String.Format("{0} {1} {2}", "Real player1 and player2 coordinates", this.player.Location, this.player1.Location));
                 //_hubProxy.Invoke<string, string>("AddMessage", (name, message) => checkAction($"{name};{message}"));
                 //_hubProxy.Invoke("SaveGame", group, player.Location, player1.Location);
             }
@@ -417,22 +422,6 @@ namespace SgClient1
                             }
                             else//  zombie takes dmg
                             {
-                                /*  if (j.Name == "bulletI")
-                                   {
-                                       zm.RemoveZombie(z);
-                                       zombieCount--;
-                                       _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
-                                       this.Controls.Remove(x);
-                                       z.Dispose();
-                                   }
-                                   if (j.Name == "bulletL")
-                                   {
-                                       zm.RemoveZombie(z);
-                                       zombieCount--;
-                                       _hubProxy.Invoke("UpdateZombies", group, z.Location.X, z.Location.Y, z.Health);
-                                       this.Controls.Remove(x);
-                                       z.Dispose();
-                                   } */
                                 playerInteractions.DoDamage(z, x);
                             }
                             //remove bullet
@@ -471,6 +460,8 @@ namespace SgClient1
             Unit mapObj = objectFactory.createGunBullets();
             mapObj.spawnUnit(this, x, y);
             player.BringToFront();
+            playerReporter._IHubProxy = _hubProxy;
+            playerReporter.ReportEntity(playerInteractions.ReportToServer());
         }
 
         private void createHealthPack(int x, int y)
@@ -486,6 +477,8 @@ namespace SgClient1
             Unit mapObj = objectFactory.createHealKit();
             mapObj.spawnUnit(this, x, y);
             player.BringToFront();
+            playerReporter._IHubProxy = _hubProxy;
+            playerReporter.ReportEntity(playerInteractions.ReportToServer());
         }
 
         private void createFireWall(int x, int y)
@@ -501,6 +494,8 @@ namespace SgClient1
             Unit mapObj = objectFactory.createFireWall();
             mapObj.spawnUnit(this, x, y);
             player.BringToFront();
+            playerReporter._IHubProxy = _hubProxy;
+            playerReporter.ReportEntity(playerInteractions.ReportToServer());
         }
 
         public void makeZombies(int x, int y)
@@ -516,6 +511,8 @@ namespace SgClient1
             if (zombieCount < 3)
             {
                 zm.createAZombie(this, x, y, hands.MakeWeapon().GetWeapon());
+                zombieReporter._IHubProxy = _hubProxy;
+                zombieReporter.ReportEntity(this.zm.ReportToServer());
                 zombieCount++;
             }
         }
