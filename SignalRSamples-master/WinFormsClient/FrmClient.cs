@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.SignalR.Client;
+﻿using InterpreterConsole.Interpreter;
+using Microsoft.AspNet.SignalR.Client;
 using SgClient1;
 using SgClient1.Command;
 using SgClient1.Composite;
@@ -63,7 +64,41 @@ namespace WinFormsClient
         private void btnSend_Click(object sender, EventArgs e)
         {
             //Call the "Send" method on the hub (on the server) with the given parameters
-            _hubProxy.Invoke("Send", instance.gettxtMessage().Text);
+            //_hubProxy.Invoke("Send", instance.gettxtMessage().Text);
+            addCommand(instance.gettxtMessage().Text);
+        }
+
+        private async void connectToServer()
+        {
+            await connectAsync();
+        }
+
+        private void addCommand(string command)
+        {
+            CommandExpression interpreter;
+
+            switch (command)
+            {
+                case "join":
+                    interpreter = new SingleCommand(new JoinServerGroup(_signalRConnection, _hubProxy, instance));
+                    break;
+                case "ready":
+                    interpreter = new SingleCommand(new ReadyForGame(_signalRConnection, _hubProxy, instance));
+                    break;
+                case "not ready":
+                    interpreter = new SingleCommand(new LeaveReadyState(_signalRConnection, _hubProxy, instance));
+                    break;
+                case "leave":
+                    interpreter = new SingleCommand(new LeaveServerGroup(_signalRConnection, _hubProxy, instance));
+                    break;
+                default:
+                    interpreter = null;
+                    break;
+            }
+            if(interpreter != null)
+            {
+                interpreter.Execute();
+            }
         }
 
         private void btnJoinGroup_Click(object sender, EventArgs e)
@@ -78,7 +113,7 @@ namespace WinFormsClient
             _hubProxy.Invoke("LeaveGroup", instance.gettxtGroupName().Text);
         }
 
-        private async Task connectAsync()
+        public async Task connectAsync()
         {
             //Create a connection for the SignalR server
             _signalRConnection = new HubConnection(txtUrl.Text);
@@ -334,6 +369,14 @@ namespace WinFormsClient
             return grpServer1;
         }
 
+        private void grpMessaging_Enter(object sender, EventArgs e)
+        {
 
+        }
+
+        private void txtMessage_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

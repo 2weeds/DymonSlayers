@@ -138,13 +138,13 @@
             this.grpMessaging.Controls.Add(this.btnSend);
             this.grpMessaging.Controls.Add(this.label2);
             this.grpMessaging.Controls.Add(this.txtMessage);
-            this.grpMessaging.Enabled = false;
             this.grpMessaging.Location = new System.Drawing.Point(12, 125);
             this.grpMessaging.Name = "grpMessaging";
             this.grpMessaging.Size = new System.Drawing.Size(403, 79);
             this.grpMessaging.TabIndex = 1;
             this.grpMessaging.TabStop = false;
             this.grpMessaging.Text = "Messaging";
+            this.grpMessaging.Enter += new System.EventHandler(this.grpMessaging_Enter);
             // 
             // btnSend
             // 
@@ -161,9 +161,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(9, 26);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 13);
+            this.label2.Size = new System.Drawing.Size(54, 13);
             this.label2.TabIndex = 8;
-            this.label2.Text = "Message";
+            this.label2.Text = "Command";
             // 
             // txtMessage
             // 
@@ -171,6 +171,7 @@
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(238, 20);
             this.txtMessage.TabIndex = 7;
+            this.txtMessage.TextChanged += new System.EventHandler(this.txtMessage_TextChanged);
             // 
             // groupBox3
             // 
