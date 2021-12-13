@@ -8,11 +8,14 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SgClient1.Visitor;
+using SgClient1.Memento;
 
 namespace SgClient1.Classes_Test
 {
     public class PlayerClass : Entity, ISubject
     {
+        internal CareTaker careTaker;
+        static System.Timers.Timer ultiTimer;
         private HealthState healthState;
         //public int Health = 100;
         public int level = 1;
@@ -34,7 +37,9 @@ namespace SgClient1.Classes_Test
         {
             healthState = new StateHealthy(this);
             _observers = new List<IObserver>();
-            
+            SetTimer();
+            //pc = this;
+            careTaker = new CareTaker(this);
         }
         public void SetHub(IHubProxy hubProxy)
         {
@@ -54,7 +59,36 @@ namespace SgClient1.Classes_Test
                 o.Update(this);
             });
         }
+        private void SetTimer()
+        {
+            ultiTimer = new System.Timers.Timer(5000); // 5 sec interval
+            // Hook up the Elapsed event for the timer. 
+            ultiTimer.Elapsed += OnTimedEvent;
+            ultiTimer.AutoReset = true;
+            ultiTimer.Enabled = true;
+        }
 
+        private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            // create backup
+            careTaker.Backup();
+        }
+        /// <summary>
+        /// Reserved for CareTaker
+        /// </summary>
+        /// <returns></returns>
+        public Memento MakeSnapshot()
+        {
+            return new Memento(GetHealth(), ammo, player, player.Left, player.Top);
+        }
+        public void Restore(Memento memento)
+        {
+            Health = memento.RestoreHealth();
+            ammo = memento.RestoreAmmo();
+            player = memento.RestorePlayer();
+            Tuple<int, int> coords = memento.RestoreCoords();
+            SendMovementToServer("up", coords.Item1, coords.Item2) ;
+        }
         public void DoDamage(Zombie zombie, Control x)
         {
             Mediator.Mediator mediator = new Mediator.Mediator(this, zombie);
@@ -85,11 +119,11 @@ namespace SgClient1.Classes_Test
             return Health;
         }
 
-        public void PlayerMove(bool left, bool up, bool right, bool down)
+        public void PlayerMove(PictureBox player, bool left, bool up, bool right, bool down)
         {
             SetSpeed();
             string dir = GetPictureDirection(left, up, right, down);
-            Tuple<int, int> xy = GetPlayerCoords(left, up, right, down);
+            Tuple<int, int> xy = GetPlayerCoords(player, left, up, right, down);
             SendMovementToServer(dir, xy.Item1, xy.Item2);
             //SetNewCoordinates(xy.Item1, xy.Item2);
         }
@@ -107,7 +141,7 @@ namespace SgClient1.Classes_Test
         {
             return  String.Format("Player {0} spawned a pickup", this.Name);
         }
-        Tuple<int, int> GetPlayerCoords(bool left, bool up, bool right, bool down)
+        Tuple<int, int> GetPlayerCoords(PictureBox player, bool left, bool up, bool right, bool down)
         {
             int x = player.Left;
             int y = player.Top;
@@ -155,7 +189,7 @@ namespace SgClient1.Classes_Test
                 progressBar.ForeColor = System.Drawing.Color.Red;
             }
 
-            PlayerMove(goleft, goup, goright, godown);
+            PlayerMove(player, goleft, goup, goright, godown);
 
             Mediator.Mediator mediator = new Mediator.Mediator();
             foreach (Control x in form.Controls)
@@ -262,6 +296,37 @@ namespace SgClient1.Classes_Test
                 tm.Stop();
                 tm.Dispose();
                 bullet.Dispose();
+            }
+        }
+
+        public class Memento
+        {
+            int health, ammo;
+            PictureBox player;
+            int x, y;
+            public Memento(int health, int ammo, PictureBox pb, int x, int y)
+            {
+                this.health = health;
+                this.ammo = ammo;
+                player = pb;
+                this.x = x;
+                this.y = y;
+            }
+            internal int RestoreHealth()
+            {
+                return health;
+            }
+            internal int RestoreAmmo()
+            {
+                return ammo;
+            }
+            internal PictureBox RestorePlayer()
+            {
+                return player;
+            }
+            internal Tuple<int, int> RestoreCoords()
+            {
+                return new Tuple<int, int>(x, y);
             }
         }
     }

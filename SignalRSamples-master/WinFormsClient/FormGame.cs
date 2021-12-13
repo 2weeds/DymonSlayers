@@ -15,6 +15,7 @@ namespace SgClient1
 {
     public partial class FormGame : Form, ICloneable
     {
+        bool ultimate = true;
         bool firstLaunch = true;
         public bool goup;
         public bool godown;
@@ -81,6 +82,7 @@ namespace SgClient1
             zm.createAZombie(this, pictureBox3.Left, pictureBox3.Top, hands.MakeWeapon().GetWeapon());
 
         }
+        
         public async void Form1_Load(object sender, EventArgs e)
         {
             reporter._IHubProxy = _hubProxy;
@@ -262,6 +264,12 @@ namespace SgClient1
                         bulletType = "Fire";
                         break;
                 }
+            }
+            if (e.KeyCode == Keys.R)
+            {
+                //Call for ekko ulti
+                playerInteractions.careTaker.Undo();
+                ultimate = false;
             }
         }
 
