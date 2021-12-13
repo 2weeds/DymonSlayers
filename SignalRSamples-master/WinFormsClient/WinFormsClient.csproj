@@ -152,6 +152,8 @@
     <Compile Include="AbstractFactory-Factory\L1\L1Factory.cs" />
     <Compile Include="AbstractFactory-Factory\LevelCreator.cs" />
     <Compile Include="AbstractFactory-Factory\LevelObject.cs" />
+    <Compile Include="Interpreter\CommandExpression.cs" />
+    <Compile Include="Interpreter\SingleCommand.cs" />
     <Compile Include="Iterator\ZombieNameCollection.cs" />
     <Compile Include="Iterator\ZombieNameIterator.cs" />
     <Compile Include="Iterator\IterableCollection.cs" />
