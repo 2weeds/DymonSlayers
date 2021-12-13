@@ -57,7 +57,7 @@ namespace SgClient1.Classes_Test
 
         public void DoDamage(Zombie zombie, Control x)
         {
-            Mediator.Mediator mediator = new Mediator.Mediator(zombie);
+            Mediator.Mediator mediator = new Mediator.Mediator(this, zombie);
             mediator.Interaction(zombie);
             //zombie.TakeDamage(this.Weapon.GetWeaponDamage());
         }

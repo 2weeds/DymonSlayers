@@ -11,18 +11,14 @@ namespace SgClient1.Mediator
     {
         public PlayerClass player;
         public Unit unit;
-        public Bullet bullet;
         public Zombie zombie;
-
-        public Mediator(PlayerClass player)
+        
+        public Mediator(PlayerClass player, Zombie zombie)
         {
             this.player = player;
-        }
-
-        public Mediator(Zombie zombie)
-        {
             this.zombie = zombie;
         }
+
         public Mediator()
         {
         }
@@ -30,11 +26,11 @@ namespace SgClient1.Mediator
         {
             if (obj is PlayerClass)
             {
-                player.TakeDamage(1);
+                player.TakeDamage(zombie.ZombieDamageToPlayer);
             }   
             else if (obj is Zombie)
             {
-                zombie.Health -= 1;
+                zombie.Health -= player.Weapon.GetWeaponDamage();
             }
         }
         public int Interaction(string type)

@@ -9,8 +9,6 @@ namespace SgClient1.Visitor
 {
     interface IReportToServer
     {
-
         void ReportEntity(string line);
-
     }
 }
