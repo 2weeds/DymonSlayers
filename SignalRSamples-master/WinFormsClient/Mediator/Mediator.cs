@@ -11,9 +11,9 @@ namespace SgClient1.Mediator
     {
         public PlayerClass player;
         public Unit unit;
-        public Bullet bullet;
         public Zombie zombie;
 
+<<<<<<< Updated upstream
         public Mediator(PlayerClass player, Unit unit, Bullet bullet, Zombie zombie)
         {
             this.player = player;
@@ -23,14 +23,14 @@ namespace SgClient1.Mediator
         }
 
         public Mediator(PlayerClass player)
+=======
+        public Mediator(PlayerClass player, Zombie zombie)
+>>>>>>> Stashed changes
         {
             this.player = player;
-        }
-
-        public Mediator(Zombie zombie)
-        {
             this.zombie = zombie;
         }
+
         public Mediator()
         {
         }
@@ -38,11 +38,15 @@ namespace SgClient1.Mediator
         {
             if (obj is PlayerClass)
             {
+<<<<<<< Updated upstream
                 player.Health-= 1;
+=======
+                player.TakeDamage(zombie.ZombieDamageToPlayer);
+>>>>>>> Stashed changes
             }   
             else if (obj is Zombie)
             {
-                zombie.Health -= 1;
+                zombie.Health -= player.Weapon.GetWeaponDamage();
             }
         }
         public int Interaction(string type)

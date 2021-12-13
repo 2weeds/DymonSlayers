@@ -17,6 +17,7 @@ namespace SgClient1.Classes_Test
         public int zombieTop;
         private ZombieNameCollection names = new ZombieNameCollection();
         private ZombiesCollection zombies = new ZombiesCollection();
+        public int ZombieDamageToPlayer = 1;
 
         public bool ContainsName(string name)
         {
@@ -88,10 +89,8 @@ namespace SgClient1.Classes_Test
         }
         public void Scratch(PlayerClass playerClass, Control x)
         {
-            Mediator.Mediator mediator = new Mediator.Mediator(playerClass);
+            Mediator.Mediator mediator = new Mediator.Mediator(playerClass, this);
             mediator.Interaction(playerClass);
-
-            // playerClass.TakeDamage(Find(x.Name).Weapon.GetWeaponDamage());      //zombie do dmg to player
         }
         public void zombieInteractions(PlayerClass playerClass, int chaseCase)
         {
